@@ -21,7 +21,7 @@ pub trait Environment {
 	type State : Space;
 	type Action : Space;
 
-	fn step(&self, action: <Self::Action as Space>::Element) -> Observation<Self::State>;
-	fn reset(&self) -> Observation<Self::State>;
+	fn step(&mut self, action: <Self::Action as Space>::Element) -> Observation<Self::State>;
+	fn reset(&mut self) -> Observation<Self::State>;
 	fn render(&self);
 }

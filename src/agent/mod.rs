@@ -7,7 +7,7 @@ pub trait Agent<S: Space, A: Space> {
 pub trait Model<S: Space, A: Space> {
 	fn transition(&self, curr: S::Element, action: A::Element, next: S::Element) -> f64;
 	fn reward(&self, curr: S::Element, action: A::Element, next: S::Element) -> f64;
-	fn update_model(&self, old: S::Element, action: A::Element, new: S::Element, reward: f64);
+	fn update_model(&mut self, old: S::Element, action: A::Element, new: S::Element, reward: f64);
 }
 
 pub trait DeterministicModel<S: Space, A: Space> : Model<S, A> {
