@@ -1,4 +1,4 @@
-use super::environment::{Space, Environment, Transition};
+use environment::{Space, Environment, Transition};
 
 pub trait Agent<S: Space, A: Space> {
 	fn get_action(&self, env: Box<Environment<State=S, Action=A>>) -> A;
