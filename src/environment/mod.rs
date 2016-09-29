@@ -1,3 +1,5 @@
+pub mod finite;
+
 pub type Transition<S: Space, A: Space> = (S::Element, A::Element, f64, S::Element);
 
 pub trait Space {
@@ -14,7 +16,7 @@ pub trait FiniteSpace : Space {
 pub struct Observation<S: Space> {
 	state: 	S::Element,
 	reward: f64,
-	done: 	bool
+	done: 	bool,
 }
 
 pub trait Environment {
