@@ -1,3 +1,5 @@
+pub mod qlearner;
+
 use environment::{Space, Environment, Transition};
 
 pub trait Agent<S: Space, A: Space> {
@@ -25,15 +27,11 @@ pub trait DeterministicModel<S: Space, A: Space> : Model<S, A> {
 	}
 }
 
-pub trait OnlineTrainer<S: Space, A: Space> {
-	type AgentType : Agent<S, A>;
-
-	fn train(&self, env: Box<Environment<State=S, Action=A>>) -> Self::AgentType;
-	fn train_step(&self, agent: Self::AgentType, transition: Transition<S, A>) -> Self::AgentType;
+pub trait OnlineTrainer<S: Space, A: Space, T: Agent<S, A>> {
+	fn train_step(&self, agent: &mut T, transition: Transition<S, A>);
+	fn train(&self, agent: &mut T, env: Box<Environment<State=S, Action=A>>);
 }
 
-pub trait BatchTrainer<S: Space, A: Space> {
-	type AgentType : Agent<S, A>;
-
-	fn train(&self, transitions: Vec<Transition<S, A>>) -> Self::AgentType;
+pub trait BatchTrainer<S: Space, A: Space, T: Agent<S, A>> {
+	fn train(&self, agent: &mut T, transitions: Vec<Transition<S, A>>);
 }

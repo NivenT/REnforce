@@ -1,15 +1,10 @@
 pub mod table;
 
-use environment::{Space, Transition};
+use environment::Space;
 
-pub trait QFunction<S: Space, A: Space + Clone> {
+pub trait QFunction<S: Space, A: Space> {
 	fn eval(&self, state: S::Element, action: A::Element) -> f64;
-	fn update(&mut self, transition: Transition<S, A>, action_space: A, gamma: f64, alpha: f64);
-	fn batch_update(&mut self, transitions: Vec<Transition<S, A>>, action_space: A, gamma: f64, alpha: f64) {
-		for t in transitions {
-			self.update(t, action_space.clone(), gamma, alpha);
-		}
-	}
+	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) -> &Self;
 }
 
 pub trait VFunction<S: Space, A: Space> {

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::f64;
 
-use environment::{FiniteSpace, Space, Transition};
+use environment::{FiniteSpace, Space};
 
 use util::{QFunction, VFunction};
 
@@ -19,15 +19,10 @@ impl<S: FiniteSpace, A: FiniteSpace + Clone> QFunction<S, A> for QTable<S, A>
 			0.0
 		}
 	}
-	fn update(&mut self, transition: Transition<S, A>, action_space: A, gamma: f64, alpha: f64) {
-		let (state, action, reward, next) = transition;
+	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) -> &QTable<S, A> {
 		let old_val = self.eval(state, action);
-
-		let mut max_next_val = f64::MIN;
-		for a in action_space.enumerate() {
-			max_next_val = max_next_val.max(self.eval(next, a));
-		}
-		self.map.insert((state, action), old_val + alpha*(reward + gamma*max_next_val - old_val));
+		self.map.insert((state, action), old_val + alpha*(new_val - old_val));
+		self
 	}
 }
 
