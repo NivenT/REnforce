@@ -10,19 +10,27 @@ pub struct QTable<S: FiniteSpace, A: FiniteSpace> {
 	map: HashMap<(S::Element, A::Element), f64>
 }
 
-impl<S: FiniteSpace, A: FiniteSpace + Clone> QFunction<S, A> for QTable<S, A> 
+impl<S: FiniteSpace, A: FiniteSpace> QFunction<S, A> for QTable<S, A> 
 	where S::Element: Hash + Eq, A::Element: Hash + Eq {
 	fn eval(&self, state: S::Element, action: A::Element) -> f64 {
-		if !self.map.contains_key(&(state, action)) {
+		if self.map.contains_key(&(state, action)) {
 			self.map[&(state, action)]
 		} else {
 			0.0
 		}
 	}
-	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) -> &QTable<S, A> {
+	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) {
 		let old_val = self.eval(state, action);
 		self.map.insert((state, action), old_val + alpha*(new_val - old_val));
-		self
+	}
+}
+
+impl<S: FiniteSpace, A: FiniteSpace> QTable<S, A> 
+	where S::Element: Hash + Eq, A::Element: Hash + Eq {
+	pub fn new() -> QTable<S, A> {
+		QTable {
+			map: HashMap::new()
+		}
 	}
 }
 

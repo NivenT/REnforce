@@ -1,9 +1,10 @@
 pub mod qlearner;
+pub mod qagents;
 
 use environment::{Space, Environment, Transition};
 
 pub trait Agent<S: Space, A: Space> {
-	fn get_action(&self, env: Box<Environment<State=S, Action=A>>) -> A;
+	fn get_action(&self, state: S::Element) -> A::Element;
 }
 
 pub trait Model<S: Space, A: Space> {

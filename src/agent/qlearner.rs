@@ -29,3 +29,13 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 		//TODO
 	}
 }
+
+impl<A: FiniteSpace> QLearner<A> {
+	pub fn new(action_space: A, gamma: f64, alpha: f64) -> QLearner<A> {
+		QLearner {
+			action_space: action_space,
+			gamma: gamma,
+			alpha: alpha,
+		}
+	}
+}
