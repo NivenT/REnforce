@@ -1,4 +1,5 @@
 pub mod table;
+pub mod chooser;
 
 use environment::Space;
 
@@ -9,4 +10,8 @@ pub trait QFunction<S: Space, A: Space> {
 
 pub trait VFunction<S: Space, A: Space> {
 	fn eval(&self, state: S::Element) -> f64;
+}
+
+pub trait Chooser<T> {
+	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T;
 }

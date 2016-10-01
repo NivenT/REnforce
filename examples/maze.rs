@@ -6,10 +6,11 @@ use re::environment::{Environment, Observation};
 use re::environment::finite::Finite;
 
 use re::agent::{Agent, OnlineTrainer};
-use re::agent::qagents::GreedyQAgent;
+use re::agent::qagents::EGreedyQAgent;
 use re::agent::qlearner::QLearner;
 
 use re::util::table::QTable;
+use re::util::chooser::Softmax;
 
 #[derive(PartialEq)]
 enum MazeSpot{EMTY, WALL, GOAL}
@@ -102,7 +103,7 @@ impl Maze {
 fn main() {
 	let action_space = Finite::new(4);
 	let q_func = QTable::new();
-	let mut agent = GreedyQAgent::new(Box::new(q_func), action_space);
+	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space, 0.05, Softmax::new(1.0));
 	let mut env = Maze::new();
 	let trainer = QLearner::new(action_space, 0.9, 0.9, 10000);
 
