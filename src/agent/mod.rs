@@ -1,5 +1,6 @@
 pub mod qlearner;
 pub mod qagents;
+pub mod randagent;
 
 use environment::{Space, Environment, Transition};
 
