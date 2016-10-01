@@ -1,5 +1,6 @@
 pub mod finite;
 pub mod empty;
+pub mod tuple;
 
 pub type Transition<S: Space, A: Space> = (S::Element, A::Element, f64, S::Element);
 

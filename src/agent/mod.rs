@@ -30,7 +30,7 @@ pub trait DeterministicModel<S: Space, A: Space> : Model<S, A> {
 
 pub trait OnlineTrainer<S: Space, A: Space, T: Agent<S, A>> {
 	fn train_step(&self, agent: &mut T, transition: Transition<S, A>);
-	fn train(&self, agent: &mut T, env: Box<Environment<State=S, Action=A>>);
+	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>);
 }
 
 pub trait BatchTrainer<S: Space, A: Space, T: Agent<S, A>> {
