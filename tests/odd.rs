@@ -1,3 +1,6 @@
+// This will test a trainer's ability to work in a simple environment
+// THe agent needs to learn to output an odd number
+
 extern crate renforce as re;
 
 use re::environment::{Environment, Observation};

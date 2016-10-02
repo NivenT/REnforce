@@ -1,3 +1,5 @@
+// In this example, we will train an agent to find the shorted path through a maze
+
 extern crate renforce as re;
 
 use std::io::stdin;
@@ -30,9 +32,12 @@ impl Environment for Maze {
 		if action < 4 {
 			self.move_agent(action);
 		}
+		// End episode when agent reaches goal
 		let done = self.grid[self.loc.0][self.loc.1] == GOAL;
 		Observation {
 			state: self.loc, 
+			// Punish agent for every step it takes, but reward it when it reaches the goal
+			// The optimal strategy is then to take the shortest path to the goal
 			reward: if done {1.0} else {-1.0},
 			done: done
 		}
@@ -101,14 +106,23 @@ impl Maze {
 }
 
 fn main() {
+	// The agent has 4 actions: move {up, down, left, right}
 	let action_space = Finite::new(4);
+	// The agent will use a table as its Q-function
 	let q_func = QTable::new();
+	// Creates an epsilon greedy Q-agent
+	// Agent will use softmax to act randomly 5% of the time
 	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space, 0.05, Softmax::new(1.0));
 	let mut env = Maze::new();
+	// We will use Q-learning to train the agent with
+	// discount factor and learning rate both 0.9 and
+	// 10000 training iterations
 	let trainer = QLearner::new(action_space, 0.9, 0.9, 10000);
 
+	// Magic happens
 	trainer.train(&mut agent, &mut env);
 
+	// Simulate one episode of the environment to see what the agent learned
 	let mut obs = env.reset();
 	while !obs.done {
 		env.render();
