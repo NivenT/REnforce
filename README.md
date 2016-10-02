@@ -1,9 +1,9 @@
 # REnforce
-[![Build Status](https://travis-ci.org/nivent/renforce.svg?branch=master)](https://travis-ci.org/nivent/renforce)
+[![Build Status](https://travis-ci.org/NivenT/REnforce.svg?branch=master)](https://travis-ci.org/NivenT/REnforce)
 
 Reinforcement library written in Rust
 
-This library is still in early stages, and the API has not yet been finalized. The documentation can be found [here](http://nivent.github.io/docs/renforce). Contributions and comments are welcomed.
+This library is still in early stages, and the API has not yet been finalized. The documentation can be found [here](http://nivent.github.io/doc/renforce). Contributions and comments are welcomed.
 
 ## Adding to project
 Use [cargo](http://doc.crates.io/guide.html) to add this library to your project. This library is not in [crates.io](https://crates.io/) yet, so add the following to your `Cargo.toml` in order to include it
