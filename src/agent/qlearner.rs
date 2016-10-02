@@ -1,3 +1,5 @@
+//! QLearner Module
+
 use std::f64;
 
 use environment::Environment;
@@ -8,10 +10,19 @@ use agent::{Agent, OnlineTrainer};
 
 use util::QFunction;
 
+/// QLearner
+///
+/// Represents an OnlineTrainer for Q-functions
+/// Uses the [Q-learning algorithm](https://www.wikiwand.com/en/Q-learning)
+#[derive(Debug)]
 pub struct QLearner<A: FiniteSpace> {
+	/// The action space used by the agent
 	action_space: 	A,
+	/// The discount factor
 	gamma:			f64,
+	/// The learning rate
 	alpha:			f64,
+	/// The number of steps to perform when calling train
 	iters:			usize,
 }
 
@@ -39,6 +50,7 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 }
 
 impl<A: FiniteSpace> QLearner<A> {
+	/// Returns a new QLearner with the given info
 	pub fn new(action_space: A, gamma: f64, alpha: f64, iters: usize) -> QLearner<A> {
 		QLearner {
 			action_space: action_space,

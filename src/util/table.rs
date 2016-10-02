@@ -1,3 +1,5 @@
+//! Table Module
+
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::f64;
@@ -6,7 +8,13 @@ use environment::{FiniteSpace, Space};
 
 use util::{QFunction, VFunction};
 
-pub struct QTable<S: FiniteSpace, A: FiniteSpace> {
+/// QTable
+///
+/// Represents a QFunction implemented using a table
+/// The values of all (state, action) pairs are stored in a table
+#[derive(Debug, Clone)]
+pub struct QTable<S: FiniteSpace, A: FiniteSpace>
+	where S::Element: Hash + Eq, A::Element: Hash + Eq {
 	map: HashMap<(S::Element, A::Element), f64>
 }
 
@@ -27,6 +35,7 @@ impl<S: FiniteSpace, A: FiniteSpace> QFunction<S, A> for QTable<S, A>
 
 impl<S: FiniteSpace, A: FiniteSpace> QTable<S, A> 
 	where S::Element: Hash + Eq, A::Element: Hash + Eq {
+	/// Returns a new QTable where all values are initialized to 0
 	pub fn new() -> QTable<S, A> {
 		QTable {
 			map: HashMap::new()
@@ -34,7 +43,12 @@ impl<S: FiniteSpace, A: FiniteSpace> QTable<S, A>
 	}
 }
 
-pub struct VTable<S: FiniteSpace> {
+/// VTable
+///
+/// Represents a VFunction implemented using a table
+/// The values of all states are stored in a table
+#[derive(Debug, Clone)]
+pub struct VTable<S: FiniteSpace> where S::Element: Hash + Eq {
 	map: HashMap<S::Element, f64>
 }
 

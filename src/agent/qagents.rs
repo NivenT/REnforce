@@ -1,3 +1,5 @@
+//! Q-Agents module
+
 use rand::{Rng, thread_rng};
 
 use environment::{Space, FiniteSpace};
@@ -7,8 +9,14 @@ use agent::Agent;
 use util::QFunction;
 use util::Chooser;
 
+/// Greedy Q-Agent
+///
+/// Represents an agent that only performs the best action according to its QFunction
+#[derive(Debug)]
 pub struct GreedyQAgent<S: Space, A: FiniteSpace> {
+	/// The underlying QFunction used by the agent
 	q_func:			Box<QFunction<S, A>>,
+	/// The agent's action space
 	action_space:	A,
 }
 
@@ -39,6 +47,7 @@ impl<S: Space, A: FiniteSpace> QFunction<S, A> for GreedyQAgent<S, A> {
 }
 
 impl<S: Space, A: FiniteSpace> GreedyQAgent<S, A> {
+	/// Returns a new GreedyQAgent with the given function and action space
 	pub fn new(q_func: Box<QFunction<S, A>>, action_space: A) -> GreedyQAgent<S, A> {
 		GreedyQAgent {
 			q_func: q_func,
@@ -47,10 +56,19 @@ impl<S: Space, A: FiniteSpace> GreedyQAgent<S, A> {
 	}
 }
 
+/// Epsilon Greedy Q-Agent
+///
+/// Represents an agent that acts randomly with probabilty epsilon and
+/// acts greedily with probabilty (1 - epsilon)
+#[derive(Debug)]
 pub struct EGreedyQAgent<S: Space, A: FiniteSpace, T: Chooser<A::Element>> {
+	/// Underlying QFunction
 	q_func:			Box<QFunction<S,A>>,
+	/// Agent's action space
 	action_space:	A,
+	/// Probabilty of acting randomly
 	epsilon:		f64,
+	/// Method for choosing a random action
 	chooser:		T,
 }
 
@@ -91,6 +109,7 @@ impl<S: Space, A: FiniteSpace, T: Chooser<A::Element>> QFunction<S, A> for EGree
 }
 
 impl<S: Space, A: FiniteSpace, T: Chooser<A::Element>> EGreedyQAgent<S, A, T> {
+	/// Returns a new EGreedyQAgent with the given information
 	pub fn new(q_func: Box<QFunction<S, A>>, action_space: A, epsilon: f64, chooser: T) -> EGreedyQAgent<S, A, T> {
 		assert!(0.0 <= epsilon && epsilon <= 1.0, "epsilon must be between 0 and 1");
 

@@ -1,9 +1,15 @@
+//! Finite Module
+
 use rand::{Rng, thread_rng};
 
 use environment::{Space, FiniteSpace};
 
+/// Finite
+///
+/// Represents a Space with finitely many elements, {0, 1, 2, ..., size-1}
 #[derive(Debug, Clone, Copy)]
 pub struct Finite {
+	/// The number of elements in the space
 	size: usize,
 }
 
@@ -23,6 +29,7 @@ impl FiniteSpace for Finite {
 }
 
 impl Finite {
+	/// Returns a new Finite with the given number of elements
 	pub fn new(size: usize) -> Finite {
 		Finite {
 			size: size

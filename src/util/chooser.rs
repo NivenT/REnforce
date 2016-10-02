@@ -1,7 +1,13 @@
+//! Chooser Module
+
 use rand::{Rng, thread_rng};
 
 use util::Chooser;
 
+/// Uniform
+///
+/// Represents a Chooser that picks each with equal probability
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Uniform;
 
 impl<T: Clone> Chooser<T> for Uniform {
@@ -11,6 +17,10 @@ impl<T: Clone> Chooser<T> for Uniform {
 	}
 }
 
+/// Softmax
+///
+/// Represents a Chooser that picks each element with probability according to a softmax distrobution
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Softmax {
 	temp: f64
 }
@@ -37,6 +47,7 @@ impl<T: Clone> Chooser<T> for Softmax {
 }
 
 impl Softmax {
+	/// Creates a new Softmax with the given temp
 	pub fn new(temp: f64) -> Softmax {
 		Softmax {
 			temp: temp
