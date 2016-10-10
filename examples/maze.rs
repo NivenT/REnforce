@@ -5,7 +5,7 @@ extern crate renforce as re;
 use std::io::stdin;
 
 use re::environment::{Environment, Observation};
-use re::environment::finite::Finite;
+use re::environment::Finite;
 
 use re::agent::{Agent, OnlineTrainer};
 use re::agent::qagents::EGreedyQAgent;

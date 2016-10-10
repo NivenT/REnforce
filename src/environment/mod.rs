@@ -1,11 +1,15 @@
 //! Environment Module
 
-pub mod finite;
+mod finite;
+mod range;
 mod empty;
 mod tuple;
 mod vector;
 
 use std::fmt::Debug;
+
+pub use self::finite::Finite;
+pub use self::range::Range;
 
 /// A transition experienced by the agent
 pub type Transition<S: Space, A: Space> = (S::Element, A::Element, f64, S::Element);

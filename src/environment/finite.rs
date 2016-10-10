@@ -1,5 +1,3 @@
-//! Finite Module
-
 use rand::{Rng, thread_rng};
 
 use environment::{Space, FiniteSpace};
