@@ -3,6 +3,7 @@
 pub mod finite;
 mod empty;
 mod tuple;
+mod vector;
 
 use std::fmt::Debug;
 
@@ -13,9 +14,8 @@ pub type Transition<S: Space, A: Space> = (S::Element, A::Element, f64, S::Eleme
 ///
 /// Represents a {State, Action} Space
 pub trait Space : Debug {
-	//Should we require Copy?
 	/// The type of members of the Space
-	type Element : Debug + PartialEq + Clone + Copy;
+	type Element : Debug + PartialEq + Clone;
 
 	/// Returns a random element of this space
 	fn sample(&self) -> Self::Element;

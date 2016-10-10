@@ -21,14 +21,14 @@ pub struct QTable<S: FiniteSpace, A: FiniteSpace>
 impl<S: FiniteSpace, A: FiniteSpace> QFunction<S, A> for QTable<S, A> 
 	where S::Element: Hash + Eq, A::Element: Hash + Eq {
 	fn eval(&self, state: S::Element, action: A::Element) -> f64 {
-		if self.map.contains_key(&(state, action)) {
+		if self.map.contains_key(&(state.clone(), action.clone())) {
 			self.map[&(state, action)]
 		} else {
 			0.0
 		}
 	}
 	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) {
-		let old_val = self.eval(state, action);
+		let old_val = self.eval(state.clone(), action.clone());
 		self.map.insert((state, action), old_val + alpha*(new_val - old_val));
 	}
 }

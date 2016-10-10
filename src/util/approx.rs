@@ -35,7 +35,7 @@ impl<S: Space, A: Space> QFunction<S, A> for QLinear
 	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) {
 		let cost_grad = {
 			let func: &mut QFunction<S, A> = self;
-			func.eval(state, action) - new_val
+			func.eval(state.clone(), action.clone()) - new_val
 		};
 		let mut index = 0;
 		for s in state.into() {
