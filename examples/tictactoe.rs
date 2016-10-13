@@ -7,14 +7,13 @@ use std::io::stdin;
 
 use rand::{Rng, thread_rng};
 
-use re::environment::{Environment, Observation, Space, FiniteSpace};
-use re::environment::{Finite, Range};
+use re::environment::{Environment, Observation, Space};
+use re::environment::Finite;
 
 use re::agent::{Agent, OnlineTrainer};
 use re::agent::qagents::EGreedyQAgent;
-use re::agent::qlearner::QLearner;
+use re::agent::qlearner::SARSALearner;
 
-use re::util::table::QTable;
 use re::util::approx::QLinear;
 use re::util::chooser::Softmax;
 
@@ -29,11 +28,12 @@ struct Board {
 
 impl Environment for Board {
 	type State = Vec<Finite>;
-	type Action = Finite;
+	//Needs elements convertible to Vec<f64>, so must be a Vec. Will always have 1 element in practice
+	type Action = Vec<Finite>;
 
-	fn step(&mut self, action: <Finite as Space>::Element) -> Observation<Self::State> {
+	fn step(&mut self, action: <Vec<Finite> as Space>::Element) -> Observation<Self::State> {
 		let mut winner = 0;
-		let action = action as usize;
+		let action = action[0] as usize;
 		if action < 9 && self.cells[action] == E {
 			self.cells[action] = X;
 			winner = self.get_winner();
@@ -47,7 +47,7 @@ impl Environment for Board {
 			}
 		}
 		Observation {
-			state: self.cells.iter().map(|&c| c as i64 as usize).collect(),
+			state: self.cells.iter().map(|&c| c as u32).collect(),
 			reward: winner as f64,
 			done: if winner == 0 {(0..9).filter(|&i| self.cells[i] == E).count() == 0} else {true}
 		}
@@ -96,20 +96,26 @@ impl Board {
 
 fn main() {
 	// The agent has 9 spots to play an X in
-	let action_space = Finite::new(9);
-	// The agent will use a table as its Q-function
-	let q_func = QTable::new();
+	let action_space = vec![Finite::new(9)];
+	// The agent will use a Linear function approximator as its Q-function
+	// The state is 9 dimensional and the action in 1 dimensional, for a
+	// total of 10 dimensions.
+	let q_func = QLinear::new(10);
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space, 0.05, Softmax::new(1.0));
+	let mut agent = EGreedyQAgent::new(Box::new(q_func.clone()), action_space.clone(), 
+										0.05, Softmax::new(1.0));
 	let mut env = Board::new();
+
+	println!("weights: {:?}", q_func.get_weights());
 	// We will use Q-learning to train the agent with
 	// discount factor and learning rate both 0.9 and
 	// 100000 training iterations
-	let trainer = QLearner::new(action_space, 0.9, 0.9, 100000);
+	let trainer = SARSALearner::new(0.9, 0.9, 100000);
 
 	// Magic happens
 	trainer.train(&mut agent, &mut env);
+	println!("weights: {:?}", q_func.get_weights());
 
 	// Simulate one episode of the environment to see what the agent learned
 	let mut obs = env.reset();

@@ -60,3 +60,49 @@ impl<A: FiniteSpace> QLearner<A> {
 		}
 	}
 }
+
+/// SARSALearner
+///
+/// Represents an OnlineTrainer for Q-functions
+/// Uses the [SARSA algorithm](https://www.wikiwand.com/en/State-Action-Reward-State-Action)
+#[derive(Debug)]
+pub struct SARSALearner {
+	/// The discount factor
+	gamma:			f64,
+	/// The learning rate
+	alpha:			f64,
+	/// The number of steps to perform when calling train
+	iters:			usize,
+}
+
+impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
+	where T: QFunction<S, A> + Agent<S, A> {
+	fn train_step(&self, agent: &mut T, transition: Transition<S, A>) {
+		let (state, action, reward, next) = transition;
+		
+		let next_action = agent.get_action(next.clone());
+		let next_val = agent.eval(next, next_action);
+		agent.update(state, action, reward + self.gamma*next_val, self.alpha);
+	}
+	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
+		let mut obs = env.reset();
+		for _ in 0..self.iters {
+			let action = agent.get_action(obs.state.clone());
+			let new_obs = env.step(action.clone());
+			self.train_step(agent, (obs.state, action, new_obs.reward, new_obs.state.clone()));
+
+			obs = if new_obs.done {env.reset()} else {new_obs};
+		}
+	}
+}
+
+impl SARSALearner {
+	/// Returns a new SARSALearner with the given info
+	pub fn new(gamma: f64, alpha: f64, iters: usize) -> SARSALearner {
+		SARSALearner {
+			gamma: gamma,
+			alpha: alpha,
+			iters: iters
+		}
+	}
+}

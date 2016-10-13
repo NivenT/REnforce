@@ -21,19 +21,19 @@ use MazeSpot::*;
 
 struct Maze {
 	grid: Vec<Vec<MazeSpot>>,
-	loc: (usize, usize),
+	loc: (u32, u32),
 }
 
 impl Environment for Maze {
 	type State = (Finite, Finite);
 	type Action = Finite;
 
-	fn step(&mut self, action: usize) -> Observation<(Finite, Finite)> {
+	fn step(&mut self, action: u32) -> Observation<(Finite, Finite)> {
 		if action < 4 {
 			self.move_agent(action);
 		}
 		// End episode when agent reaches goal
-		let done = self.grid[self.loc.0][self.loc.1] == GOAL;
+		let done = self.grid[self.loc.0 as usize][self.loc.1 as usize] == GOAL;
 		Observation {
 			state: self.loc, 
 			// Punish agent for every step it takes, but reward it when it reaches the goal
@@ -54,7 +54,7 @@ impl Environment for Maze {
 		println!("===============");
 		for r in 0..8 {
 			for c in 0..8 {
-				let ch = match self.grid[r][c] {
+				let ch = match self.grid[r as usize][c as usize] {
 					EMTY => " ",
 					WALL => "#",
 					GOAL => "_",
@@ -84,7 +84,7 @@ impl Maze {
 	fn is_in_bounds(&self, loc: (usize, usize)) -> bool {
 		loc.0 < 8 && loc.1 < 8
 	}
-	fn move_agent(&mut self, action: usize) {
+	fn move_agent(&mut self, action: u32) {
 		if action >= 4 {
 			return;
 		}
@@ -100,7 +100,7 @@ impl Maze {
 		let new_loc = (new_loc.0 as usize, new_loc.1 as usize);
 
 		if self.is_in_bounds(new_loc) && self.grid[new_loc.0][new_loc.1] != WALL {
-			self.loc = new_loc;
+			self.loc = (new_loc.0 as u32, new_loc.1 as u32);
 		}
 	}
 }

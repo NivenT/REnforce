@@ -8,27 +8,27 @@ use environment::{Space, FiniteSpace};
 #[derive(Debug, Clone, Copy)]
 pub struct Finite {
 	/// The number of elements in the space
-	size: usize,
+	size: u32,
 }
 
 impl Space for Finite {
-	type Element = usize;
+	type Element = u32;
 
-	fn sample(&self) -> usize {
+	fn sample(&self) -> u32 {
 		let mut rng = thread_rng();
 		rng.gen_range(0, self.size)
 	}
 }
 
 impl FiniteSpace for Finite {
-	fn enumerate(&self) -> Vec<usize> {
+	fn enumerate(&self) -> Vec<u32> {
 		(0..self.size).collect()
 	}
 }
 
 impl Finite {
 	/// Returns a new Finite with the given number of elements
-	pub fn new(size: usize) -> Finite {
+	pub fn new(size: u32) -> Finite {
 		Finite {
 			size: size
 		}

@@ -18,7 +18,7 @@ impl Environment for NumberChooser {
 	type State = ();
 	type Action = Finite;
 
-	fn step(&mut self, action: usize) -> Observation<()> {
+	fn step(&mut self, action: u32) -> Observation<()> {
 		Observation {
 			state: (), 
 			reward: if action%2 == 1 {1.0} else {-1.0},
