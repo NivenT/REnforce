@@ -58,3 +58,4 @@ fn main() {
 A lot remains to be done, but the following reinforcement learning algorithms have been implemented thus far...
 
 * [Q-learning](https://www.wikiwand.com/en/Q-learning)
+* [SARSA](https://www.wikiwand.com/en/State-Action-Reward-State-Action)
