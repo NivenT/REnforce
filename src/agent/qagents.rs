@@ -121,6 +121,13 @@ impl<S: Space, A: FiniteSpace, T: Chooser<A::Element>> EGreedyQAgent<S, A, T> {
 			chooser: chooser
 		}
 	}
+	/// Returns a GreedyQAgent using this agent's q_function
+	pub fn to_greedy(self) -> GreedyQAgent<S, A> {
+		GreedyQAgent {
+			q_func: self.q_func,
+			action_space: self.action_space
+		}
+	}
 }
 
 #[cfg(test)]

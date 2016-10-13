@@ -1,4 +1,4 @@
-// In this example, we will train an agent to play tic-tac-toe
+// In this example, we will train an agent to play tic-tac-toe against a random player
 
 extern crate renforce as re;
 extern crate rand;
@@ -14,7 +14,7 @@ use re::agent::{Agent, OnlineTrainer};
 use re::agent::qagents::EGreedyQAgent;
 use re::agent::qlearner::SARSALearner;
 
-use re::util::approx::QLinear;
+use re::util::table::QTable;
 use re::util::chooser::Softmax;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -97,25 +97,22 @@ impl Board {
 fn main() {
 	// The agent has 9 spots to play an X in
 	let action_space = vec![Finite::new(9)];
-	// The agent will use a Linear function approximator as its Q-function
-	// The state is 9 dimensional and the action in 1 dimensional, for a
-	// total of 10 dimensions.
-	let q_func = QLinear::new(10);
+	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
-	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = EGreedyQAgent::new(Box::new(q_func.clone()), action_space.clone(), 
-										0.05, Softmax::new(1.0));
+	// Agent will use softmax to act randomly 15% of the time
+	let mut agent = EGreedyQAgent::new(Box::new(q_func.clone()), action_space.clone(),
+										0.15, Softmax::new(1.0));
 	let mut env = Board::new();
 
-	println!("weights: {:?}", q_func.get_weights());
 	// We will use Q-learning to train the agent with
 	// discount factor and learning rate both 0.9 and
-	// 100000 training iterations
-	let trainer = SARSALearner::new(0.9, 0.9, 100000);
+	// 50000 training iterations
+	let trainer = SARSALearner::new(0.9, 0.9, 50000);
 
 	// Magic happens
 	trainer.train(&mut agent, &mut env);
-	println!("weights: {:?}", q_func.get_weights());
+	// Agent will no longer explore, only exploit
+	let agent = agent.to_greedy();
 
 	// Simulate one episode of the environment to see what the agent learned
 	let mut obs = env.reset();
@@ -123,7 +120,8 @@ fn main() {
 		env.render();
 
 		let action = agent.get_action(obs.state);
-		obs = env.step(action);
+		obs = env.step(action.clone());
+		println!("action: {:?}", action);
 
 		let _ = stdin().read_line(&mut String::new());
 	}
