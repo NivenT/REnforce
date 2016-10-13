@@ -1,4 +1,6 @@
-use environment::Space;
+use std::iter;
+
+use environment::{Space, FiniteSpace};
 
 impl<T: Space> Space for Vec<T> {
 	type Element = Vec<T::Element>;
@@ -10,4 +12,22 @@ impl<T: Space> Space for Vec<T> {
 	}
 }
 
-//TODO: impl<T: FiniteSpace> FiniteSpace for Vec<T>
+impl<T: FiniteSpace + Clone> FiniteSpace for Vec<T> {
+	fn enumerate(&self) -> Vec<Self::Element> {
+		match self.len() {
+			0 => vec![],
+			1 => self[0].enumerate().into_iter().map(|x| vec![x]).collect(),
+			_ => {
+				let (head, tail) = self.split_first().unwrap();
+				head.enumerate()
+					.into_iter()
+					.flat_map(|x| iter::repeat(x).zip(tail.to_vec().enumerate())
+												 .map(|(h, mut t)| {
+												 	t.insert(0, h);
+												 	t
+												 }))
+					.collect()
+			}
+		}
+	}
+}
