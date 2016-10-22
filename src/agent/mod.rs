@@ -13,7 +13,7 @@ pub use self::randagent::RandomAgent;
 /// Represents an agent acting in an environment
 pub trait Agent<S: Space, A: Space> {
 	/// Returns the function the agent should perform in the given state
-	fn get_action(&self, state: S::Element) -> A::Element;
+	fn get_action(&self, state: &S::Element) -> A::Element;
 }
 
 /// Model Trait
@@ -22,9 +22,9 @@ pub trait Agent<S: Space, A: Space> {
 /// The model itself is composed of the transition and reward functions
 pub trait Model<S: Space, A: Space> {
 	/// Returns the probabilty of moving from curr to next when performing action
-	fn transition(&self, curr: S::Element, action: A::Element, next: S::Element) -> f64;
+	fn transition(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64;
 	/// Returns the reward received when moving from curr to next when performing action
-	fn reward(&self, curr: S::Element, action: A::Element, next: S::Element) -> f64;
+	fn reward(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64;
 	/// Updates the model using information from the given transition
 	fn update_model(&mut self, transition: Transition<S, A>);
 }
@@ -35,22 +35,22 @@ pub trait Model<S: Space, A: Space> {
 /// When the agent performs a specified action in a specified state, there's only one possible next state
 pub trait DeterministicModel<S: Space, A: Space> {
 	/// Returns the new state of the agent after performing action in curr
-	fn transition2(&self, curr: S::Element, action: A::Element) -> S::Element;
+	fn transition2(&self, curr: &S::Element, action: &A::Element) -> S::Element;
 	/// Returns the reward received when performing action in curr
-	fn reward2(&self, curr: S::Element, action: A::Element) -> f64;
+	fn reward2(&self, curr: &S::Element, action: &A::Element) -> f64;
 	/// Upates the model using information from the given transition
 	fn update_model(&mut self, transition: Transition<S, A>);
 }
 
 impl<S: Space, A: Space> Model<S, A> for DeterministicModel<S, A> {
-	fn transition(&self, curr: S::Element, action: A::Element, next: S::Element) -> f64 {
-		let actual_next = self.transition2(curr.clone(), action.clone());
-		if next == actual_next {1.0} else {0.0}
+	fn transition(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
+		let actual_next = self.transition2(curr, action);
+		if *next == actual_next {1.0} else {0.0}
 	}
 
-	fn reward(&self, curr: S::Element, action: A::Element, next: S::Element) -> f64 {
-		let actual_next = self.transition2(curr.clone(), action.clone());
-		if next == actual_next {self.reward2(curr, action)} else {0.0}
+	fn reward(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
+		let actual_next = self.transition2(curr, action);
+		if *next == actual_next {self.reward2(curr, action)} else {0.0}
 	}
 
 	fn update_model(&mut self, transition: Transition<S, A>) {

@@ -21,15 +21,14 @@ pub struct GreedyQAgent<S: Space, A: FiniteSpace> {
 }
 
 impl<S: Space, A: FiniteSpace> Agent<S, A> for GreedyQAgent<S, A> {
-	fn get_action(&self, state: S::Element) -> A::Element {
+	fn get_action(&self, state: &S::Element) -> A::Element {
 		let actions = self.action_space.enumerate();
-		let (mut best_action, mut best_val) = (actions[0].clone(), 
-											   self.q_func.eval(state.clone(), actions[0].clone()));
+		let (mut best_action, mut best_val) = (actions[0].clone(), self.q_func.eval(state, &actions[0]));
 		
 		for a in actions.into_iter().skip(1) {
-			let val = self.q_func.eval(state.clone(), a.clone());
+			let val = self.q_func.eval(state, &a);
 			if val > best_val {
-				best_action = a.clone();
+				best_action = a;
 				best_val = val;
 			}
 		}
@@ -39,10 +38,10 @@ impl<S: Space, A: FiniteSpace> Agent<S, A> for GreedyQAgent<S, A> {
 }
 
 impl<S: Space, A: FiniteSpace> QFunction<S, A> for GreedyQAgent<S, A> {
-	fn eval(&self, state: S::Element, action: A::Element) -> f64 {
+	fn eval(&self, state: &S::Element, action: &A::Element) -> f64 {
 		self.q_func.eval(state, action)
 	}
-	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) {
+	fn update(&mut self, state: &S::Element, action: &A::Element, new_val: f64, alpha: f64) {
 		self.q_func.update(state, action, new_val, alpha)
 	}
 }
@@ -74,24 +73,24 @@ pub struct EGreedyQAgent<S: Space, A: FiniteSpace, T: Chooser<A::Element>> {
 }
 
 impl<S: Space, A: FiniteSpace, T: Chooser<A::Element>> Agent<S, A> for EGreedyQAgent<S, A, T> {
-	fn get_action(&self, state: S::Element) -> A::Element {
+	fn get_action(&self, state: &S::Element) -> A::Element {
 		let mut rng = thread_rng();
 		let mut best_action;
 
 		let actions = self.action_space.enumerate();
 		if rng.gen_range(0.0, 1.0) < self.epsilon {
 			let weights = actions.iter()
-								 .map(|a| self.q_func.eval(state.clone(), a.clone()))
+								 .map(|a| self.q_func.eval(state, a))
 								 .collect();
 			best_action = self.chooser.choose(actions, weights);
 		} else {
-			let mut best_val = self.q_func.eval(state.clone(), actions[0].clone());
+			let mut best_val = self.q_func.eval(state, &actions[0]);
 			
 			best_action = actions[0].clone();
 			for a in actions.into_iter().skip(1) {
-				let val = self.q_func.eval(state.clone(), a.clone());
+				let val = self.q_func.eval(state, &a);
 				if val > best_val {
-					best_action = a.clone();
+					best_action = a;
 					best_val = val;
 				}
 			}
@@ -101,10 +100,10 @@ impl<S: Space, A: FiniteSpace, T: Chooser<A::Element>> Agent<S, A> for EGreedyQA
 }
 
 impl<S: Space, A: FiniteSpace, T: Chooser<A::Element>> QFunction<S, A> for EGreedyQAgent<S, A, T> {
-	fn eval(&self, state: S::Element, action: A::Element) -> f64 {
+	fn eval(&self, state: &S::Element, action: &A::Element) -> f64 {
 		self.q_func.eval(state, action)
 	}
-	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) {
+	fn update(&mut self, state: &S::Element, action: &A::Element, new_val: f64, alpha: f64) {
 		self.q_func.update(state, action, new_val, alpha)
 	}
 }

@@ -28,7 +28,8 @@ impl Environment for Maze {
 	type State = (Finite, Finite);
 	type Action = Finite;
 
-	fn step(&mut self, action: u32) -> Observation<(Finite, Finite)> {
+	fn step(&mut self, action: &u32) -> Observation<(Finite, Finite)> {
+		let action = *action;
 		if action < 4 {
 			self.move_agent(action);
 		}
@@ -127,8 +128,8 @@ fn main() {
 	while !obs.done {
 		env.render();
 
-		let action = agent.get_action(obs.state);
-		obs = env.step(action);
+		let action = agent.get_action(&obs.state);
+		obs = env.step(&action);
 
 		let _ = stdin().read_line(&mut String::new());
 	}

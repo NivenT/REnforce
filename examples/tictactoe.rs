@@ -31,12 +31,14 @@ impl Environment for Board {
 	//Needs elements convertible to Vec<f64>, so must be a Vec. Will always have 1 element in practice
 	type Action = Vec<Finite>;
 
-	fn step(&mut self, action: <Vec<Finite> as Space>::Element) -> Observation<Self::State> {
+	fn step(&mut self, action: &<Vec<Finite> as Space>::Element) -> Observation<Self::State> {
 		let mut winner = 0;
+		let mut valid_move = false;
 		let action = action[0] as usize;
 		if action < 9 && self.cells[action] == E {
 			self.cells[action] = X;
 			winner = self.get_winner();
+			valid_move = true;
 			if winner == 0 {
 				let mut rng = thread_rng();
 				let empty_cells: Vec<_> = (0..9).filter(|&i| self.cells[i] == E).collect();
@@ -48,7 +50,7 @@ impl Environment for Board {
 		}
 		Observation {
 			state: self.cells.iter().map(|&c| c as u32).collect(),
-			reward: winner as f64,
+			reward: if valid_move {winner as f64} else {-0.5},
 			done: if winner == 0 {(0..9).filter(|&i| self.cells[i] == E).count() == 0} else {true}
 		}
 	}
@@ -82,7 +84,7 @@ impl Board {
 			if board[i] == board[i+3] && board[i+3] == board[i+6] && board[i+6] != E {
 				return -2*(board[i] as i8) + 3;
 			} else if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3+2] != E {
-				return -2*(board[i] as i8) + 3;
+				return -2*(board[i*3] as i8) + 3;
 			}
 		}
 		if board[0] == board[4] && board[4] == board[8] && board[8] != E {
@@ -116,14 +118,17 @@ fn main() {
 
 	// Simulate one episode of the environment to see what the agent learned
 	let mut obs = env.reset();
+	let mut reward = 0.0;
 	while !obs.done {
 		env.render();
 
-		let action = agent.get_action(obs.state);
-		obs = env.step(action.clone());
+		let action = agent.get_action(&obs.state);
+		obs = env.step(&action);
+		reward += obs.reward;
 		println!("action: {:?}", action);
 
 		let _ = stdin().read_line(&mut String::new());
 	}
 	env.render();
+	println!("total reward: {}", reward);
 }

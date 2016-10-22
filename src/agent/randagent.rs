@@ -12,7 +12,7 @@ pub struct RandomAgent<A: Space> {
 }
 
 impl<S: Space, A: Space> Agent<S, A> for RandomAgent<A> {
-	fn get_action(&self, _: S::Element) -> A::Element {
+	fn get_action(&self, _: &S::Element) -> A::Element {
 		self.action_space.sample()
 	}
 }

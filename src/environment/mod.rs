@@ -11,8 +11,8 @@ use std::fmt::Debug;
 pub use self::finite::Finite;
 pub use self::range::Range;
 
-/// A transition experienced by the agent
-pub type Transition<S: Space, A: Space> = (S::Element, A::Element, f64, S::Element);
+/// A transition experienced by the agent (s, a, r, s')
+pub type Transition<'a, S: Space, A: Space> = (&'a S::Element, &'a A::Element, f64, &'a S::Element);
 
 /// Space Trait
 ///
@@ -56,7 +56,7 @@ pub trait Environment {
 	type Action : Space;
 
 	/// Performs action in environment and returns the observed result
-	fn step(&mut self, action: <Self::Action as Space>::Element) -> Observation<Self::State>;
+	fn step(&mut self, action: &<Self::Action as Space>::Element) -> Observation<Self::State>;
 	/// Resets the environment to its initial configuration
 	fn reset(&mut self) -> Observation<Self::State>;
 	/// Displays the environment

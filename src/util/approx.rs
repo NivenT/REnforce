@@ -21,20 +21,20 @@ pub struct QLinear<S: Space, A: Space> {
 }
 
 impl<S: Space, A: Space> QFunction<S, A> for QLinear<S, A> {
-	fn eval(&self, state: S::Element, action: A::Element) -> f64 {
+	fn eval(&self, state: &S::Element, action: &A::Element) -> f64 {
 		let mut ret = self.bias;
 		for (i, feat) in self.features.iter().enumerate() {
-			ret += self.weights[i]*feat.extract(state.clone(), action.clone());
+			ret += self.weights[i]*feat.extract(&state, &action);
 		}
 		ret
 	}
-	fn update(&mut self, state: S::Element, action: A::Element, new_val: f64, alpha: f64) {
+	fn update(&mut self, state: &S::Element, action: &A::Element, new_val: f64, alpha: f64) {
 		let cost_grad = {
 			let func: &mut QFunction<S, A> = self;
-			func.eval(state.clone(), action.clone()) - new_val
+			func.eval(&state, &action) - new_val
 		};
 		for (i, feat) in self.features.iter().enumerate() {
-			self.weights[i] -= alpha*cost_grad*feat.extract(state.clone(), action.clone());
+			self.weights[i] -= alpha*cost_grad*feat.extract(&state, &action);
 		}
 		self.bias -= alpha*cost_grad;
 	}

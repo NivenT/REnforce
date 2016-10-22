@@ -18,10 +18,10 @@ impl Environment for NumberChooser {
 	type State = ();
 	type Action = Finite;
 
-	fn step(&mut self, action: u32) -> Observation<()> {
+	fn step(&mut self, action: &u32) -> Observation<()> {
 		Observation {
 			state: (), 
-			reward: if action%2 == 1 {1.0} else {-1.0},
+			reward: if *action%2 == 1 {1.0} else {-1.0},
 			done: false
 		}
 	}
@@ -46,5 +46,5 @@ fn learn_to_choose_odd() {
 
 	trainer.train(&mut agent, &mut env);
 
-	assert!(agent.get_action(())%2 == 1, "The agent should have learned to pick odd numbers");
+	assert!(agent.get_action(&())%2 == 1, "The agent should have learned to pick odd numbers");
 }

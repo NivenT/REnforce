@@ -33,16 +33,16 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 		
 		let mut max_next_val = f64::MIN;
 		for a in self.action_space.enumerate() {
-			max_next_val = max_next_val.max(agent.eval(next.clone(), a));
+			max_next_val = max_next_val.max(agent.eval(&next, &a));
 		}
-		agent.update(state, action, reward + self.gamma*max_next_val, self.alpha);
+		agent.update(&state, &action, reward + self.gamma*max_next_val, self.alpha);
 	}
 	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
 		for _ in 0..self.iters {
-			let action = agent.get_action(obs.state.clone());
-			let new_obs = env.step(action.clone());
-			self.train_step(agent, (obs.state, action, new_obs.reward, new_obs.state.clone()));
+			let action = agent.get_action(&obs.state);
+			let new_obs = env.step(&action);
+			self.train_step(agent, (&obs.state, &action, new_obs.reward, &new_obs.state));
 
 			obs = if new_obs.done {env.reset()} else {new_obs};
 		}
@@ -80,16 +80,16 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 	fn train_step(&self, agent: &mut T, transition: Transition<S, A>) {
 		let (state, action, reward, next) = transition;
 		
-		let next_action = agent.get_action(next.clone());
-		let next_val = agent.eval(next, next_action);
-		agent.update(state, action, reward + self.gamma*next_val, self.alpha);
+		let next_action = agent.get_action(&next);
+		let next_val = agent.eval(&next, &next_action);
+		agent.update(&state, &action, reward + self.gamma*next_val, self.alpha);
 	}
 	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
 		for _ in 0..self.iters {
-			let action = agent.get_action(obs.state.clone());
-			let new_obs = env.step(action.clone());
-			self.train_step(agent, (obs.state, action, new_obs.reward, new_obs.state.clone()));
+			let action = agent.get_action(&obs.state);
+			let new_obs = env.step(&action);
+			self.train_step(agent, (&obs.state, &action, new_obs.reward, &new_obs.state));
 
 			obs = if new_obs.done {env.reset()} else {new_obs};
 		}
