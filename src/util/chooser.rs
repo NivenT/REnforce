@@ -37,6 +37,11 @@ impl<T: Clone> Chooser<T> for Softmax {
 										 .collect();
 		let mut rng = thread_rng();
 		let mut index = 0;
+
+		if total == 0.0 {
+			return rng.choose(&choices).unwrap().clone()
+		}
+
 		let mut choice = rng.gen_range(0.0, total);
 		while choice > new_weights[index] {
 			choice -= new_weights[index];

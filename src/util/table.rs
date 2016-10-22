@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::f64;
 
-use environment::{FiniteSpace, Space};
+use environment::FiniteSpace;
 
 use util::{QFunction, VFunction};
 
@@ -52,7 +52,7 @@ pub struct VTable<S: FiniteSpace> where S::Element: Hash + Eq {
 	map: HashMap<S::Element, f64>
 }
 
-impl<S: FiniteSpace, A: Space> VFunction<S, A> for VTable<S> where S::Element: Hash + Eq {
+impl<S: FiniteSpace> VFunction<S> for VTable<S> where S::Element: Hash + Eq {
 	fn eval(&self, state: &S::Element) -> f64 {
 		//*self.map.entry(state).or_insert(0.0)
 		if self.map.contains_key(state) {
@@ -60,5 +60,9 @@ impl<S: FiniteSpace, A: Space> VFunction<S, A> for VTable<S> where S::Element: H
 		} else {
 			0.0
 		}
+	}
+	fn update(&mut self, state: &S::Element, new_val: f64, alpha: f64) {
+		let old_val = self.eval(state);
+		self.map.insert(state.clone(), old_val + alpha*(new_val - old_val));
 	}
 }

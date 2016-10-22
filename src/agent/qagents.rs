@@ -15,9 +15,9 @@ use util::Chooser;
 #[derive(Debug)]
 pub struct GreedyQAgent<S: Space, A: FiniteSpace> {
 	/// The underlying QFunction used by the agent
-	q_func:			Box<QFunction<S, A>>,
+	q_func:	Box<QFunction<S, A>>,
 	/// The agent's action space
-	action_space:	A,
+	action_space: A,
 }
 
 impl<S: Space, A: FiniteSpace> Agent<S, A> for GreedyQAgent<S, A> {
