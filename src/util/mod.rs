@@ -53,3 +53,13 @@ impl<S: Space, A: Space> Feature<S, A> for BinaryFeature<S, A> {
 		return self.b_extract(state, action) as u32 as f64;
 	}
 }
+
+/// A type with a notion of distance
+/// The distance function should satisfy the triangle inequality (and the other [metric](https://www.wikiwand.com/en/Metric_(mathematics)) properties)
+/// d(x,z) <= d(x,y) + d(y,z)
+pub trait Metric {
+	/// Returns the distance between x and y
+	fn dist(x: &Self, y: &Self) -> f64;
+	/// Returns the squared distance between x and y
+	fn dist2(x: &Self, y: &Self) -> f64;
+}

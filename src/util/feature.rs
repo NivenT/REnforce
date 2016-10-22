@@ -5,7 +5,7 @@ use std::fmt::Debug;
 
 use environment::Space;
 
-use util::Feature;
+use util::{Feature, Metric};
 
 /// Identity Feature
 ///
@@ -32,5 +32,31 @@ impl<T: Debug> IFeature<T> {
 	/// Creates a new Identity Feature
 	pub fn new(index: usize) -> IFeature<T> {
 		IFeature {index: index, phantom: PhantomData}
+	}
+}
+
+/// Radial Basis Feature
+///
+/// Computes feature exp(-||s-s'||^2/(2u^2))
+/// Represents a gaussian centered at s' with standard deviation u
+#[derive(Debug)]
+pub struct RBFeature<S: Space> {
+	center: S::Element,
+	deviation: f64,
+}
+
+impl <S: Space, A: Space> Feature<S, A> for RBFeature<S> where S::Element: Metric {
+	fn extract(&self, state: &S::Element, _: &A::Element) -> f64 {
+		(-Metric::dist2(state, &self.center)/(2.0*self.deviation*self.deviation)).exp()
+	}
+}
+
+impl<S: Space> RBFeature<S> {
+	/// Creates a new RBFeature with given center and standard deviation
+	pub fn new(center: S::Element, deviation: f64) -> RBFeature<S> {
+		RBFeature {
+			center: center,
+			deviation: deviation
+		}
 	}
 }
