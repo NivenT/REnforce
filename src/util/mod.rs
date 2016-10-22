@@ -22,7 +22,7 @@ pub trait QFunction<S: Space, A: Space> : Debug {
 /// VFunction Trait
 ///
 /// Represents a function V: S -> R that takes in a state and returns its value
-pub trait VFunction<S: Space, A: Space> {
+pub trait VFunction<S: Space, A: Space> : Debug {
 	/// Evaluate the function on the given state
 	fn eval(&self, state: S::Element) -> f64;
 }
@@ -36,13 +36,13 @@ pub trait Chooser<T> : Debug {
 }
 
 /// A feature of a state, action pair with a real value
-pub trait Feature<S: Space, A: Space> {
+pub trait Feature<S: Space, A: Space> : Debug {
 	/// Extracts some real-valued feature from a given state, action pair
 	fn extract(&self, state: S::Element, action: A::Element) -> f64;
 }
 
 /// A feature of a state, action pair with a binary value
-pub trait BinaryFeature<S: Space, A: Space> {
+pub trait BinaryFeature<S: Space, A: Space> : Debug {
 	/// Extracts some binary feature from a given state, action pair
 	fn b_extract(&self, state: S::Element, action: A::Element) -> bool;
 }

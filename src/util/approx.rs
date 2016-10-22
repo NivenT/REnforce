@@ -1,39 +1,30 @@
 //! Function Approximator Module
 
-use std::marker::PhantomData;
-use std::fmt::Debug;
-
 use rand::{Rng, thread_rng};
 
 use environment::Space;
 
-use util::QFunction;
+use util::{Feature, QFunction};
 
 /// QLinear
 ///
 /// Represents a linear function approximator
-/// f(x) = w^T x + b
+/// f(x) = w^T g(x) + b
+/// 	where g: S x A -> R^n maps state, action pairs to a vector of features
 /// Weights updated using squared error cost
-/// C = 1/2(w^T x + b - y)^2
-#[derive(Debug, Clone)]
-pub struct QLinear<T: Into<f64>> {
+/// C = 1/2(w^T g(x) + b - y)^2
+#[derive(Debug)]
+pub struct QLinear<S: Space, A: Space> {
+	features: Vec<Box<Feature<S, A>>>,
 	weights: Vec<f64>,
 	bias: f64,
-	phantom: PhantomData<T>,
 }
 
-impl<T: Into<f64> + Debug, S: Space, A: Space> QFunction<S, A> for QLinear<T>
-	where S::Element: Into<Vec<T>>, A::Element: Into<Vec<T>> {
+impl<S: Space, A: Space> QFunction<S, A> for QLinear<S, A> {
 	fn eval(&self, state: S::Element, action: A::Element) -> f64 {
-		let mut index = 0;
 		let mut ret = self.bias;
-		for s in state.into() {
-			ret += self.weights[index]*s.into();
-			index += 1;
-		}
-		for a in action.into() {
-			ret += self.weights[index]*a.into();
-			index += 1;
+		for (i, feat) in self.features.iter().enumerate() {
+			ret += self.weights[i]*feat.extract(state.clone(), action.clone());
 		}
 		ret
 	}
@@ -42,31 +33,32 @@ impl<T: Into<f64> + Debug, S: Space, A: Space> QFunction<S, A> for QLinear<T>
 			let func: &mut QFunction<S, A> = self;
 			func.eval(state.clone(), action.clone()) - new_val
 		};
-		let mut index = 0;
-		for s in state.into() {
-			self.weights[index] -= alpha*cost_grad*s.into();
-			index += 1;
-		}
-		for a in action.into() {
-			self.weights[index] -= alpha*cost_grad*a.into();
-			index += 1;
+		for (i, feat) in self.features.iter().enumerate() {
+			self.weights[i] -= alpha*cost_grad*feat.extract(state.clone(), action.clone());
 		}
 		self.bias -= alpha*cost_grad;
 	}
 }
 
-impl<T: Into<f64>> QLinear<T> {
+impl<S: Space, A: Space> QLinear<S, A> {
 	/// Creates a new Linear Q-Function Approximator
-	pub fn new(n: usize) -> QLinear<T> {
+	pub fn new() -> QLinear<S, A> {
 		let mut rng = thread_rng();
 		QLinear {
-			weights: (0..n).map(|_| rng.gen_range(0.0, 1.0)).collect(),
-			bias: rng.gen_range(0.0, 1.0),
-			phantom: PhantomData
+			features: vec![],
+			weights: vec![],
+			bias: rng.gen_range(-1.0, 1.0)
 		}
 	}
 	/// Returns a clone of the weights of this function
 	pub fn get_weights(&self) -> Vec<f64> {
 		self.weights.clone()
+	}
+	/// Adds the specified feature to the end of the feature vector, giving it a random weight
+	pub fn add_feature<'a>(&'a mut self, feature: Box<Feature<S, A>>) -> &'a mut QLinear<S, A> {
+		let mut rng = thread_rng();
+		self.weights.push(rng.gen_range(-1.0, 1.0));
+		self.features.push(feature);
+		self
 	}
 }
