@@ -3,6 +3,7 @@
 pub mod table;
 pub mod chooser;
 pub mod approx;
+pub mod feature;
 
 use environment::Space;
 
