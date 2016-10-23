@@ -24,6 +24,15 @@ impl<S: Space, A: FiniteSpace> Agent<S, A> for BinaryVAgent<S, A> {
 	}
 }
 
+impl<S: Space, A: FiniteSpace> VFunction<S> for BinaryVAgent<S, A> {
+	fn eval(&self, state: &S::Element) -> f64 {
+		self.v_func.eval(state)
+	}
+	fn update(&mut self, state: &S::Element, new_val: f64, alpha: f64) {
+		self.v_func.update(state, new_val, alpha)
+	}
+}
+
 impl<S: Space, A: FiniteSpace> BinaryVAgent<S, A> {
 	/// Creates a new BinaryVAgent
 	pub fn new(v_func: Box<VFunction<S>>, action_space: A) -> BinaryVAgent<S, A> {

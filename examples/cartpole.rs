@@ -8,9 +8,10 @@ use re::environment::{Finite, Range};
 
 use re::agent::{Agent, OnlineTrainer};
 use re::agent::vagents::BinaryVAgent;
+use re::agent::vlearner::BinaryVLearner;
 
 use re::util::approx::VLinear;
-use re::util::feature::IFeature;
+use re::util::feature::{RBFeature, IFeature};
 
 use gym::Client;
 
@@ -63,7 +64,7 @@ fn main() {
 	// The agent has 2 actions: move {left, right}
 	let action_space = vec![Finite::new(2)];
 
-	let v_func: VLinear<Vec<Range>> = VLinear::new().add_feature(Box::new(IFeature::new(0)))
+	let v_func = VLinear::new().add_feature(Box::new(IFeature::new(0)))
 							   .add_feature(Box::new(IFeature::new(1)))
 							   .add_feature(Box::new(IFeature::new(2)))
 							   .add_feature(Box::new(IFeature::new(3)));
@@ -73,6 +74,10 @@ fn main() {
 
 	let mut env = CartPole::new();
 
+	let trainer = BinaryVLearner::new(0.7, 0.1, 20000);
+	trainer.train(&mut agent, &mut env);
+	println!("Done training");
+
 	unsafe {
 		render_cartpole = true;
 	}
@@ -80,6 +85,7 @@ fn main() {
 
 	// Simulate one episode of the environment to see what the agent learned
 	let mut obs = env.reset();
+	println!("{:?}", obs.state);
 	let mut reward = 0.0;
 	while !obs.done {
 		env.render();

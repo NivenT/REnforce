@@ -5,7 +5,7 @@ use std::fmt::Debug;
 
 use environment::Space;
 
-use util::{Feature, Metric};
+use util::{BinaryFeature, Feature, Metric};
 
 /// Identity Feature
 ///
@@ -41,7 +41,7 @@ pub struct RBFeature<S: Space> {
 	variation: f64,
 }
 
-impl <S: Space> Feature<S> for RBFeature<S> where S::Element: Metric {
+impl<S: Space> Feature<S> for RBFeature<S> where S::Element: Metric {
 	fn extract(&self, state: &S::Element) -> f64 {
 		(-Metric::dist2(state, &self.center)/(2.0*self.variation)).exp()
 	}
@@ -53,6 +53,63 @@ impl<S: Space> RBFeature<S> {
 		RBFeature {
 			center: center,
 			variation: deviation*deviation
+		}
+	}
+}
+
+/// Binary Ball Feature
+///
+/// 1 iff the state is close enough to the center
+#[derive(Debug)]
+pub struct BBFeature<S: Space> {
+	center: S::Element,
+	radius: f64,
+}
+
+impl<S: Space> BinaryFeature<S> for BBFeature<S> where S::Element: Metric {
+	fn b_extract(&self, state: &S::Element) -> bool {
+		Metric::dist2(state, &self.center) <= self.radius*self.radius
+	}
+}
+
+impl<S: Space> BBFeature<S> {
+	/// Creates a new BBFeature
+	pub fn new(center: S::Element, radius: f64) -> BBFeature<S> {
+		BBFeature {
+			center: center,
+			radius: radius
+		}
+	}
+}
+
+/// Bineary Slice Feature
+///
+/// 1 iff the value in the specified dimension is in the given range
+#[derive(Debug)]
+pub struct BSFeature<T: Debug + Into<f64>> {
+	min: f64,
+	max: f64,
+	dim: usize,
+	phantom: PhantomData<T>,
+}
+
+impl<S: Space, T> BinaryFeature<S> for BSFeature<T>
+	where T: Into<f64> + Debug + Clone,
+		  S::Element: Into<Vec<T>> {
+	fn b_extract(&self, state: &S::Element) -> bool {
+		let val = state.clone().into()[self.dim].clone().into();
+		self.min <= val && val <= self.max
+	}
+}
+
+impl<T: Debug + Into<f64>> BSFeature<T> {
+	/// Creates a new BSFeature
+	pub fn new(min: f64, max: f64, dim: usize) -> BSFeature<T> {
+		BSFeature {
+			min: min,
+			max: max,
+			dim: dim,
+			phantom: PhantomData
 		}
 	}
 }
