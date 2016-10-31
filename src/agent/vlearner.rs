@@ -27,13 +27,13 @@ pub struct BinaryVLearner {
 }
 
 impl<S: Space, A: FiniteSpace> OnlineTrainer<S, A, BinaryVAgent<S, A>> for BinaryVLearner {
-	fn train_step(&self, agent: &mut BinaryVAgent<S, A>, transition: Transition<S, A>) {
+	fn train_step(&mut self, agent: &mut BinaryVAgent<S, A>, transition: Transition<S, A>) {
 		let (state, _, reward, next) = transition;
 		
 		let next_val = agent.eval(&next);
 		agent.update(&state, reward + self.gamma*next_val, self.alpha);
 	}
-	fn train(&self, agent: &mut BinaryVAgent<S, A>, env: &mut Environment<State=S, Action=A>) {
+	fn train(&mut self, agent: &mut BinaryVAgent<S, A>, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
 		for _ in 0..self.iters {
 			let action = agent.get_action(&obs.state);

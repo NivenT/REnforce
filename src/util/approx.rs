@@ -26,12 +26,14 @@ impl<S: Space> VFunction<S> for VLinear<S> {
 		for (i, feat) in self.features.iter().enumerate() {
 			ret += self.weights[i]*feat.extract(&state);
 		}
+		/*
 		println!("features: {:?}", self.features.iter().map(|feat| {
 			feat.extract(&state)
 		}).collect::<Vec<_>>());
 		println!("weights: {:?}", self.weights);
 		println!("bias: {}", self.bias);
 		println!("val: {}\n", ret);
+		*/
 		ret
 	}
 	fn update(&mut self, state: &S::Element, new_val: f64, alpha: f64) {
@@ -61,7 +63,7 @@ impl<S: Space> VLinear<S> {
 		self.weights.clone()
 	}
 	/// Adds the specified feature to the end of the feature vector, giving it a random weight
-	pub fn add_feature<'a>(mut self, feature: Box<Feature<S>>) -> VLinear<S> {
+	pub fn add_feature(mut self, feature: Box<Feature<S>>) -> VLinear<S> {
 		let mut rng = thread_rng();
 		self.weights.push(rng.gen_range(-10.0, 10.0));
 		self.features.push(feature);

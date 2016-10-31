@@ -11,7 +11,7 @@ use re::agent::vagents::BinaryVAgent;
 use re::agent::vlearner::BinaryVLearner;
 
 use re::util::approx::VLinear;
-use re::util::feature::{RBFeature, IFeature};
+use re::util::feature::*;
 
 use gym::Client;
 
@@ -64,17 +64,26 @@ fn main() {
 	// The agent has 2 actions: move {left, right}
 	let action_space = vec![Finite::new(2)];
 
-	let v_func = VLinear::new().add_feature(Box::new(IFeature::new(0)))
-							   .add_feature(Box::new(IFeature::new(1)))
-							   .add_feature(Box::new(IFeature::new(2)))
-							   .add_feature(Box::new(IFeature::new(3)));
+	let mut v_func = VLinear::new();
+	let num_ranges = 20;
+	for d in 0..4 {
+		for n in 0..num_ranges {
+			let num_ranges = num_ranges as f64;
+			v_func = v_func.add_feature(Box::new(BSFeature::new(-3.0 + 6.0*(n as f64)/num_ranges,
+																-3.0 + 6.0*(n + 1) as f64/num_ranges,
+																d)));
+		}
+	}
+
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 5% of the time
 	let mut agent = BinaryVAgent::new(Box::new(v_func), action_space.clone());
 
 	let mut env = CartPole::new();
 
-	let trainer = BinaryVLearner::new(0.7, 0.1, 20000);
+	let mut trainer = BinaryVLearner::new(0.7, 0.1, 5000);
+
+	println!("Training...");
 	trainer.train(&mut agent, &mut env);
 	println!("Done training");
 
@@ -85,7 +94,6 @@ fn main() {
 
 	// Simulate one episode of the environment to see what the agent learned
 	let mut obs = env.reset();
-	println!("{:?}", obs.state);
 	let mut reward = 0.0;
 	while !obs.done {
 		env.render();

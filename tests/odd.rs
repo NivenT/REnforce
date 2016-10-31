@@ -42,7 +42,7 @@ fn learn_to_choose_odd() {
 	let q_func = QTable::new();
 	let mut agent = GreedyQAgent::new(Box::new(q_func), action_space);
 	let mut env = NumberChooser;
-	let trainer = QLearner::new(action_space, 0.9, 0.9, 100);
+	let mut trainer = QLearner::new(action_space, 0.9, 0.9, 100);
 
 	trainer.train(&mut agent, &mut env);
 

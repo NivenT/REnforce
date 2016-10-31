@@ -65,9 +65,9 @@ impl<S: Space, A: Space> Model<S, A> for DeterministicModel<S, A> {
 /// Represents a way to train an agent online (by interacting with the environment)
 pub trait OnlineTrainer<S: Space, A: Space, T: Agent<S, A>> {
 	/// Performs one training iteration using the given transition
-	fn train_step(&self, agent: &mut T, transition: Transition<S, A>);
+	fn train_step(&mut self, agent: &mut T, transition: Transition<S, A>);
 	/// Automatically trains the agent to perform well in the environment
-	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>);
+	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>);
 }
 
 /// Batch Trainer Trait
@@ -75,5 +75,5 @@ pub trait OnlineTrainer<S: Space, A: Space, T: Agent<S, A>> {
 /// Represents a way to train an agent from a set of transitions
 pub trait BatchTrainer<S: Space, A: Space, T: Agent<S, A>> {
 	/// Trains agent based on the observed transitions
-	fn train(&self, agent: &mut T, transitions: Vec<Transition<S, A>>);
+	fn train(&mut self, agent: &mut T, transitions: Vec<Transition<S, A>>);
 }

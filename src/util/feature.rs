@@ -72,6 +72,12 @@ impl<S: Space> BinaryFeature<S> for BBFeature<S> where S::Element: Metric {
 	}
 }
 
+impl<S: Space> Feature<S> for BBFeature<S> where S::Element: Metric {
+	fn extract(&self, state: &S::Element) -> f64 {
+		if self.b_extract(state) {1.0} else {0.0}
+	}
+}
+
 impl<S: Space> BBFeature<S> {
 	/// Creates a new BBFeature
 	pub fn new(center: S::Element, radius: f64) -> BBFeature<S> {
@@ -99,6 +105,15 @@ impl<S: Space, T> BinaryFeature<S> for BSFeature<T>
 	fn b_extract(&self, state: &S::Element) -> bool {
 		let val = state.clone().into()[self.dim].clone().into();
 		self.min <= val && val <= self.max
+	}
+}
+
+impl<S: Space, T> Feature<S> for BSFeature<T> 
+	where T: Into<f64> + Debug + Clone,
+		  S::Element: Into<Vec<T>> {
+	fn extract(&self, state: &S::Element) -> f64 {
+		let bin: &BinaryFeature<S> = self;
+		if bin.b_extract(state) {1.0} else {0.0}
 	}
 }
 

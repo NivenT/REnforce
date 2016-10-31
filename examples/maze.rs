@@ -118,7 +118,7 @@ fn main() {
 	// We will use Q-learning to train the agent with
 	// discount factor and learning rate both 0.9 and
 	// 10000 training iterations
-	let trainer = QLearner::new(action_space, 0.9, 0.9, 10000);
+	let mut trainer = QLearner::new(action_space, 0.9, 0.9, 10000);
 
 	// Magic happens
 	trainer.train(&mut agent, &mut env);

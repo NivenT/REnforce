@@ -51,11 +51,7 @@ pub trait BinaryFeature<S: Space> : Debug {
 	fn b_extract(&self, state: &S::Element) -> bool;
 }
 
-impl<S: Space> Feature<S> for BinaryFeature<S> {
-	fn extract(&self, state: &S::Element) -> f64 {
-		return self.b_extract(state) as u32 as f64;
-	}
-}
+//TODO: Macro for implmenting Feature for BinaryFeatures
 
 /// A type with a notion of distance
 /// The distance function should satisfy the triangle inequality (and the other [metric](https://www.wikiwand.com/en/Metric_(mathematics)) properties)

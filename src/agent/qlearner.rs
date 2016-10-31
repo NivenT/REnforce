@@ -28,7 +28,7 @@ pub struct QLearner<A: FiniteSpace> {
 
 impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 	where T: QFunction<S, A> + Agent<S, A> {
-	fn train_step(&self, agent: &mut T, transition: Transition<S, A>) {
+	fn train_step(&mut self, agent: &mut T, transition: Transition<S, A>) {
 		let (state, action, reward, next) = transition;
 		
 		let mut max_next_val = f64::MIN;
@@ -37,7 +37,7 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 		}
 		agent.update(&state, &action, reward + self.gamma*max_next_val, self.alpha);
 	}
-	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
+	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
 		for _ in 0..self.iters {
 			let action = agent.get_action(&obs.state);
@@ -77,14 +77,14 @@ pub struct SARSALearner {
 
 impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 	where T: QFunction<S, A> + Agent<S, A> {
-	fn train_step(&self, agent: &mut T, transition: Transition<S, A>) {
+	fn train_step(&mut self, agent: &mut T, transition: Transition<S, A>) {
 		let (state, action, reward, next) = transition;
 		
 		let next_action = agent.get_action(&next);
 		let next_val = agent.eval(&next, &next_action);
 		agent.update(&state, &action, reward + self.gamma*next_val, self.alpha);
 	}
-	fn train(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
+	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
 		for _ in 0..self.iters {
 			let action = agent.get_action(&obs.state);
