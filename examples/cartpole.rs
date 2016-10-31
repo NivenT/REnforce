@@ -44,7 +44,6 @@ impl Environment for CartPole {
 		}
 	}
 	fn render(&self) {
-		//TODO
 	}
 }
 

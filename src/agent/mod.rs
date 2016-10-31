@@ -44,7 +44,7 @@ pub trait DeterministicModel<S: Space, A: Space> {
 	fn update_model(&mut self, transition: Transition<S, A>);
 }
 
-impl<S: Space, A: Space> Model<S, A> for DeterministicModel<S, A> {
+impl<S: Space, A: Space, T: DeterministicModel<S, A>> Model<S, A> for T {
 	fn transition(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
 		let actual_next = self.transition2(curr, action);
 		if *next == actual_next {1.0} else {0.0}
