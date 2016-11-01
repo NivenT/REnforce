@@ -43,6 +43,14 @@ pub trait Chooser<T> : Debug {
 pub trait Feature<S: Space> : Debug {
 	/// Extracts some real-valued feature from a given state pair
 	fn extract(&self, state: &S::Element) -> f64;
+	/// Creates a cloned trait object of self
+	fn box_clone(&self) -> Box<Feature<S>>;
+}
+
+impl<S: Space> Clone for Box<Feature<S>> {
+	fn clone(&self) -> Self {
+		self.box_clone()
+	}
 }
 
 /// A type with a notion of distance
