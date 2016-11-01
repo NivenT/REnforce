@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BBFeature","Binary Ball Feature"],["BSFeature","Binary Slice Feature"],["IFeature","Identity Feature"],["RBFeature","Radial Basis (Function) Feature"]]});

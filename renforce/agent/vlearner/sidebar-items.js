@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BinaryVLearner","Represents an OnlineTrainer for binary V-functions Uses a SARSA-like algorithm."]]});

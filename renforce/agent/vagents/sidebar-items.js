@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BinaryVAgent","Agent for environments where the action space has 2 members Performs action 0 if state value is negative, and performs action 1 otherwise"]]});
