@@ -3,7 +3,6 @@
 pub mod qlearner;
 pub mod qagents;
 pub mod vagents;
-pub mod vlearner;
 mod randagent;
 
 use environment::{Space, Environment, Transition};

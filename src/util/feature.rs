@@ -91,7 +91,7 @@ impl<S: Space> BBFeature<S> {
 	}
 }
 
-/// Bineary Slice Feature
+/// Binary Slice Feature
 ///
 /// 1 iff the value in the specified dimension is in the given range
 #[derive(Debug, Clone)]

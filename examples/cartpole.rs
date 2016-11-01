@@ -1,3 +1,6 @@
+// Here, we train an agent on the classic cartpole problem
+// The agent does not exhibit optimal behavior, but it certainly learns something
+
 extern crate renforce as re;
 extern crate gym;
 
@@ -7,14 +10,16 @@ use re::environment::{Environment, Observation};
 use re::environment::{Finite, Range};
 
 use re::agent::{Agent, OnlineTrainer};
-use re::agent::vagents::BinaryVAgent;
-use re::agent::vlearner::BinaryVLearner;
+use re::agent::qagents::EGreedyQAgent;
+use re::agent::qlearner::SARSALearner;
 
-use re::util::approx::VLinear;
+use re::util::approx::QLinear;
+use re::util::chooser::Uniform;
 use re::util::feature::*;
 
 use gym::Client;
 
+// Used to render agent during testing but not during training
 static mut render_cartpole: bool = false;
 
 struct CartPole {
@@ -63,29 +68,32 @@ fn main() {
 	// The agent has 2 actions: move {left, right}
 	let action_space = vec![Finite::new(2)];
 
-	let mut v_func = VLinear::new();
-	let num_ranges = 20;
+	let mut q_func = QLinear::new();
+	let num_ranges: u32 = 50;
 	for d in 0..4 {
 		for n in 0..num_ranges {
 			let num_ranges = num_ranges as f64;
-			v_func = v_func.add_feature(Box::new(BSFeature::new(-3.0 + 6.0*(n as f64)/num_ranges,
-																-3.0 + 6.0*(n + 1) as f64/num_ranges,
-																d)));
+			q_func.add(Box::new(BSFeature::new(-3.0 + 6.0*(n as f64)/num_ranges,
+											   -3.0 + 6.0*(n + 1) as f64/num_ranges,
+											   d)));
 		}
 	}
 
 	// Creates an epsilon greedy Q-agent
-	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = BinaryVAgent::new(Box::new(v_func), action_space.clone());
+	// 20% of the time, the agent uniformly chooses a random action
+	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space.clone(), 
+										0.20, Uniform);
 
 	let mut env = CartPole::new();
 
-	let mut trainer = BinaryVLearner::new(0.7, 0.1, 5000);
+	// Could have also used Q learning instead
+	let mut trainer = SARSALearner::new(0.99, 0.05, 15000);
 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);
-	println!("Done training");
+	println!("Done training (press enter)");
 
+	let agent = agent.to_greedy();
 	unsafe {
 		render_cartpole = true;
 	}
@@ -95,14 +103,11 @@ fn main() {
 	let mut obs = env.reset();
 	let mut reward = 0.0;
 	while !obs.done {
-		env.render();
-
 		let action = agent.get_action(&obs.state);
 		obs = env.step(&action);
 		reward += obs.reward;
 		println!("action: {:?}", action);
 	}
-	env.render();
 	println!("total reward: {}", reward);
 
 }
