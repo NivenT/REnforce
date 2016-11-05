@@ -18,6 +18,8 @@ pub trait Agent<S: Space, A: Space> {
 
 /// An agent whose actions are determined by some parameters
 pub trait ParameterizedAgent<S: Space, A: Space, T: Num> : Agent<S, A> {
+	/// Returns number of parameters used by the agent
+	fn num_params(&self) -> usize;
 	/// Returns the parameters used by the agent
 	fn get_params(&self) -> Vec<T>;
 	/// Changes the parameters used by the agent
