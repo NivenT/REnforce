@@ -10,7 +10,7 @@ use re::environment::{Environment, Observation};
 use re::environment::{Finite, Range};
 
 use re::trainer::OnlineTrainer;
-use re::trainer::qlearner::SARSALearner;
+use re::trainer::SARSALearner;
 
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;

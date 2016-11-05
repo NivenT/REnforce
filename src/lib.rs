@@ -6,6 +6,7 @@
 #![warn(missing_debug_implementations, unused_import_braces, unused_qualifications)]
 
 extern crate rand;
+extern crate num;
 
 pub mod environment;
 pub mod trainer;

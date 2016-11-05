@@ -1,6 +1,10 @@
 //! Trainer Module
 
-pub mod qlearner;
+mod qlearner;
+mod cem;
+
+pub use self::qlearner::{QLearner, SARSALearner};
+pub use self::cem::CrossEntropy;
 
 use environment::{Space, Environment, Transition};
 

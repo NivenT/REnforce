@@ -1,5 +1,3 @@
-//! QLearner Module
-
 use std::f64;
 
 use environment::Environment;

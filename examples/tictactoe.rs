@@ -11,7 +11,7 @@ use re::environment::{Environment, Observation, Space};
 use re::environment::Finite;
 
 use re::trainer::OnlineTrainer;
-use re::trainer::qlearner::SARSALearner;
+use re::trainer::SARSALearner;
 
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;

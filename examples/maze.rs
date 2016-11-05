@@ -8,7 +8,7 @@ use re::environment::{Environment, Observation};
 use re::environment::Finite;
 
 use re::trainer::OnlineTrainer;
-use re::trainer::qlearner::QLearner;
+use re::trainer::QLearner;
 
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
