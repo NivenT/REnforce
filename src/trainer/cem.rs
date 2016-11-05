@@ -8,7 +8,8 @@ use num::cast::NumCast;
 
 use environment::{Space, Transition, Environment};
 use trainer::OnlineTrainer;
-use agent::ParameterizedAgent;
+use agent::Agent;
+use util::ParameterizedFunc;
 use stat::mean_var;
 
 /// Cross Entropy method for parameter selection
@@ -26,7 +27,7 @@ pub struct CrossEntropy<F: Float> {
 }
 
 impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
-	where T: ParameterizedAgent<S, A, F> {
+	where T: Agent<S, A> + ParameterizedFunc<F> {
 	fn train_step(&mut self, _: &mut T, _: Transition<S, A>) {
 		panic!("Cross Entropy can't be used to train on a sinple transition");
 	}
@@ -95,7 +96,7 @@ impl<F: Float> CrossEntropy<F> {
 	fn eval<T, S, A>(&self, params: &Vec<F>, agent: &mut T, env: &mut Environment<State=S, Action=A>) -> F 
 		where 	S: Space,
 				A: Space,
-				T: ParameterizedAgent<S, A, F> {
+				T: Agent<S, A> + ParameterizedFunc<F> {
 		agent.set_params(params);
 
 		let mut obs = env.reset();

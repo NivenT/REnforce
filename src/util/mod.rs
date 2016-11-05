@@ -6,9 +6,21 @@ pub mod approx;
 pub mod feature;
 mod metric;
 
+use std::fmt::Debug;
+
+use num::Num;
+
 use environment::Space;
 
-use std::fmt::Debug;
+/// A function that evaluates its input by making use of some parameters
+pub trait ParameterizedFunc<T: Num> {
+	/// Returns number of parameters used by the agent
+	fn num_params(&self) -> usize;
+	/// Returns the parameters used by the agent
+	fn get_params(&self) -> Vec<T>;
+	/// Changes the parameters used by the agent
+	fn set_params(&self, params: &Vec<T>);
+}
 
 /// QFunction Trait
 ///
