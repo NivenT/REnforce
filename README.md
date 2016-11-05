@@ -3,7 +3,9 @@
 
 Reinforcement library written in Rust
 
-This library is still in early stages, and the API has not yet been finalized. The documentation can be found [here](http://nivent.github.io/doc/renforce). Contributions and comments are welcomed.
+This library is still in early stages, and the API has not yet been finalized. The documentation can be found [here](https://nivent.github.io/REnforce/renforce/). Contributions and comments are welcomed.
+
+As things are right now, the main focus has been on getting some working examples to see how the library can be used, to get a feel for how reasonable the API is, and to get more comfortable with RL. Going forward, the API still needs to be improved (made more intuitive and customizable), the code needs to be safer, more RL algorithms need to be incorporated, and documentation needs a lot of work. 
 
 ## Adding to project
 Use [cargo](http://doc.crates.io/guide.html) to add this library to your project. This library is not in [crates.io](https://crates.io/) yet, so add the following to your `Cargo.toml` in order to include it
