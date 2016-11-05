@@ -5,7 +5,7 @@ Reinforcement library written in Rust
 
 This library is still in early stages, and the API has not yet been finalized. The documentation can be found [here](https://nivent.github.io/REnforce/renforce/). Contributions and comments are welcomed.
 
-As things are right now, the main focus has been on getting some working examples to see how the library can be used, to get a feel for how reasonable the API is, and to get more comfortable with RL. Going forward, the API still needs to be improved (made more intuitive and customizable), the code needs to be safer, more RL algorithms need to be incorporated, and documentation needs a lot of work. 
+As things are right now, the main focus has been on getting some working examples to see how the library can be used, to get a feel for how reasonable the API is, and to get more comfortable with RL. Going forward, the API still needs to be improved (made more intuitive and customizable), the code needs to be safer (less prone to panic), more RL algorithms need to be incorporated, and documentation needs a lot of work. 
 
 ## Adding to project
 Use [cargo](http://doc.crates.io/guide.html) to add this library to your project. This library is not in [crates.io](https://crates.io/) yet, so add the following to your `Cargo.toml` in order to include it
@@ -30,7 +30,7 @@ fn main() {
 	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space, 0.05, Softmax::new(1.0));
+	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.05, Softmax::new(1.0));
     // Create the environment
 	let mut env = ...
 	// Here, we use Q-learning to train the agent with
@@ -61,3 +61,4 @@ A lot remains to be done, but the following reinforcement learning algorithms ha
 
 * [Q-learning](https://www.wikiwand.com/en/Q-learning)
 * [SARSA](https://www.wikiwand.com/en/State-Action-Reward-State-Action)
+* [Cross Entropy](https://gym.openai.com/docs/rl#black-box-optimization-and-the-cross-entropy-method)

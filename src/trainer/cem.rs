@@ -85,6 +85,8 @@ impl<F: Float> Default for CrossEntropy<F> {
 impl<F: Float> CrossEntropy<F> {
 	/// Constructs a new CrossEntropy with randomly initialized mean and deviation
 	pub fn new(elite: f64, num_samples: usize, eval_period: usize, iters: usize) -> CrossEntropy<F> {
+		assert!(0.0 <= elite && elite <= 1.0, "elite must be between 0 and 1");
+
 		CrossEntropy {
 			elite: elite,
 			num_samples: num_samples,

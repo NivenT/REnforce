@@ -115,7 +115,7 @@ fn main() {
 	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space, 0.05, Softmax::new(1.0));
+	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.05, Softmax::new(1.0));
 	let mut env = Maze::new();
 	// We will use Q-learning to train the agent with
 	// discount factor and learning rate both 0.9 and

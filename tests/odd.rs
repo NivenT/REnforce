@@ -42,7 +42,7 @@ impl Environment for NumberChooser {
 fn learn_to_choose_odd() {
 	let action_space = Finite::new(10);
 	let q_func = QTable::new();
-	let mut agent = GreedyQAgent::new(Box::new(q_func), action_space);
+	let mut agent = GreedyQAgent::new(q_func, action_space);
 	let mut env = NumberChooser;
 	let mut trainer = QLearner::new(action_space, 0.9, 0.9, 100);
 

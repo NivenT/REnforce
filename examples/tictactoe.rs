@@ -104,7 +104,7 @@ fn main() {
 	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 15% of the time
-	let mut agent = EGreedyQAgent::new(Box::new(q_func.clone()), action_space.clone(),
+	let mut agent = EGreedyQAgent::new(q_func.clone(), action_space.clone(),
 										0.15, Softmax::new(1.0));
 	let mut env = Board::new();
 

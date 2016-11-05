@@ -83,8 +83,7 @@ fn main() {
 
 	// Creates an epsilon greedy Q-agent
 	// 20% of the time, the agent uniformly chooses a random action
-	let mut agent = EGreedyQAgent::new(Box::new(q_func), action_space.clone(), 
-										0.20, Uniform);
+	let mut agent = EGreedyQAgent::new(q_func, action_space.clone(), 0.20, Uniform);
 
 	let mut env = CartPole::new();
 
