@@ -29,7 +29,7 @@ macro_rules! implement_parameterizedfunc {
 		fn get_params(&self) -> Vec<N> {
 			self.q_func.get_params()
 		}
-		fn set_params(&mut self, params: &Vec<N>) {
+		fn set_params(&mut self, params: Vec<N>) {
 			self.q_func.set_params(params)
 		}
     }

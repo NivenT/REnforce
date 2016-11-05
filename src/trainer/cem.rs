@@ -49,7 +49,7 @@ impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
 			}).collect();
 
 			let mut scored_samples: Vec<_> = samples.into_iter()
-													.map(|s| (self.eval(&s, agent, env), s))
+													.map(|s| (self.eval(s.clone(), agent, env), s))
 													.collect();
 			scored_samples.sort_by(|x, y| x.0.partial_cmp(&y.0).unwrap().reverse());
 
@@ -65,7 +65,7 @@ impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
 			}
 		}
 
-		agent.set_params(&mean_params);
+		agent.set_params(mean_params);
 	}
 }
 
@@ -95,7 +95,7 @@ impl<F: Float> CrossEntropy<F> {
 			phantom: PhantomData
 		}
 	}
-	fn eval<T, S, A>(&self, params: &Vec<F>, agent: &mut T, env: &mut Environment<State=S, Action=A>) -> F 
+	fn eval<T, S, A>(&self, params: Vec<F>, agent: &mut T, env: &mut Environment<State=S, Action=A>) -> F 
 		where 	S: Space,
 				A: Space,
 				T: Agent<S, A> + ParameterizedFunc<F> {
