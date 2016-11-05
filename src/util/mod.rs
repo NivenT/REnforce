@@ -19,7 +19,7 @@ pub trait ParameterizedFunc<T: Num> {
 	/// Returns the parameters used by the agent
 	fn get_params(&self) -> Vec<T>;
 	/// Changes the parameters used by the agent
-	fn set_params(&self, params: &Vec<T>);
+	fn set_params(&mut self, params: &Vec<T>);
 }
 
 /// QFunction Trait
