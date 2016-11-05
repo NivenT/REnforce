@@ -29,7 +29,7 @@ pub struct CrossEntropy<F: Float> {
 impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
 	where T: Agent<S, A> + ParameterizedFunc<F> {
 	fn train_step(&mut self, _: &mut T, _: Transition<S, A>) {
-		panic!("Cross Entropy can't be used to train on a sinple transition");
+		panic!("Cross Entropy can't be used to train on a single transition");
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut rng = thread_rng();
@@ -95,6 +95,26 @@ impl<F: Float> CrossEntropy<F> {
 			phantom: PhantomData
 		}
 	}
+	/// Updates elite field of self
+	pub fn elite(mut self, elite: f64) -> CrossEntropy<F> {
+		self.elite = elite;
+		self
+	}
+	/// Updates num_samples field of self
+	pub fn num_samples(mut self, num_samples: usize) -> CrossEntropy<F> {
+		self.num_samples = num_samples;
+		self
+	}
+	/// Updates eval_period field of self
+	pub fn eval_period(mut self, eval_period: usize) -> CrossEntropy<F> {
+		self.eval_period = eval_period;
+		self
+	}
+	/// Updates iters field of self
+	pub fn iters(mut self, iters: usize) -> CrossEntropy<F> {
+		self.iters = iters;
+		self
+	}
 	fn eval<T, S, A>(&self, params: Vec<F>, agent: &mut T, env: &mut Environment<State=S, Action=A>) -> F 
 		where 	S: Space,
 				A: Space,
@@ -103,7 +123,7 @@ impl<F: Float> CrossEntropy<F> {
 
 		let mut obs = env.reset();
 		let mut reward = 0.0;
-		for _ in 0..self.iters {
+		for _ in 0..self.eval_period {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
 
