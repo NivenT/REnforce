@@ -8,5 +8,6 @@
 extern crate rand;
 
 pub mod environment;
+pub mod trainer;
 pub mod agent;
 pub mod util;

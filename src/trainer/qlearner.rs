@@ -6,7 +6,9 @@ use environment::Environment;
 use environment::Transition;
 use environment::{Space, FiniteSpace};
 
-use agent::{Agent, OnlineTrainer};
+use trainer::OnlineTrainer;
+
+use agent::Agent;
 
 use util::QFunction;
 

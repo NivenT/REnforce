@@ -39,9 +39,9 @@ pub trait Chooser<T> : Debug {
 	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T;
 }
 
-/// A feature of a state pair with a real value
+/// A feature real-valued feature of elements of some state space
 pub trait Feature<S: Space> : Debug {
-	/// Extracts some real-valued feature from a given state pair
+	/// Extracts some real-valued feature from a given state
 	fn extract(&self, state: &S::Element) -> f64;
 	/// Creates a cloned trait object of self
 	fn box_clone(&self) -> Box<Feature<S>>;

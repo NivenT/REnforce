@@ -9,9 +9,11 @@ use std::io::stdin;
 use re::environment::{Environment, Observation};
 use re::environment::{Finite, Range};
 
-use re::agent::{Agent, OnlineTrainer};
+use re::trainer::OnlineTrainer;
+use re::trainer::qlearner::SARSALearner;
+
+use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
-use re::agent::qlearner::SARSALearner;
 
 use re::util::approx::QLinear;
 use re::util::chooser::Uniform;

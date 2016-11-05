@@ -6,9 +6,11 @@ extern crate renforce as re;
 use re::environment::{Environment, Observation};
 use re::environment::Finite;
 
-use re::agent::{Agent, OnlineTrainer};
+use re::trainer::OnlineTrainer;
+use re::trainer::qlearner::QLearner;
+
+use re::agent::Agent;
 use re::agent::qagents::GreedyQAgent;
-use re::agent::qlearner::QLearner;
 
 use re::util::table::QTable;
 

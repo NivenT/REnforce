@@ -10,9 +10,11 @@ use rand::{Rng, thread_rng};
 use re::environment::{Environment, Observation, Space};
 use re::environment::Finite;
 
-use re::agent::{Agent, OnlineTrainer};
+use re::trainer::OnlineTrainer;
+use re::trainer::qlearner::SARSALearner;
+
+use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
-use re::agent::qlearner::SARSALearner;
 
 use re::util::table::QTable;
 use re::util::chooser::Softmax;
