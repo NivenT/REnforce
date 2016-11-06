@@ -23,7 +23,7 @@ pub struct QLearner<A: FiniteSpace> {
 	/// The learning rate
 	alpha: f64,
 	/// The time period to train agent on when calling train
-	iters: TimePeriod,
+	train_period: TimePeriod,
 }
 
 impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
@@ -39,7 +39,7 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
-		let mut time_remaining = self.iters;
+		let mut time_remaining = self.train_period;
 		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
@@ -53,12 +53,12 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 
 impl<A: FiniteSpace> QLearner<A> {
 	/// Returns a new QLearner with the given info
-	pub fn new(action_space: A, gamma: f64, alpha: f64, iters: TimePeriod) -> QLearner<A> {
+	pub fn new(action_space: A, gamma: f64, alpha: f64, train_period: TimePeriod) -> QLearner<A> {
 		QLearner {
 			action_space: action_space,
 			gamma: gamma,
 			alpha: alpha,
-			iters: iters
+			train_period: train_period
 		}
 	}
 }
@@ -74,7 +74,7 @@ pub struct SARSALearner {
 	/// The learning rate
 	alpha: f64,
 	/// The time period to train agent on when calling train
-	iters: TimePeriod,
+	train_period: TimePeriod,
 }
 
 impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
@@ -88,7 +88,7 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
-		let mut time_remaining = self.iters;
+		let mut time_remaining = self.train_period;
 		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
@@ -102,11 +102,11 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 
 impl SARSALearner {
 	/// Returns a new SARSALearner with the given info
-	pub fn new(gamma: f64, alpha: f64, iters: TimePeriod) -> SARSALearner {
+	pub fn new(gamma: f64, alpha: f64, train_period: TimePeriod) -> SARSALearner {
 		SARSALearner {
 			gamma: gamma,
 			alpha: alpha,
-			iters: iters
+			train_period: train_period
 		}
 	}
 }

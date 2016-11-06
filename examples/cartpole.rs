@@ -87,9 +87,8 @@ fn main() {
 
 	let mut env = CartPole::new();
 
-	// Could have also used Q learning instead
-	let mut trainer = CrossEntropy::default().iters(2)
-											 .num_samples(30);
+	// Train agent using Cross Entropy Method with default parameters, except 5 iterations
+	let mut trainer = CrossEntropy::default().iters(5);
 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);
