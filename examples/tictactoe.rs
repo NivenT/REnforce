@@ -16,6 +16,7 @@ use re::trainer::SARSALearner;
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
 
+use re::util::TimePeriod;
 use re::util::table::QTable;
 use re::util::chooser::Softmax;
 
@@ -111,7 +112,7 @@ fn main() {
 	// We will use Q-learning to train the agent with
 	// discount factor and learning rate both 0.9 and
 	// 50000 training iterations
-	let mut trainer = SARSALearner::new(0.9, 0.9, 50000);
+	let mut trainer = SARSALearner::new(0.9, 0.9, TimePeriod::TIMESTEPS(50000));
 
 	// Magic happens
 	trainer.train(&mut agent, &mut env);

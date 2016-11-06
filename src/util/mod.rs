@@ -76,3 +76,33 @@ pub trait Metric {
 	/// Returns the squared distance between x and y
 	fn dist2(x: &Self, y: &Self) -> f64;
 }
+
+/// Some length of time experienced by an agent
+#[derive(Debug, Clone, Copy)]
+pub enum TimePeriod {
+	/// A time period stored as a number of episodes
+	EPISODES(usize),
+	/// A time period stored as a number of individual timesteps
+	TIMESTEPS(usize),
+}
+
+impl TimePeriod {
+	/// Returns whether or not self represents an empty time period
+	pub fn is_none(&self) -> bool {
+		match *self {
+			TimePeriod::EPISODES(x) => x == 0,
+			TimePeriod::TIMESTEPS(x) => x == 0
+		}
+	}
+	/// Returns the time period remaing after one time step
+	pub fn dec(&self, done: bool) -> TimePeriod {
+		if self.is_none() {
+			*self
+		} else {
+			match *self {
+				TimePeriod::EPISODES(x) => TimePeriod::EPISODES(if done {x-1} else {x}),
+				TimePeriod::TIMESTEPS(x) => TimePeriod::TIMESTEPS(x-1)
+			}
+		}
+	}
+}

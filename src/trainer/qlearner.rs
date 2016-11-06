@@ -8,7 +8,7 @@ use trainer::OnlineTrainer;
 
 use agent::Agent;
 
-use util::QFunction;
+use util::{QFunction, TimePeriod};
 
 /// QLearner
 ///
@@ -17,13 +17,13 @@ use util::QFunction;
 #[derive(Debug)]
 pub struct QLearner<A: FiniteSpace> {
 	/// The action space used by the agent
-	action_space: 	A,
+	action_space: A,
 	/// The discount factor
-	gamma:			f64,
+	gamma: f64,
 	/// The learning rate
-	alpha:			f64,
-	/// The number of steps to perform when calling train
-	iters:			usize,
+	alpha: f64,
+	/// The time period to train agent on when calling train
+	iters: TimePeriod,
 }
 
 impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
@@ -39,11 +39,13 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
-		for _ in 0..self.iters {
+		let mut time_remaining = self.iters;
+		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
 			self.train_step(agent, (&obs.state, &action, new_obs.reward, &new_obs.state));
 
+			time_remaining = time_remaining.dec(new_obs.done);
 			obs = if new_obs.done {env.reset()} else {new_obs};
 		}
 	}
@@ -51,7 +53,7 @@ impl<T, S: Space, A: FiniteSpace> OnlineTrainer<S, A, T> for QLearner<A>
 
 impl<A: FiniteSpace> QLearner<A> {
 	/// Returns a new QLearner with the given info
-	pub fn new(action_space: A, gamma: f64, alpha: f64, iters: usize) -> QLearner<A> {
+	pub fn new(action_space: A, gamma: f64, alpha: f64, iters: TimePeriod) -> QLearner<A> {
 		QLearner {
 			action_space: action_space,
 			gamma: gamma,
@@ -68,11 +70,11 @@ impl<A: FiniteSpace> QLearner<A> {
 #[derive(Debug)]
 pub struct SARSALearner {
 	/// The discount factor
-	gamma:			f64,
+	gamma: f64,
 	/// The learning rate
-	alpha:			f64,
-	/// The number of steps to perform when calling train
-	iters:			usize,
+	alpha: f64,
+	/// The time period to train agent on when calling train
+	iters: TimePeriod,
 }
 
 impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
@@ -86,11 +88,13 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
-		for _ in 0..self.iters {
+		let mut time_remaining = self.iters;
+		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
 			self.train_step(agent, (&obs.state, &action, new_obs.reward, &new_obs.state));
 
+			time_remaining = time_remaining.dec(new_obs.done);
 			obs = if new_obs.done {env.reset()} else {new_obs};
 		}
 	}
@@ -98,7 +102,7 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 
 impl SARSALearner {
 	/// Returns a new SARSALearner with the given info
-	pub fn new(gamma: f64, alpha: f64, iters: usize) -> SARSALearner {
+	pub fn new(gamma: f64, alpha: f64, iters: TimePeriod) -> SARSALearner {
 		SARSALearner {
 			gamma: gamma,
 			alpha: alpha,

@@ -89,8 +89,7 @@ fn main() {
 
 	// Could have also used Q learning instead
 	let mut trainer = CrossEntropy::default().iters(2)
-											 .num_samples(30)
-											 .eval_period(100);
+											 .num_samples(30);
 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);

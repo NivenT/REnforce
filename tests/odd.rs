@@ -12,6 +12,7 @@ use re::trainer::QLearner;
 use re::agent::Agent;
 use re::agent::qagents::GreedyQAgent;
 
+use re::util::TimePeriod;
 use re::util::table::QTable;
 
 struct NumberChooser;
@@ -44,7 +45,7 @@ fn learn_to_choose_odd() {
 	let q_func = QTable::new();
 	let mut agent = GreedyQAgent::new(q_func, action_space);
 	let mut env = NumberChooser;
-	let mut trainer = QLearner::new(action_space, 0.9, 0.9, 100);
+	let mut trainer = QLearner::new(action_space, 0.9, 0.9, TimePeriod::TIMESTEPS(100));
 
 	trainer.train(&mut agent, &mut env);
 

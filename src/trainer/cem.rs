@@ -10,6 +10,7 @@ use environment::{Space, Transition, Environment};
 use trainer::OnlineTrainer;
 use agent::Agent;
 use util::ParameterizedFunc;
+use util::TimePeriod;
 use stat::mean_var;
 
 /// Cross Entropy method for parameter selection
@@ -20,8 +21,8 @@ pub struct CrossEntropy<F: Float> {
 	/// Number of samples to take
 	num_samples: usize,
 	/// Time period to evaluate each parameter sample on
-	eval_period: usize,
-	/// Number of training iterations to perform when calline `train`
+	eval_period: TimePeriod,
+	/// Number of training iterations to perform when calling `train`
 	iters: usize,
 	phantom: PhantomData<F>,
 }
@@ -76,7 +77,7 @@ impl<F: Float> Default for CrossEntropy<F> {
 		CrossEntropy {
 			elite: 0.2,
 			num_samples: 50,
-			eval_period: 1000,
+			eval_period: TimePeriod::EPISODES(1),
 			iters: 10,
 			phantom: PhantomData
 		}
@@ -85,7 +86,7 @@ impl<F: Float> Default for CrossEntropy<F> {
 
 impl<F: Float> CrossEntropy<F> {
 	/// Constructs a new CrossEntropy with randomly initialized mean and deviation
-	pub fn new(elite: f64, num_samples: usize, eval_period: usize, iters: usize) -> CrossEntropy<F> {
+	pub fn new(elite: f64, num_samples: usize, eval_period: TimePeriod, iters: usize) -> CrossEntropy<F> {
 		assert!(0.0 <= elite && elite <= 1.0, "elite must be between 0 and 1");
 
 		CrossEntropy {
@@ -107,7 +108,7 @@ impl<F: Float> CrossEntropy<F> {
 		self
 	}
 	/// Updates eval_period field of self
-	pub fn eval_period(mut self, eval_period: usize) -> CrossEntropy<F> {
+	pub fn eval_period(mut self, eval_period: TimePeriod) -> CrossEntropy<F> {
 		self.eval_period = eval_period;
 		self
 	}
@@ -124,11 +125,13 @@ impl<F: Float> CrossEntropy<F> {
 
 		let mut obs = env.reset();
 		let mut reward = 0.0;
-		for _ in 0..self.eval_period {
+		let mut time_remaining = self.eval_period;
+		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
 
 			reward += new_obs.reward;
+			time_remaining = time_remaining.dec(new_obs.done);
 			obs = if new_obs.done {env.reset()} else {new_obs};
 		}
 		NumCast::from(reward).unwrap()
