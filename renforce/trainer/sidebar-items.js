@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CrossEntropy","Cross Entropy method for parameter selection"],["QLearner","QLearner"],["SARSALearner","SARSALearner"]],"trait":[["BatchTrainer","Batch Trainer Trait"],["DeterministicModel","Deterministic Model Trait"],["Model","Model Trait"],["OnlineTrainer","Online Trainer Trait"]]});

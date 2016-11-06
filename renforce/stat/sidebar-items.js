@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["mean","Calculates the mean of a set of numbers"],["mean_var","Calculates the mean and variance of a set of numbers"],["stddev","Calculates the standard deviation of a set of numbers"],["variance","Calculates the variance of a set of numbers"]]});

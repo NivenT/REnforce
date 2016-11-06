@@ -47,15 +47,15 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-929' class='srclink' href='../../src/renforce/src/util/mod.rs.html#43-48' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-1116' class='srclink' href='../../src/renforce/src/util/mod.rs.html#55-60' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Feature&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt;: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> {
     fn <a href='#tymethod.extract' class='fnname'>extract</a>(&amp;self, state: &amp;S::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>;
     fn <a href='#tymethod.box_clone' class='fnname'>box_clone</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='../../renforce/util/trait.Feature.html' title='renforce::util::Feature'>Feature</a>&lt;S&gt;&gt;;
-}</pre><div class='docblock'><p>A feature of a state pair with a real value</p>
+}</pre><div class='docblock'><p>A feature real-valued feature of elements of some state space</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.extract' class='method stab '><span id='extract.v' class='invisible'><code>fn <a href='#tymethod.extract' class='fnname'>extract</a>(&amp;self, state: &amp;S::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h3><div class='docblock'><p>Extracts some real-valued feature from a given state pair</p>
+        <h3 id='tymethod.extract' class='method stab '><span id='extract.v' class='invisible'><code>fn <a href='#tymethod.extract' class='fnname'>extract</a>(&amp;self, state: &amp;S::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h3><div class='docblock'><p>Extracts some real-valued feature from a given state</p>
 </div><h3 id='tymethod.box_clone' class='method stab '><span id='box_clone.v' class='invisible'><code>fn <a href='#tymethod.box_clone' class='fnname'>box_clone</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='../../renforce/util/trait.Feature.html' title='renforce::util::Feature'>Feature</a>&lt;S&gt;&gt;</code></span></h3><div class='docblock'><p>Creates a cloned trait object of self</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ParameterizedFunc` trait in crate `renforce`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ParameterizedFunc">
+
+    <title>renforce::util::ParameterizedFunc - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>renforce</a>::<wbr><a href='index.html'>util</a></p><script>window.sidebarCurrent = {name: 'ParameterizedFunc', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>renforce</a>::<wbr><a href='index.html'>util</a>::<wbr><a class='trait' href=''>ParameterizedFunc</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1078' class='srclink' href='../../src/renforce/src/util/mod.rs.html#16-23' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait ParameterizedFunc&lt;T:&nbsp;<a class='trait' href='../../num_traits/trait.Num.html' title='num_traits::Num'>Num</a>&gt; {
+    fn <a href='#tymethod.num_params' class='fnname'>num_params</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
+    fn <a href='#tymethod.get_params' class='fnname'>get_params</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;;
+    fn <a href='#tymethod.set_params' class='fnname'>set_params</a>(&amp;mut self, params: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;);
+}</pre><div class='docblock'><p>A function that evaluates its input by making use of some parameters</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.num_params' class='method stab '><span id='num_params.v' class='invisible'><code>fn <a href='#tymethod.num_params' class='fnname'>num_params</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Returns number of parameters used by the agent</p>
+</div><h3 id='tymethod.get_params' class='method stab '><span id='get_params.v' class='invisible'><code>fn <a href='#tymethod.get_params' class='fnname'>get_params</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</code></span></h3><div class='docblock'><p>Returns the parameters used by the agent</p>
+</div><h3 id='tymethod.set_params' class='method stab '><span id='set_params.v' class='invisible'><code>fn <a href='#tymethod.set_params' class='fnname'>set_params</a>(&amp;mut self, params: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;)</code></span></h3><div class='docblock'><p>Changes the parameters used by the agent</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl&lt;N:&nbsp;<a class='trait' href='../../num_traits/trait.Num.html' title='num_traits::Num'>Num</a>,&nbsp;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='renforce::environment::FiniteSpace'>FiniteSpace</a>,&nbsp;Q&gt; ParameterizedFunc&lt;N&gt; for <a class='struct' href='../../renforce/agent/qagents/struct.GreedyQAgent.html' title='renforce::agent::qagents::GreedyQAgent'>GreedyQAgent</a>&lt;S,&nbsp;A,&nbsp;Q&gt; <span class='where'>where Q: <a class='trait' href='../../renforce/util/trait.QFunction.html' title='renforce::util::QFunction'>QFunction</a>&lt;S,&nbsp;A&gt; + <a class='trait' href='../../renforce/util/trait.ParameterizedFunc.html' title='renforce::util::ParameterizedFunc'>ParameterizedFunc</a>&lt;N&gt;</span></code></li>
+<li><code>impl&lt;N:&nbsp;<a class='trait' href='../../num_traits/trait.Num.html' title='num_traits::Num'>Num</a>,&nbsp;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='renforce::environment::FiniteSpace'>FiniteSpace</a>,&nbsp;Q,&nbsp;T&gt; ParameterizedFunc&lt;N&gt; for <a class='struct' href='../../renforce/agent/qagents/struct.EGreedyQAgent.html' title='renforce::agent::qagents::EGreedyQAgent'>EGreedyQAgent</a>&lt;S,&nbsp;A,&nbsp;Q,&nbsp;T&gt; <span class='where'>where T: <a class='trait' href='../../renforce/util/trait.Chooser.html' title='renforce::util::Chooser'>Chooser</a>&lt;A::Element&gt;, Q: <a class='trait' href='../../renforce/util/trait.QFunction.html' title='renforce::util::QFunction'>QFunction</a>&lt;S,&nbsp;A&gt; + <a class='trait' href='../../renforce/util/trait.ParameterizedFunc.html' title='renforce::util::ParameterizedFunc'>ParameterizedFunc</a>&lt;N&gt;</span></code></li>
+<li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; ParameterizedFunc&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>&gt; for <a class='struct' href='../../renforce/util/approx/struct.VLinear.html' title='renforce::util::approx::VLinear'>VLinear</a>&lt;S&gt;</code></li>
+<li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='renforce::environment::FiniteSpace'>FiniteSpace</a>&gt; ParameterizedFunc&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>&gt; for <a class='struct' href='../../renforce/util/approx/struct.QLinear.html' title='renforce::util::approx::QLinear'>QLinear</a>&lt;S,&nbsp;A&gt; <span class='where'>where A::Element: <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a></span></code></li>
+</ul><script type="text/javascript" async
+                         src="../../implementors/renforce/util/trait.ParameterizedFunc.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "renforce";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>
