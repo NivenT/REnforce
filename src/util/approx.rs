@@ -85,6 +85,7 @@ impl<S: Space> VLinear<S> {
 pub struct QLinear<S: Space, A: FiniteSpace> 
 	where A::Element: Hash + Eq {
 	functions: HashMap<A::Element, VLinear<S>>,
+	actions: Vec<A::Element>,
 	/// Every linear function uses the same set of features with different weights
 	features: Vec<Box<Feature<S>>>,
 }
@@ -107,21 +108,26 @@ impl<S: Space, A: FiniteSpace> QFunction<S, A> for QLinear<S, A>
 impl<S: Space, A: FiniteSpace> ParameterizedFunc<f64> for QLinear<S, A>
 	where A::Element: Hash + Eq {
 	fn num_params(&self) -> usize {
-		self.functions.values().map(|v| v.num_params()).sum()
+		(self.features.len()+1)*self.actions.len()
 	}
 	fn get_params(&self) -> Vec<f64> {
 		//self.functions.values().flat_map(|v| v.get_params().iter().map(|x| *x)).collect()
 		let mut vec = Vec::with_capacity(self.num_params());
-		for v in self.functions.values() {
-			vec.extend_from_slice(&v.get_params());
+		for a in &self.actions {
+			if self.functions.contains_key(a) {
+				vec.extend_from_slice(&self.functions[a].get_params());
+			} else {
+				vec.extend_from_slice(&vec![0.0; self.features.len()+1]);
+			}
 		}
 		vec
 	}
 	fn set_params(&mut self, params: Vec<f64>) {
 		let mut index = 0;
-		for mut v in self.functions.values_mut() {
-			let num_params = v.num_params();
-			v.set_params(params[index..index+num_params].to_vec());
+		let num_params = self.features.len()+1;
+		for a in self.actions.clone() {
+			let func = self.get_func(&a);
+			func.set_params(params[index..index+num_params].to_vec());
 			index += num_params;
 		}
 	}
@@ -129,9 +135,10 @@ impl<S: Space, A: FiniteSpace> ParameterizedFunc<f64> for QLinear<S, A>
 
 impl<S: Space, A: FiniteSpace> QLinear<S, A> where A::Element: Hash + Eq {
 	/// Creates a new, empty QLinear
-	pub fn new() -> QLinear<S, A> {
+	pub fn new(action_space: &A) -> QLinear<S, A> {
 		QLinear {
 			functions: HashMap::new(),
+			actions: action_space.enumerate(),
 			features: Vec::new()
 		}
 	}

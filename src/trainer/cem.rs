@@ -35,8 +35,9 @@ impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
 		let mut rng = thread_rng();
 		let mut mean_params = agent.get_params();
 		let mut deviation: Vec<F> = (0..mean_params.len()).map(|_| {
+			let zero = F::zero().to_f64().unwrap();
 			let one = F::one().to_f64().unwrap();
-			NumCast::from(rng.gen_range(-one, one)).unwrap()
+			NumCast::from(rng.gen_range(zero, one)).unwrap()
 		}).collect();
 		
 		for _ in 0..self.iters {
@@ -74,7 +75,7 @@ impl<F: Float> Default for CrossEntropy<F> {
 	fn default() -> CrossEntropy<F> {
 		CrossEntropy {
 			elite: 0.2,
-			num_samples: 10,
+			num_samples: 50,
 			eval_period: 1000,
 			iters: 10,
 			phantom: PhantomData

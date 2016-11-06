@@ -10,14 +10,14 @@ use re::environment::{Environment, Observation};
 use re::environment::{Finite, Range};
 
 use re::trainer::OnlineTrainer;
-use re::trainer::SARSALearner;
+use re::trainer::CrossEntropy;
 
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
 
 use re::util::approx::QLinear;
 use re::util::chooser::Uniform;
-use re::util::feature::*;
+use re::util::feature::BSFeature;
 
 use gym::Client;
 
@@ -70,7 +70,7 @@ fn main() {
 	// The agent has 2 actions: move {left, right}
 	let action_space = vec![Finite::new(2)];
 
-	let mut q_func = QLinear::new();
+	let mut q_func = QLinear::new(&action_space);
 	let num_ranges: u32 = 50;
 	for d in 0..4 {
 		for n in 0..num_ranges {
@@ -88,7 +88,9 @@ fn main() {
 	let mut env = CartPole::new();
 
 	// Could have also used Q learning instead
-	let mut trainer = SARSALearner::new(0.99, 0.05, 15000);
+	let mut trainer = CrossEntropy::default().iters(2)
+											 .num_samples(30)
+											 .eval_period(100);
 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);
