@@ -30,11 +30,11 @@ struct CartPole {
 
 impl Environment for CartPole {
 	type State = Vec<Range>;
-	type Action = Vec<Finite>;
+	type Action = Finite;
 
-	fn step(&mut self, action: &Vec<u32>) -> Observation<Vec<Range>> {
+	fn step(&mut self, action: &u32) -> Observation<Vec<Range>> {
 		let obs = unsafe {
-			self.env.step(vec![action[0] as f64], render_cartpole).unwrap()
+			self.env.step(vec![*action as f64], render_cartpole).unwrap()
 		};
 		Observation {
 			state: obs.observation,
@@ -68,7 +68,7 @@ impl CartPole {
 
 fn main() {
 	// The agent has 2 actions: move {left, right}
-	let action_space = vec![Finite::new(2)];
+	let action_space = Finite::new(2);
 
 	let mut q_func = QLinear::new(&action_space);
 	let num_ranges: u32 = 50;

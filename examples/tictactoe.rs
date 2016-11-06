@@ -31,13 +31,12 @@ struct Board {
 
 impl Environment for Board {
 	type State = Vec<Finite>;
-	//Needs elements convertible to Vec<f64>, so must be a Vec. Will always have 1 element in practice
-	type Action = Vec<Finite>;
+	type Action = Finite;
 
-	fn step(&mut self, action: &<Vec<Finite> as Space>::Element) -> Observation<Self::State> {
+	fn step(&mut self, action: &<Finite as Space>::Element) -> Observation<Self::State> {
 		let mut winner = 0;
 		let mut valid_move = false;
-		let action = action[0] as usize;
+		let action = *action as usize;
 		if action < 9 && self.cells[action] == E {
 			self.cells[action] = X;
 			winner = self.get_winner();
@@ -101,7 +100,7 @@ impl Board {
 
 fn main() {
 	// The agent has 9 spots to play an X in
-	let action_space = vec![Finite::new(9)];
+	let action_space = Finite::new(9);
 	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 15% of the time
