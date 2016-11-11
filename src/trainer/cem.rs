@@ -41,12 +41,16 @@ impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
 			NumCast::from(rng.gen_range(zero, one)).unwrap()
 		}).collect();
 		
+		let num_keep = (self.elite * self.num_samples as f64).floor() as usize;
 		for _ in 0..self.iters {
+			let normals: Vec<_> = (0..mean_params.len()).map(|i| {
+				Normal::new(mean_params[i].to_f64().unwrap(), 
+							deviation[i].to_f64().unwrap())
+			}).collect();
+
 			let samples: Vec<Vec<F>> = (0..self.num_samples).map(|_| {
-				(0..mean_params.len()).map(|i| {
-					let normal = Normal::new(mean_params[i].to_f64().unwrap(),
-											 deviation[i].to_f64().unwrap());
-					NumCast::from(normal.ind_sample(&mut rng)).unwrap()
+				normals.iter().map(|&distro| {
+					NumCast::from(distro.ind_sample(&mut rng)).unwrap()
 				}).collect()
 			}).collect();
 
@@ -54,9 +58,7 @@ impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
 													.map(|s| (self.eval(s.clone(), agent, env), s))
 													.collect();
 			scored_samples.sort_by(|x, y| x.0.partial_cmp(&y.0).unwrap().reverse());
-
-			let num_keep = (self.elite * self.num_samples as f64).floor() as usize;
-			scored_samples = scored_samples[..num_keep].to_vec();
+			let scored_samples = &scored_samples[..num_keep];
 
 			for i in 0..mean_params.len() {
 				let dim_i: Vec<F> = scored_samples.iter().map(|s| s.1[i]).collect();
@@ -76,7 +78,7 @@ impl<F: Float> Default for CrossEntropy<F> {
 	fn default() -> CrossEntropy<F> {
 		CrossEntropy {
 			elite: 0.2,
-			num_samples: 50,
+			num_samples: 100,
 			eval_period: TimePeriod::EPISODES(1),
 			iters: 10,
 			phantom: PhantomData

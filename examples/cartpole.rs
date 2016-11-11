@@ -87,8 +87,8 @@ fn main() {
 
 	let mut env = CartPole::new();
 
-	// Train agent using Cross Entropy Method with default parameters, except 5 iterations
-	let mut trainer = CrossEntropy::default().iters(5);
+	// Train agent using Cross Entropy Method with default parameters
+	let mut trainer = CrossEntropy::default();
 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);
