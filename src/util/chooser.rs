@@ -25,6 +25,13 @@ pub struct Softmax {
 	temp: f64
 }
 
+impl Default for Softmax {
+	/// Creates a Softmax with temperature 1.0
+	fn default() -> Softmax {
+		Softmax{temp: 1.0}
+	}
+}
+
 impl<T: Clone> Chooser<T> for Softmax {
 	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T {
 		let mut total = 0.0;
