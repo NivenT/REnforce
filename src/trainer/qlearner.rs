@@ -61,6 +61,30 @@ impl<A: FiniteSpace> QLearner<A> {
 			train_period: train_period
 		}
 	}
+	/// Creates a new QLearner with default gamma, alpha, and train_period
+	pub fn default(action_space: A) -> QLearner<A> {
+		QLearner {
+			action_space: action_space,
+			gamma: 0.95,
+			alpha: 0.1,
+			train_period: TimePeriod::EPISODES(100)
+		}
+	}
+	/// Sets gamma field of self
+	pub fn gamma(mut self, gamma: f64) -> QLearner<A> {
+		self.gamma = gamma;
+		self
+	}
+	/// Sets alpha field of self
+	pub fn alpha(mut self, alpha: f64) -> QLearner<A> {
+		self.alpha = alpha;
+		self
+	}
+	/// Sets train_period field of self
+	pub fn train_period(mut self, train_period: TimePeriod) -> QLearner<A> {
+		self.train_period = train_period;
+		self
+	}
 }
 
 /// SARSALearner
@@ -100,6 +124,17 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 	}
 }
 
+impl Default for SARSALearner {
+	/// Creates a new SARSALearner with default values for gamma, alpha, and train_period
+	fn default() -> SARSALearner {
+		SARSALearner {
+			gamma: 0.95,
+			alpha: 0.1,
+			train_period: TimePeriod::EPISODES(100)
+		}
+	}
+}
+
 impl SARSALearner {
 	/// Returns a new SARSALearner with the given info
 	pub fn new(gamma: f64, alpha: f64, train_period: TimePeriod) -> SARSALearner {
@@ -108,5 +143,20 @@ impl SARSALearner {
 			alpha: alpha,
 			train_period: train_period
 		}
+	}
+	/// Sets gamma field of self
+	pub fn gamma(mut self, gamma: f64) -> SARSALearner {
+		self.gamma = gamma;
+		self
+	}
+	/// Sets alpha field of self
+	pub fn alpha(mut self, alpha: f64) -> SARSALearner {
+		self.alpha = alpha;
+		self
+	}
+	/// Sets train_period field of self
+	pub fn train_period(mut self, train_period: TimePeriod) -> SARSALearner {
+		self.train_period = train_period;
+		self
 	}
 }
