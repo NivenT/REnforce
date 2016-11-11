@@ -19,7 +19,7 @@ use re::util::approx::QLinear;
 use re::util::chooser::Uniform;
 use re::util::feature::BSFeature;
 
-use gym::Client;
+use gym::GymClient;
 
 // Used to render agent during testing but not during training
 static mut render_cartpole: bool = false;
@@ -56,7 +56,7 @@ impl Environment for CartPole {
 
 impl CartPole {
 	fn new() -> CartPole {
-		let client = Client::new("http://localhost:5000".to_string());
+		let client = GymClient::new("http://localhost:5000".to_string());
 		let mut env = match client.make("CartPole-v0") {
 			Ok(env) => env,
 			Err(msg) => panic!("Could not make environment because of error:\n{}", msg)
