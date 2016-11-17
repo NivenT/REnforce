@@ -3,7 +3,7 @@
 mod qlearner;
 mod cem;
 
-pub use self::qlearner::{QLearner, SARSALearner};
+pub use self::qlearner::{QLearner, SARSALearner, DynaQ};
 pub use self::cem::CrossEntropy;
 
 use environment::{Space, Environment, Transition};
@@ -18,7 +18,7 @@ pub trait Model<S: Space, A: Space> {
 	/// Returns the reward received when moving from curr to next when performing action
 	fn reward(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64;
 	/// Updates the model using information from the given transition
-	fn update_model(&mut self, transition: Transition<S, A>);
+	fn update(&mut self, transition: Transition<S, A>);
 }
 
 /// Represents a deterministic model of an environment
@@ -29,7 +29,7 @@ pub trait DeterministicModel<S: Space, A: Space> {
 	/// Returns the reward received when performing action in curr
 	fn reward2(&self, curr: &S::Element, action: &A::Element) -> f64;
 	/// Upates the model using information from the given transition
-	fn update_model(&mut self, transition: Transition<S, A>);
+	fn update(&mut self, transition: Transition<S, A>);
 }
 
 impl<S: Space, A: Space, T: DeterministicModel<S, A>> Model<S, A> for T {
@@ -43,8 +43,8 @@ impl<S: Space, A: Space, T: DeterministicModel<S, A>> Model<S, A> for T {
 		if *next == actual_next {self.reward2(curr, action)} else {0.0}
 	}
 
-	fn update_model(&mut self, transition: Transition<S, A>) {
-		self.update_model(transition);
+	fn update(&mut self, transition: Transition<S, A>) {
+		self.update(transition);
 	}
 }
 
