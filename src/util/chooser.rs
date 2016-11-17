@@ -4,8 +4,6 @@ use rand::{Rng, thread_rng};
 
 use util::Chooser;
 
-/// Uniform
-///
 /// Represents a Chooser that picks each with equal probability
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Uniform;
@@ -17,8 +15,6 @@ impl<T: Clone> Chooser<T> for Uniform {
 	}
 }
 
-/// Softmax
-///
 /// Represents a Chooser that picks each element with probability according to a softmax distrobution
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Softmax {
@@ -64,5 +60,28 @@ impl Softmax {
 		Softmax {
 			temp: temp
 		}
+	}
+}
+
+/// Chooses elements with probabilities proportional to their weights
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Weighted; // TODO: Come up with a better name
+
+impl<T: Clone> Chooser<T> for Weighted {
+	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T {
+		let total = weights.iter().sum();
+
+		let mut rng = thread_rng();
+		if total == 0.0 {
+			return rng.choose(&choices).unwrap().clone();
+		}
+
+		let mut index = 0;
+		let mut choice = rng.gen_range(0.0, total);
+		while choice > weights[index] {
+			choice -= weights[index];
+			index += 1;
+		}
+		choices[index].clone()
 	}
 }
