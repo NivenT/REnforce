@@ -10,8 +10,6 @@ use environment::{Space, Environment, Transition};
 
 use agent::Agent;
 
-/// Model Trait
-///
 /// Represents a (nondeterministic) model of an environment
 /// The model itself is composed of the transition and reward functions
 pub trait Model<S: Space, A: Space> {
@@ -23,8 +21,6 @@ pub trait Model<S: Space, A: Space> {
 	fn update_model(&mut self, transition: Transition<S, A>);
 }
 
-/// Deterministic Model Trait
-///
 /// Represents a deterministic model of an environment
 /// When the agent performs a specified action in a specified state, there's only one possible next state
 pub trait DeterministicModel<S: Space, A: Space> {
@@ -52,8 +48,6 @@ impl<S: Space, A: Space, T: DeterministicModel<S, A>> Model<S, A> for T {
 	}
 }
 
-/// Online Trainer Trait
-///
 /// Represents a way to train an agent online (by interacting with the environment)
 pub trait OnlineTrainer<S: Space, A: Space, T: Agent<S, A>> {
 	/// Performs one training iteration using the given transition
@@ -62,8 +56,14 @@ pub trait OnlineTrainer<S: Space, A: Space, T: Agent<S, A>> {
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>);
 }
 
-/// Batch Trainer Trait
-///
+/// Trains agents 1 "episode" at a time
+pub trait EpisodicTrainer<S: Space, A: Space, T: Agent<S, A>> {
+	/// Trains agent using 1 "episodes" worth of exploration
+	fn train_step(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>);
+	/// Trains agent to perform well in the environment, potentially acting out multiple episodes
+	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>);
+}
+
 /// Represents a way to train an agent from a set of transitions
 pub trait BatchTrainer<S: Space, A: Space, T: Agent<S, A>> {
 	/// Trains agent based on the observed transitions
