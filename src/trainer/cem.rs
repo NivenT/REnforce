@@ -1,13 +1,11 @@
-use std::marker::PhantomData;
-
 use rand::{Rng, thread_rng};
 use rand::distributions::IndependentSample;
 use rand::distributions::normal::Normal;
 use num::Float;
 use num::cast::NumCast;
 
-use environment::{Space, Transition, Environment};
-use trainer::OnlineTrainer;
+use environment::{Space, Environment};
+use trainer::EpisodicTrainer;
 use agent::Agent;
 use util::ParameterizedFunc;
 use util::TimePeriod;
@@ -18,58 +16,67 @@ use stat::mean_var;
 pub struct CrossEntropy<F: Float> {
 	/// Percent of top samples to use for Gaussian fit
 	elite: f64,
+	/// The mean of the gaussian
+	mean_params: Vec<F>,
+	/// The standard deviation of the guassian
+	deviation: Vec<F>,
 	/// Number of samples to take
 	num_samples: usize,
 	/// Time period to evaluate each parameter sample on
 	eval_period: TimePeriod,
 	/// Number of training iterations to perform when calling `train`
 	iters: usize,
-	phantom: PhantomData<F>,
 }
 
-impl<F: Float, S: Space, A: Space, T> OnlineTrainer<S, A, T> for CrossEntropy<F>
+impl<F: Float, S: Space, A: Space, T> EpisodicTrainer<S, A, T> for CrossEntropy<F>
 	where T: Agent<S, A> + ParameterizedFunc<F> {
-	fn train_step(&mut self, _: &mut T, _: Transition<S, A>) {
-		panic!("Cross Entropy can't be used to train on a single transition");
-	}
-	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
+	fn train_step(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut rng = thread_rng();
-		let mut mean_params = agent.get_params();
-		let mut deviation: Vec<F> = (0..mean_params.len()).map(|_| {
-			let zero = F::zero().to_f64().unwrap();
-			let one = F::one().to_f64().unwrap();
-			NumCast::from(rng.gen_range(zero, one)).unwrap()
-		}).collect();
-		
-		let num_keep = (self.elite * self.num_samples as f64).floor() as usize;
-		for _ in 0..self.iters {
-			let normals: Vec<_> = (0..mean_params.len()).map(|i| {
-				Normal::new(mean_params[i].to_f64().unwrap(), 
-							deviation[i].to_f64().unwrap())
-			}).collect();
 
-			let samples: Vec<Vec<F>> = (0..self.num_samples).map(|_| {
-				normals.iter().map(|&distro| {
-					NumCast::from(distro.ind_sample(&mut rng)).unwrap()
-				}).collect()
-			}).collect();
-
-			let mut scored_samples: Vec<_> = samples.into_iter()
-													.map(|s| (self.eval(s.clone(), agent, env), s))
-													.collect();
-			scored_samples.sort_by(|x, y| x.0.partial_cmp(&y.0).unwrap().reverse());
-			let scored_samples = &scored_samples[..num_keep];
-
-			for i in 0..mean_params.len() {
-				let dim_i: Vec<F> = scored_samples.iter().map(|s| s.1[i]).collect();
-				let (mean, var) = mean_var(&dim_i);
-
-				mean_params[i] = mean;
-				deviation[i] = var.sqrt();
-			}
+		if self.mean_params.is_empty() {
+			self.mean_params = agent.get_params();
 		}
 
-		agent.set_params(mean_params);
+		if self.deviation.is_empty() {
+			self.deviation = (0..self.mean_params.len()).map(|_| {
+				let zero = F::zero().to_f64().unwrap();
+				let one = F::one().to_f64().unwrap();
+				NumCast::from(rng.gen_range(zero, one)).unwrap()
+			}).collect();
+		}
+
+		let normals: Vec<_> = (0..self.mean_params.len()).map(|i| {
+			Normal::new(self.mean_params[i].to_f64().unwrap(), 
+						self.deviation[i].to_f64().unwrap())
+		}).collect();
+
+		let samples: Vec<Vec<F>> = (0..self.num_samples).map(|_| {
+			normals.iter().map(|&distro| {
+				NumCast::from(distro.ind_sample(&mut rng)).unwrap()
+			}).collect()
+		}).collect();
+
+		let num_keep = (self.elite * self.num_samples as f64).floor() as usize;
+		let mut scored_samples: Vec<_> = samples.into_iter()
+												.map(|s| (self.eval(s.clone(), agent, env), s))
+												.collect();
+		scored_samples.sort_by(|x, y| x.0.partial_cmp(&y.0).unwrap().reverse());
+		let scored_samples = &scored_samples[..num_keep];
+
+		for i in 0..self.mean_params.len() {
+			let dim_i: Vec<F> = scored_samples.iter().map(|s| s.1[i]).collect();
+			let (mean, var) = mean_var(&dim_i);
+
+			self.mean_params[i] = mean;
+			self.deviation[i] = var.sqrt();
+		}
+
+		agent.set_params(self.mean_params.clone());
+	}
+	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
+		for _ in 0..self.iters {
+			self.train_step(agent, env);		
+		}
 	}
 }
 
@@ -78,10 +85,11 @@ impl<F: Float> Default for CrossEntropy<F> {
 	fn default() -> CrossEntropy<F> {
 		CrossEntropy {
 			elite: 0.2,
+			mean_params: vec![],
+			deviation: vec![],
 			num_samples: 100,
 			eval_period: TimePeriod::EPISODES(1),
-			iters: 10,
-			phantom: PhantomData
+			iters: 10
 		}
 	}
 }
@@ -93,10 +101,11 @@ impl<F: Float> CrossEntropy<F> {
 
 		CrossEntropy {
 			elite: elite,
+			mean_params: vec![],
+			deviation: vec![],
 			num_samples: num_samples,
 			eval_period: eval_period,
-			iters: iters,
-			phantom: PhantomData
+			iters: iters
 		}
 	}
 	/// Updates elite field of self

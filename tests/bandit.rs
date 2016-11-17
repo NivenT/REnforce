@@ -7,7 +7,7 @@ use rand::distributions::normal::Normal;
 
 use re::environment::{Environment, Observation};
 use re::environment::Finite;
-use re::trainer::OnlineTrainer;
+use re::trainer::{OnlineTrainer, EpisodicTrainer};
 use re::trainer::{CrossEntropy, SARSALearner, QLearner};
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;

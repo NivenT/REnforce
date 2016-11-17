@@ -9,7 +9,7 @@ use std::io::stdin;
 use re::environment::{Environment, Observation};
 use re::environment::{Finite, Range};
 
-use re::trainer::OnlineTrainer;
+use re::trainer::EpisodicTrainer;
 use re::trainer::CrossEntropy;
 
 use re::agent::Agent;
