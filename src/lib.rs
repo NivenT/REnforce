@@ -10,6 +10,7 @@ extern crate num;
 
 pub mod environment;
 pub mod trainer;
+pub mod model;
 pub mod agent;
 pub mod util;
 pub mod stat;

@@ -6,6 +6,27 @@ pub use self::plain::PlainModel;
 
 use environment::{Space, Transition};
 
+// Macro not tested, likely needs to be modified
+macro_rules! implement_model_for_deterministicmodel {
+    ($name:ident, $state:ident, $action:ident) => {
+    	impl<S: $state, A: $action> Model<S, A> for $name<S, A> {
+	    fn transition(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
+			let actual_next = self.transition2(curr, action);
+			if *next == actual_next {1.0} else {0.0}
+		}
+
+		fn reward(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
+			let actual_next = self.transition2(curr, action);
+			if *next == actual_next {self.reward2(curr, action)} else {0.0}
+		}
+
+		fn update(&mut self, transition: Transition<S, A>) {
+			self.update(transition);
+		}
+	    	}
+    }
+}
+
 /// Represents a (nondeterministic) model of an environment
 /// The model itself is composed of the transition and reward functions
 pub trait Model<S: Space, A: Space> {
@@ -26,20 +47,4 @@ pub trait DeterministicModel<S: Space, A: Space> {
 	fn reward2(&self, curr: &S::Element, action: &A::Element) -> f64;
 	/// Upates the model using information from the given transition
 	fn update(&mut self, transition: Transition<S, A>);
-}
-
-impl<S: Space, A: Space, T: DeterministicModel<S, A>> Model<S, A> for T {
-	fn transition(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
-		let actual_next = self.transition2(curr, action);
-		if *next == actual_next {1.0} else {0.0}
-	}
-
-	fn reward(&self, curr: &S::Element, action: &A::Element, next: &S::Element) -> f64 {
-		let actual_next = self.transition2(curr, action);
-		if *next == actual_next {self.reward2(curr, action)} else {0.0}
-	}
-
-	fn update(&mut self, transition: Transition<S, A>) {
-		self.update(transition);
-	}
 }
