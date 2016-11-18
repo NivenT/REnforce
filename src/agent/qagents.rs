@@ -157,6 +157,10 @@ impl<S: Space, A: FiniteSpace, Q, T> EGreedyQAgent<S, A, Q, T>
 			phantom: PhantomData
 		}
 	}
+	/// Sets new value for epsilon 
+	pub fn set_epsilon(&mut self, ep: f64) {
+		self.epsilon = ep;
+	}
 	/// Returns a GreedyQAgent using this agent's q_function
 	pub fn to_greedy(self) -> GreedyQAgent<S, A, Q> {
 		GreedyQAgent {
