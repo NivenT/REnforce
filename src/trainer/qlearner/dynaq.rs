@@ -14,11 +14,11 @@ use util::{QFunction, TimePeriod, Chooser};
 use util::chooser::Weighted;
 
 /// Represents an OnlineTrainer for Q-functions
-/// Uses the Dyna-Q
+/// Uses the Dyna-Q algorithm
 #[derive(Debug)]
 pub struct DynaQ<S: Space, A: FiniteSpace, M: Model<S, A>> where
 	S::Element: Hash + Eq, A::Element: Hash + Eq {
-	/// External trainer for updating Q 
+	/// All the possible performable actions
 	all_actions: Vec<A::Element>,
 	/// The discount factor
 	gamma: f64,
@@ -39,7 +39,7 @@ impl<T, S: Space, A: FiniteSpace, M: Model<S, A>> OnlineTrainer<S, A, T> for Dyn
 	where T: QFunction<S, A> + Agent<S, A>,
 		  S::Element: Hash + Eq,
 		  A::Element: Hash + Eq {
-	// Possible improperly implemented
+	// Possibly improperly implemented
 	// Updating Q maybe should make heavier use of model
 	fn train_step(&mut self, agent: &mut T, transition: Transition<S, A>) {
 		let (state, action, reward, next) = transition;

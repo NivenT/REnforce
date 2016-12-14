@@ -3,7 +3,7 @@
 mod qlearner;
 mod cem;
 
-pub use self::qlearner::{QLearner, SARSALearner, DynaQ};
+pub use self::qlearner::{QLearner, SARSALearner, DynaQ, FittedQIteration};
 pub use self::cem::CrossEntropy;
 
 use environment::{Space, Environment, Transition};
