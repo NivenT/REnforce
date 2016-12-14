@@ -225,6 +225,10 @@
 <span id="181">181</span>
 <span id="182">182</span>
 <span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Q-Agents module</span>
 
@@ -384,6 +388,10 @@
 			<span class='ident'>chooser</span>: <span class='ident'>chooser</span>,
 			<span class='ident'>phantom</span>: <span class='ident'>PhantomData</span>
 		}
+	}
+	<span class='doccomment'>/// Sets new value for epsilon </span>
+	<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_epsilon</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>ep</span>: <span class='ident'>f64</span>) {
+		<span class='self'>self</span>.<span class='ident'>epsilon</span> <span class='op'>=</span> <span class='ident'>ep</span>;
 	}
 	<span class='doccomment'>/// Returns a GreedyQAgent using this agent&#39;s q_function</span>
 	<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_greedy</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>GreedyQAgent</span><span class='op'>&lt;</span><span class='ident'>S</span>, <span class='ident'>A</span>, <span class='ident'>Q</span><span class='op'>&gt;</span> {

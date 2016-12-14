@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Softmax","Softmax"],["Uniform","Uniform"]]});
+initSidebarItems({"struct":[["Softmax","Represents a Chooser that picks each element with probability according to a softmax distrobution"],["Uniform","Represents a Chooser that picks each with equal probability"],["Weighted","Chooses elements with probabilities proportional to their weights"]]});

@@ -181,17 +181,26 @@
 <span id="137">137</span>
 <span id="138">138</span>
 <span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
 </pre><pre class='rust '>
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>;
-
 <span class='kw'>use</span> <span class='ident'>rand</span>::{<span class='ident'>Rng</span>, <span class='ident'>thread_rng</span>};
 <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>distributions</span>::<span class='ident'>IndependentSample</span>;
 <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>distributions</span>::<span class='ident'>normal</span>::<span class='ident'>Normal</span>;
 <span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>Float</span>;
 <span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>cast</span>::<span class='ident'>NumCast</span>;
 
-<span class='kw'>use</span> <span class='ident'>environment</span>::{<span class='ident'>Space</span>, <span class='ident'>Transition</span>, <span class='ident'>Environment</span>};
-<span class='kw'>use</span> <span class='ident'>trainer</span>::<span class='ident'>OnlineTrainer</span>;
+<span class='kw'>use</span> <span class='ident'>environment</span>::{<span class='ident'>Space</span>, <span class='ident'>Environment</span>};
+<span class='kw'>use</span> <span class='ident'>trainer</span>::<span class='ident'>EpisodicTrainer</span>;
 <span class='kw'>use</span> <span class='ident'>agent</span>::<span class='ident'>Agent</span>;
 <span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>ParameterizedFunc</span>;
 <span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>TimePeriod</span>;
@@ -202,56 +211,67 @@
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CrossEntropy</span><span class='op'>&lt;</span><span class='ident'>F</span>: <span class='ident'>Float</span><span class='op'>&gt;</span> {
 	<span class='doccomment'>/// Percent of top samples to use for Gaussian fit</span>
 	<span class='ident'>elite</span>: <span class='ident'>f64</span>,
+	<span class='doccomment'>/// The mean of the gaussian</span>
+	<span class='ident'>mean_params</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>,
+	<span class='doccomment'>/// The standard deviation of the guassian</span>
+	<span class='ident'>deviation</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>,
 	<span class='doccomment'>/// Number of samples to take</span>
 	<span class='ident'>num_samples</span>: <span class='ident'>usize</span>,
 	<span class='doccomment'>/// Time period to evaluate each parameter sample on</span>
 	<span class='ident'>eval_period</span>: <span class='ident'>TimePeriod</span>,
 	<span class='doccomment'>/// Number of training iterations to perform when calling `train`</span>
 	<span class='ident'>iters</span>: <span class='ident'>usize</span>,
-	<span class='ident'>phantom</span>: <span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>F</span>: <span class='ident'>Float</span>, <span class='ident'>S</span>: <span class='ident'>Space</span>, <span class='ident'>A</span>: <span class='ident'>Space</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>OnlineTrainer</span><span class='op'>&lt;</span><span class='ident'>S</span>, <span class='ident'>A</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>CrossEntropy</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>F</span>: <span class='ident'>Float</span>, <span class='ident'>S</span>: <span class='ident'>Space</span>, <span class='ident'>A</span>: <span class='ident'>Space</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>EpisodicTrainer</span><span class='op'>&lt;</span><span class='ident'>S</span>, <span class='ident'>A</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>CrossEntropy</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>
 	<span class='kw'>where</span> <span class='ident'>T</span>: <span class='ident'>Agent</span><span class='op'>&lt;</span><span class='ident'>S</span>, <span class='ident'>A</span><span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>ParameterizedFunc</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> {
-	<span class='kw'>fn</span> <span class='ident'>train_step</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, _: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>T</span>, _: <span class='ident'>Transition</span><span class='op'>&lt;</span><span class='ident'>S</span>, <span class='ident'>A</span><span class='op'>&gt;</span>) {
-		<span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Cross Entropy can&#39;t be used to train on a single transition&quot;</span>);
-	}
-	<span class='kw'>fn</span> <span class='ident'>train</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>agent</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>T</span>, <span class='ident'>env</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Environment</span><span class='op'>&lt;</span><span class='ident'>State</span><span class='op'>=</span><span class='ident'>S</span>, <span class='ident'>Action</span><span class='op'>=</span><span class='ident'>A</span><span class='op'>&gt;</span>) {
+	<span class='kw'>fn</span> <span class='ident'>train_step</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>agent</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>T</span>, <span class='ident'>env</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Environment</span><span class='op'>&lt;</span><span class='ident'>State</span><span class='op'>=</span><span class='ident'>S</span>, <span class='ident'>Action</span><span class='op'>=</span><span class='ident'>A</span><span class='op'>&gt;</span>) {
 		<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng</span> <span class='op'>=</span> <span class='ident'>thread_rng</span>();
-		<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>mean_params</span> <span class='op'>=</span> <span class='ident'>agent</span>.<span class='ident'>get_params</span>();
-		<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>deviation</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='ident'>mean_params</span>.<span class='ident'>len</span>()).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> {
-			<span class='kw'>let</span> <span class='ident'>zero</span> <span class='op'>=</span> <span class='ident'>F</span>::<span class='ident'>zero</span>().<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>();
-			<span class='kw'>let</span> <span class='ident'>one</span> <span class='op'>=</span> <span class='ident'>F</span>::<span class='ident'>one</span>().<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>();
-			<span class='ident'>NumCast</span>::<span class='ident'>from</span>(<span class='ident'>rng</span>.<span class='ident'>gen_range</span>(<span class='ident'>zero</span>, <span class='ident'>one</span>)).<span class='ident'>unwrap</span>()
-		}).<span class='ident'>collect</span>();
-		
-		<span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>iters</span> {
-			<span class='kw'>let</span> <span class='ident'>samples</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>num_samples</span>).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> {
-				(<span class='number'>0</span>..<span class='ident'>mean_params</span>.<span class='ident'>len</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> {
-					<span class='kw'>let</span> <span class='ident'>normal</span> <span class='op'>=</span> <span class='ident'>Normal</span>::<span class='ident'>new</span>(<span class='ident'>mean_params</span>[<span class='ident'>i</span>].<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>(),
-											 <span class='ident'>deviation</span>[<span class='ident'>i</span>].<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>());
-					<span class='ident'>NumCast</span>::<span class='ident'>from</span>(<span class='ident'>normal</span>.<span class='ident'>ind_sample</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>rng</span>)).<span class='ident'>unwrap</span>()
-				}).<span class='ident'>collect</span>()
-			}).<span class='ident'>collect</span>();
 
-			<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>scored_samples</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>samples</span>.<span class='ident'>into_iter</span>()
-													.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> (<span class='self'>self</span>.<span class='ident'>eval</span>(<span class='ident'>s</span>.<span class='ident'>clone</span>(), <span class='ident'>agent</span>, <span class='ident'>env</span>), <span class='ident'>s</span>))
-													.<span class='ident'>collect</span>();
-			<span class='ident'>scored_samples</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> <span class='ident'>x</span>.<span class='number'>0</span>.<span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span><span class='ident'>y</span>.<span class='number'>0</span>).<span class='ident'>unwrap</span>().<span class='ident'>reverse</span>());
-
-			<span class='kw'>let</span> <span class='ident'>num_keep</span> <span class='op'>=</span> (<span class='self'>self</span>.<span class='ident'>elite</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>num_samples</span> <span class='kw'>as</span> <span class='ident'>f64</span>).<span class='ident'>floor</span>() <span class='kw'>as</span> <span class='ident'>usize</span>;
-			<span class='ident'>scored_samples</span> <span class='op'>=</span> <span class='ident'>scored_samples</span>[..<span class='ident'>num_keep</span>].<span class='ident'>to_vec</span>();
-
-			<span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>mean_params</span>.<span class='ident'>len</span>() {
-				<span class='kw'>let</span> <span class='ident'>dim_i</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>scored_samples</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> <span class='ident'>s</span>.<span class='number'>1</span>[<span class='ident'>i</span>]).<span class='ident'>collect</span>();
-				<span class='kw'>let</span> (<span class='ident'>mean</span>, <span class='ident'>var</span>) <span class='op'>=</span> <span class='ident'>mean_var</span>(<span class='kw-2'>&amp;</span><span class='ident'>dim_i</span>);
-
-				<span class='ident'>mean_params</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>mean</span>;
-				<span class='ident'>deviation</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>var</span>.<span class='ident'>sqrt</span>();
-			}
+		<span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>mean_params</span>.<span class='ident'>is_empty</span>() {
+			<span class='self'>self</span>.<span class='ident'>mean_params</span> <span class='op'>=</span> <span class='ident'>agent</span>.<span class='ident'>get_params</span>();
 		}
 
-		<span class='ident'>agent</span>.<span class='ident'>set_params</span>(<span class='ident'>mean_params</span>);
+		<span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>deviation</span>.<span class='ident'>is_empty</span>() {
+			<span class='self'>self</span>.<span class='ident'>deviation</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>mean_params</span>.<span class='ident'>len</span>()).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> {
+				<span class='kw'>let</span> <span class='ident'>zero</span> <span class='op'>=</span> <span class='ident'>F</span>::<span class='ident'>zero</span>().<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>();
+				<span class='kw'>let</span> <span class='ident'>one</span> <span class='op'>=</span> <span class='ident'>F</span>::<span class='ident'>one</span>().<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>();
+				<span class='ident'>NumCast</span>::<span class='ident'>from</span>(<span class='ident'>rng</span>.<span class='ident'>gen_range</span>(<span class='ident'>zero</span>, <span class='ident'>one</span>)).<span class='ident'>unwrap</span>()
+			}).<span class='ident'>collect</span>();
+		}
+
+		<span class='kw'>let</span> <span class='ident'>normals</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>mean_params</span>.<span class='ident'>len</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> {
+			<span class='ident'>Normal</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>mean_params</span>[<span class='ident'>i</span>].<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>(), 
+						<span class='self'>self</span>.<span class='ident'>deviation</span>[<span class='ident'>i</span>].<span class='ident'>to_f64</span>().<span class='ident'>unwrap</span>())
+		}).<span class='ident'>collect</span>();
+
+		<span class='kw'>let</span> <span class='ident'>samples</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>num_samples</span>).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> {
+			<span class='ident'>normals</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>distro</span><span class='op'>|</span> {
+				<span class='ident'>NumCast</span>::<span class='ident'>from</span>(<span class='ident'>distro</span>.<span class='ident'>ind_sample</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>rng</span>)).<span class='ident'>unwrap</span>()
+			}).<span class='ident'>collect</span>()
+		}).<span class='ident'>collect</span>();
+
+		<span class='kw'>let</span> <span class='ident'>num_keep</span> <span class='op'>=</span> (<span class='self'>self</span>.<span class='ident'>elite</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>num_samples</span> <span class='kw'>as</span> <span class='ident'>f64</span>).<span class='ident'>floor</span>() <span class='kw'>as</span> <span class='ident'>usize</span>;
+		<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>scored_samples</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>samples</span>.<span class='ident'>into_iter</span>()
+												.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> (<span class='self'>self</span>.<span class='ident'>eval</span>(<span class='ident'>s</span>.<span class='ident'>clone</span>(), <span class='ident'>agent</span>, <span class='ident'>env</span>), <span class='ident'>s</span>))
+												.<span class='ident'>collect</span>();
+		<span class='ident'>scored_samples</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> <span class='ident'>x</span>.<span class='number'>0</span>.<span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span><span class='ident'>y</span>.<span class='number'>0</span>).<span class='ident'>unwrap</span>().<span class='ident'>reverse</span>());
+		<span class='kw'>let</span> <span class='ident'>scored_samples</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>scored_samples</span>[..<span class='ident'>num_keep</span>];
+
+		<span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>mean_params</span>.<span class='ident'>len</span>() {
+			<span class='kw'>let</span> <span class='ident'>dim_i</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>scored_samples</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> <span class='ident'>s</span>.<span class='number'>1</span>[<span class='ident'>i</span>]).<span class='ident'>collect</span>();
+			<span class='kw'>let</span> (<span class='ident'>mean</span>, <span class='ident'>var</span>) <span class='op'>=</span> <span class='ident'>mean_var</span>(<span class='kw-2'>&amp;</span><span class='ident'>dim_i</span>);
+
+			<span class='self'>self</span>.<span class='ident'>mean_params</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>mean</span>;
+			<span class='self'>self</span>.<span class='ident'>deviation</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>var</span>.<span class='ident'>sqrt</span>();
+		}
+
+		<span class='ident'>agent</span>.<span class='ident'>set_params</span>(<span class='self'>self</span>.<span class='ident'>mean_params</span>.<span class='ident'>clone</span>());
+	}
+	<span class='kw'>fn</span> <span class='ident'>train</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>agent</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>T</span>, <span class='ident'>env</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Environment</span><span class='op'>&lt;</span><span class='ident'>State</span><span class='op'>=</span><span class='ident'>S</span>, <span class='ident'>Action</span><span class='op'>=</span><span class='ident'>A</span><span class='op'>&gt;</span>) {
+		<span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>iters</span> {
+			<span class='self'>self</span>.<span class='ident'>train_step</span>(<span class='ident'>agent</span>, <span class='ident'>env</span>);		
+		}
 	}
 }
 
@@ -260,10 +280,11 @@
 	<span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='ident'>CrossEntropy</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> {
 		<span class='ident'>CrossEntropy</span> {
 			<span class='ident'>elite</span>: <span class='number'>0.2</span>,
-			<span class='ident'>num_samples</span>: <span class='number'>50</span>,
+			<span class='ident'>mean_params</span>: <span class='macro'>vec</span><span class='macro'>!</span>[],
+			<span class='ident'>deviation</span>: <span class='macro'>vec</span><span class='macro'>!</span>[],
+			<span class='ident'>num_samples</span>: <span class='number'>100</span>,
 			<span class='ident'>eval_period</span>: <span class='ident'>TimePeriod</span>::<span class='ident'>EPISODES</span>(<span class='number'>1</span>),
-			<span class='ident'>iters</span>: <span class='number'>10</span>,
-			<span class='ident'>phantom</span>: <span class='ident'>PhantomData</span>
+			<span class='ident'>iters</span>: <span class='number'>10</span>
 		}
 	}
 }
@@ -275,10 +296,11 @@
 
 		<span class='ident'>CrossEntropy</span> {
 			<span class='ident'>elite</span>: <span class='ident'>elite</span>,
+			<span class='ident'>mean_params</span>: <span class='macro'>vec</span><span class='macro'>!</span>[],
+			<span class='ident'>deviation</span>: <span class='macro'>vec</span><span class='macro'>!</span>[],
 			<span class='ident'>num_samples</span>: <span class='ident'>num_samples</span>,
 			<span class='ident'>eval_period</span>: <span class='ident'>eval_period</span>,
-			<span class='ident'>iters</span>: <span class='ident'>iters</span>,
-			<span class='ident'>phantom</span>: <span class='ident'>PhantomData</span>
+			<span class='ident'>iters</span>: <span class='ident'>iters</span>
 		}
 	}
 	<span class='doccomment'>/// Updates elite field of self</span>

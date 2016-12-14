@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["agent","Agent Module"],["environment","Environment Module"],["stat","Statistics Module"],["trainer","Trainer Module"],["util","Utilities Module"]]});
+initSidebarItems({"mod":[["agent","Agent Module"],["environment","Environment Module"],["model","Model Module"],["stat","Statistics Module"],["trainer","Trainer Module"],["util","Utilities Module"]]});

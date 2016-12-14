@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-154' class='srclink' href='../../src/renforce/src/trainer/mod.rs.html#1-71' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-154' class='srclink' href='../../src/renforce/src/trainer/mod.rs.html#1-33' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Trainer Module</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -59,17 +59,35 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='struct' href='struct.DynaQ.html'
+                                  title='renforce::trainer::DynaQ'>DynaQ</a></td>
+                           <td class='docblock-short'>
+                                <p>Represents an OnlineTrainer for Q-functions
+Uses the Dyna-Q algorithm</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.FittedQIteration.html'
+                                  title='renforce::trainer::FittedQIteration'>FittedQIteration</a></td>
+                           <td class='docblock-short'>
+                                <p>BatchTrainer for Q-functions
+Uses Fitted Q Iteration </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='struct' href='struct.QLearner.html'
                                   title='renforce::trainer::QLearner'>QLearner</a></td>
                            <td class='docblock-short'>
-                                <p>QLearner</p>
+                                <p>Represents an OnlineTrainer for Q-functions
+Uses the <a href="https://www.wikiwand.com/en/Q-learning">Q-learning algorithm</a></p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.SARSALearner.html'
                                   title='renforce::trainer::SARSALearner'>SARSALearner</a></td>
                            <td class='docblock-short'>
-                                <p>SARSALearner</p>
+                                <p>Represents an OnlineTrainer for Q-functions
+Uses the <a href="https://www.wikiwand.com/en/State-Action-Reward-State-Action">SARSA algorithm</a></p>
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
@@ -77,28 +95,21 @@
                            <td><a class='trait' href='trait.BatchTrainer.html'
                                   title='renforce::trainer::BatchTrainer'>BatchTrainer</a></td>
                            <td class='docblock-short'>
-                                <p>Batch Trainer Trait</p>
+                                <p>Represents a way to train an agent from a set of transitions</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='trait' href='trait.DeterministicModel.html'
-                                  title='renforce::trainer::DeterministicModel'>DeterministicModel</a></td>
+                           <td><a class='trait' href='trait.EpisodicTrainer.html'
+                                  title='renforce::trainer::EpisodicTrainer'>EpisodicTrainer</a></td>
                            <td class='docblock-short'>
-                                <p>Deterministic Model Trait</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='trait' href='trait.Model.html'
-                                  title='renforce::trainer::Model'>Model</a></td>
-                           <td class='docblock-short'>
-                                <p>Model Trait</p>
+                                <p>Trains agents 1 &quot;episode&quot; at a time</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.OnlineTrainer.html'
                                   title='renforce::trainer::OnlineTrainer'>OnlineTrainer</a></td>
                            <td class='docblock-short'>
-                                <p>Online Trainer Trait</p>
+                                <p>Represents a way to train an agent online (by interacting with the environment)</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

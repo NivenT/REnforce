@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1110' class='srclink' href='../../src/renforce/src/util/mod.rs.html#49-52' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-1396' class='srclink' href='../../src/renforce/src/util/mod.rs.html#49-52' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Chooser&lt;T&gt;: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> {
     fn <a href='#tymethod.choose' class='fnname'>choose</a>(&amp;self, choices: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;, weights: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>&gt;) -&gt; T;
 }</pre><div class='docblock'><p>Choose Trait</p>
@@ -62,6 +62,7 @@
         <ul class='item-list' id='implementors-list'>
     <li><code>impl&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>&gt; Chooser&lt;T&gt; for <a class='struct' href='../../renforce/util/chooser/struct.Uniform.html' title='renforce::util::chooser::Uniform'>Uniform</a></code></li>
 <li><code>impl&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>&gt; Chooser&lt;T&gt; for <a class='struct' href='../../renforce/util/chooser/struct.Softmax.html' title='renforce::util::chooser::Softmax'>Softmax</a></code></li>
+<li><code>impl&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>&gt; Chooser&lt;T&gt; for <a class='struct' href='../../renforce/util/chooser/struct.Weighted.html' title='renforce::util::chooser::Weighted'>Weighted</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/renforce/util/trait.Chooser.js">
                  </script></section>
