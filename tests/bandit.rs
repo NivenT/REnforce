@@ -7,8 +7,8 @@ use rand::distributions::normal::Normal;
 
 use re::environment::{Environment, Observation};
 use re::environment::Finite;
-use re::trainer::{OnlineTrainer, EpisodicTrainer};
-use re::trainer::{CrossEntropy, SARSALearner, QLearner, DynaQ};
+use re::trainer::{OnlineTrainer, EpisodicTrainer, BatchTrainer};
+use re::trainer::{CrossEntropy, SARSALearner, QLearner, DynaQ, FittedQIteration};
 use re::model::PlainModel;
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
@@ -218,5 +218,48 @@ fn dyna_bandit() {
 	}
 
 	println!("Dyna-Q reward: {}", reward);
+	assert!(reward >= SOLVED_VALUE);
+}
+
+#[test]
+fn fqi_bandit() {
+	let mut env = test_env();
+
+	let action_space = Finite::new(env.num_arms() as u32);
+	let q_func: QTable<(), Finite> = QTable::new();
+	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut trainer = FittedQIteration::default(action_space);
+
+	// Collect transitions (This is ugly. Transition<S, A> maybe shouldn't store references)
+	let mut transitions = Vec::new();
+	let mut trans_refs = Vec::new();
+
+	for _ in 0..1000 {
+		let action = agent.get_action(&());
+		let obs = env.step(&action);
+
+		transitions.push(((), action, obs.reward, obs.state));
+	}
+
+	for i in 0..1000 {
+		trans_refs.push((&transitions[i].0, &transitions[i].1, transitions[i].2, &transitions[i].3))
+	}
+
+	trainer.train(&mut agent, trans_refs);
+
+	let mut obs = env.reset();
+	let mut iters = 100;
+	let mut reward = 0.0;
+
+	agent.set_epsilon(0.05);
+	while iters != 0 {
+		let action = agent.get_action(&obs.state);
+		obs = env.step(&action);
+
+		reward += obs.reward;
+		iters -= 1;
+	}
+
+	println!("FQI reward: {}", reward);
 	assert!(reward >= SOLVED_VALUE);
 }
