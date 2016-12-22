@@ -28,7 +28,7 @@ impl<S: Space, A: FiniteSpace, T> BatchTrainer<S, A, T> for FittedQIteration<A>
 			for &(ref s0, ref a, r, ref s1) in &transitions {
 				let mut max_next_val = f64::MIN;
 				for a in &self.actions {
-					max_next_val = max_next_val.max(agent.eval(&s1, a));
+					max_next_val = max_next_val.max(agent.eval(s1, a));
 				}
 
 				let target = r + self.gamma*max_next_val;
@@ -36,7 +36,7 @@ impl<S: Space, A: FiniteSpace, T> BatchTrainer<S, A, T> for FittedQIteration<A>
 			}
 
 			for (s, a, q) in patterns {
-				agent.update(&s, &a, q, self.alpha);
+				agent.update(s, a, q, self.alpha);
 			}
 		}
 	}

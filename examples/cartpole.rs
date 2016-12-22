@@ -21,11 +21,10 @@ use re::util::feature::BSFeature;
 
 use gym::GymClient;
 
-// Used to render agent during testing but not during training
-static mut render_cartpole: bool = false;
-
 struct CartPole {
-	pub env: gym::Environment
+	pub render: bool,
+
+	env: gym::Environment,
 }
 
 impl Environment for CartPole {
@@ -33,9 +32,7 @@ impl Environment for CartPole {
 	type Action = Finite;
 
 	fn step(&mut self, action: &u32) -> Observation<Vec<Range>> {
-		let obs = unsafe {
-			self.env.step(vec![*action as f64], render_cartpole).unwrap()
-		};
+		let obs = self.env.step(vec![*action as f64], self.render).unwrap();
 		Observation {
 			state: obs.observation,
 			reward: obs.reward,
@@ -50,8 +47,7 @@ impl Environment for CartPole {
 			done: false
 		}
 	}
-	fn render(&self) {
-	}
+	fn render(&self) {}
 }
 
 impl CartPole {
@@ -62,7 +58,7 @@ impl CartPole {
 			Err(msg) => panic!("Could not make environment because of error:\n{}", msg)
 		};
 		let _ = env.reset();
-		CartPole {env: env}
+		CartPole {env: env, render: false}
 	}
 }
 
@@ -95,9 +91,7 @@ fn main() {
 	println!("Done training (press enter)");
 
 	let agent = agent.to_greedy();
-	unsafe {
-		render_cartpole = true;
-	}
+	env.render = true;
 	let _ = stdin().read_line(&mut String::new());
 
 	// Simulate one episode of the environment to see what the agent learned
