@@ -12,7 +12,7 @@ pub use self::finite::Finite;
 pub use self::range::Range;
 
 /// A transition experienced by the agent (s, a, r, s')
-pub type Transition<'a, S: Space, A: Space> = (&'a S::Element, &'a A::Element, f64, &'a S::Element);
+pub type Transition<S: Space, A: Space> = (S::Element, A::Element, f64, S::Element);
 
 /// Space Trait
 ///

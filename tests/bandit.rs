@@ -230,10 +230,8 @@ fn fqi_bandit() {
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
 	let mut trainer = FittedQIteration::default(action_space);
 
-	// Collect transitions (This is ugly. Transition<S, A> maybe shouldn't store references)
+	// Collect transitions
 	let mut transitions = Vec::new();
-	let mut trans_refs = Vec::new();
-
 	for _ in 0..1000 {
 		let action = agent.get_action(&());
 		let obs = env.step(&action);
@@ -241,11 +239,7 @@ fn fqi_bandit() {
 		transitions.push(((), action, obs.reward, obs.state));
 	}
 
-	for i in 0..1000 {
-		trans_refs.push((&transitions[i].0, &transitions[i].1, transitions[i].2, &transitions[i].3))
-	}
-
-	trainer.train(&mut agent, trans_refs);
+	trainer.train(&mut agent, transitions);
 
 	let mut obs = env.reset();
 	let mut iters = 100;

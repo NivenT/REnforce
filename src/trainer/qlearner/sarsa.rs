@@ -26,7 +26,7 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 		
 		let next_action = agent.get_action(&next);
 		let next_val = agent.eval(&next, &next_action);
-		agent.update(state, action, reward + self.gamma*next_val, self.alpha);
+		agent.update(&state, &action, reward + self.gamma*next_val, self.alpha);
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
@@ -34,7 +34,7 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
-			self.train_step(agent, (&obs.state, &action, new_obs.reward, &new_obs.state));
+			self.train_step(agent, (obs.state, action, new_obs.reward, new_obs.state.clone()));
 
 			time_remaining = time_remaining.dec(new_obs.done);
 			obs = if new_obs.done {env.reset()} else {new_obs};

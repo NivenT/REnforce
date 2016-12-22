@@ -42,14 +42,14 @@ impl<T, S: Space, A: FiniteSpace, M: Model<S, A>> OnlineTrainer<S, A, T> for Dyn
 	// Possibly improperly implemented
 	// Updating Q maybe should make heavier use of model
 	fn train_step(&mut self, agent: &mut T, transition: Transition<S, A>) {
-		let (state, action, reward, next) = transition;
+		let (state, action, reward, next) = transition.clone();
 		
 		let mut max_next_val = f64::MIN;
 		for a in &self.all_actions {
 			max_next_val = max_next_val.max(agent.eval(&next, a));
 		}
 
-		agent.update(state, action, reward + self.gamma*max_next_val, self.alpha);
+		agent.update(&state, &action, reward + self.gamma*max_next_val, self.alpha);
 		self.model.update(transition);
 
 		self.states.insert(state.clone());
@@ -80,7 +80,7 @@ impl<T, S: Space, A: FiniteSpace, M: Model<S, A>> OnlineTrainer<S, A, T> for Dyn
 		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
-			self.train_step(agent, (&obs.state, &action, new_obs.reward, &new_obs.state));
+			self.train_step(agent, (obs.state, action, new_obs.reward, new_obs.state.clone()));
 
 			time_remaining = time_remaining.dec(new_obs.done);
 			obs = if new_obs.done {env.reset()} else {new_obs};
