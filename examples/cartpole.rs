@@ -1,5 +1,4 @@
 // Here, we train an agent on the classic cartpole problem
-// The agent does not exhibit optimal behavior, but it certainly learns something
 
 extern crate renforce as re;
 extern crate gym;
@@ -15,9 +14,10 @@ use re::trainer::CrossEntropy;
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
 
+use re::util::TimePeriod;
 use re::util::approx::QLinear;
 use re::util::chooser::Uniform;
-use re::util::feature::BSFeature;
+use re::util::feature::IFeature;
 
 use gym::GymClient;
 
@@ -55,7 +55,7 @@ impl CartPole {
 		let client = GymClient::new("http://localhost:5000".to_string());
 		let mut env = match client.make("CartPole-v0") {
 			Ok(env) => env,
-			Err(msg) => panic!("Could not make environment because of error:\n{}", msg)
+			Err(msg) => panic!("Could not make environment because of error:\n{}\n\nMake sure you have a [gym server](https://github.com/openai/gym-http-api) running.", msg)
 		};
 		let _ = env.reset();
 		CartPole {env: env, render: false}
@@ -67,14 +67,8 @@ fn main() {
 	let action_space = Finite::new(2);
 
 	let mut q_func = QLinear::new(&action_space);
-	let num_ranges: u32 = 50;
 	for d in 0..4 {
-		for n in 0..num_ranges {
-			let num_ranges = num_ranges as f64;
-			q_func.add(Box::new(BSFeature::new(-3.0 + 6.0*(n as f64)/num_ranges,
-											   -3.0 + 6.0*(n + 1) as f64/num_ranges,
-											   d)));
-		}
+		q_func.add(Box::new(IFeature::new(d)));
 	}
 
 	// Creates an epsilon greedy Q-agent
@@ -83,8 +77,14 @@ fn main() {
 
 	let mut env = CartPole::new();
 
+	// CrossEntropy will evalute agents for 1 episode or 300 time steps
+	// whichever comes first
+	let tp = {
+		use TimePeriod::*;
+		OR(Box::new(EPISODES(1)), Box::new(TIMESTEPS(300)))
+	};
 	// Train agent using Cross Entropy Method with default parameters
-	let mut trainer = CrossEntropy::default();
+	let mut trainer = CrossEntropy::default().eval_period(tp);
 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);

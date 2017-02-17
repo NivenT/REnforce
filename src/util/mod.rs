@@ -78,12 +78,14 @@ pub trait Metric {
 }
 
 /// Some length of time experienced by an agent
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum TimePeriod {
 	/// A time period stored as a number of episodes
 	EPISODES(usize),
 	/// A time period stored as a number of individual timesteps
 	TIMESTEPS(usize),
+	/// Time period ends when first or second one ends
+	OR(Box<TimePeriod>, Box<TimePeriod>),
 }
 
 impl TimePeriod {
@@ -91,17 +93,19 @@ impl TimePeriod {
 	pub fn is_none(&self) -> bool {
 		match *self {
 			TimePeriod::EPISODES(x) => x == 0,
-			TimePeriod::TIMESTEPS(x) => x == 0
+			TimePeriod::TIMESTEPS(x) => x == 0,
+			TimePeriod::OR(ref a, ref b) => a.is_none() || b.is_none(),
 		}
 	}
 	/// Returns the time period remaing after one time step
 	pub fn dec(&self, done: bool) -> TimePeriod {
 		if self.is_none() {
-			*self
+			self.clone()
 		} else {
 			match *self {
 				TimePeriod::EPISODES(x) => TimePeriod::EPISODES(if done {x-1} else {x}),
-				TimePeriod::TIMESTEPS(x) => TimePeriod::TIMESTEPS(x-1)
+				TimePeriod::TIMESTEPS(x) => TimePeriod::TIMESTEPS(x-1),
+				TimePeriod::OR(ref a, ref b) => TimePeriod::OR(Box::new(a.dec(done)), Box::new(b.dec(done))),
 			}
 		}
 	}

@@ -30,7 +30,7 @@ impl<T, S: Space, A: Space> OnlineTrainer<S, A, T> for SARSALearner
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let mut obs = env.reset();
-		let mut time_remaining = self.train_period;
+		let mut time_remaining = self.train_period.clone();
 		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);

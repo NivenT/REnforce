@@ -136,7 +136,7 @@ impl<F: Float> CrossEntropy<F> {
 
 		let mut obs = env.reset();
 		let mut reward = 0.0;
-		let mut time_remaining = self.eval_period;
+		let mut time_remaining = self.eval_period.clone();
 		while !time_remaining.is_none() {
 			let action = agent.get_action(&obs.state);
 			let new_obs = env.step(&action);
