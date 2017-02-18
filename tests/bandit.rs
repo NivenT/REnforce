@@ -7,11 +7,15 @@ use rand::distributions::normal::Normal;
 
 use re::environment::{Environment, Observation};
 use re::environment::Finite;
+
 use re::trainer::{OnlineTrainer, EpisodicTrainer, BatchTrainer};
-use re::trainer::{CrossEntropy, SARSALearner, QLearner, DynaQ, FittedQIteration};
+use re::trainer::*;
+
 use re::model::PlainModel;
+
 use re::agent::Agent;
 use re::agent::qagents::EGreedyQAgent;
+
 use re::util::TimePeriod;
 use re::util::table::QTable;
 use re::util::approx::QLinear;
@@ -169,7 +173,7 @@ fn cem_bandit() {
 	let mut env = test_env();
 
 	let action_space = Finite::new(env.num_arms() as u32);
-	let q_func = QLinear::new(&action_space);
+	let q_func = QLinear::default(&action_space);
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
 	let mut trainer = CrossEntropy::default().eval_period(TimePeriod::TIMESTEPS(5));
 

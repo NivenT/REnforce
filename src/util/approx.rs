@@ -58,6 +58,17 @@ impl<F: Float + Debug, S: Space> ParameterizedFunc<F> for VLinear<F, S> {
 	}
 }
 
+impl<S: Space> Default for VLinear<f64, S> {
+	/// Creates a new Linear V-Function Approximator
+	fn default() -> VLinear<f64, S> {
+		let mut rng = thread_rng();
+		VLinear {
+			features: vec![],
+			weights: vec![rng.gen_range(-10.0, 10.0)]
+		}
+	}
+}
+
 impl<F: Float + Debug, S: Space> VLinear<F, S> {
 	/// Creates a new Linear V-Function Approximator
 	pub fn new() -> VLinear<F, S> {
@@ -134,6 +145,17 @@ impl<F: Float + Debug, S: Space, A: FiniteSpace> ParameterizedFunc<F> for QLinea
 			let func = self.get_func(&a);
 			func.set_params(params[index..index+num_params].to_vec());
 			index += num_params;
+		}
+	}
+}
+
+impl<S: Space, A: FiniteSpace> QLinear<f64, S, A> where A::Element: Hash + Eq {
+	/// Creates a new, empty QLinear
+	pub fn default(action_space: &A) -> QLinear<f64, S, A> {
+		QLinear {
+			functions: HashMap::new(),
+			actions: action_space.enumerate(),
+			features: Vec::new()
 		}
 	}
 }

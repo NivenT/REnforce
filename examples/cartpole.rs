@@ -66,7 +66,7 @@ fn main() {
 	// The agent has 2 actions: move {left, right}
 	let action_space = Finite::new(2);
 
-	let mut q_func = QLinear::new(&action_space);
+	let mut q_func = QLinear::default(&action_space);
 	for d in 0..4 {
 		q_func.add(Box::new(IFeature::new(d)));
 	}
