@@ -11,7 +11,7 @@ use num::cast::NumCast;
 
 use environment::{Space, FiniteSpace};
 
-use util::{Feature, VFunction, QFunction, ParameterizedFunc};
+use util::{Feature, VFunction, QFunction, ParameterizedFunc, FeatureExtractor};
 
 /// Represents a linear function approximator
 /// f(x) = w^T g(x) + b
@@ -55,6 +55,17 @@ impl<F: Float + Debug, S: Space> ParameterizedFunc<F> for VLinear<F, S> {
 	}
 	fn set_params(&mut self, params: Vec<F>) {
 		self.weights = params;
+	}
+}
+
+impl<S: Space, A: Space, F: Float + Debug> FeatureExtractor<S, A, F> for VLinear<F, S> {
+	fn num_features(&self) -> usize {
+		self.features.len()
+	}
+	fn extract(&self, state: &S::Element, _: &A::Element) -> Vec<F> {
+		self.features.iter().map(|feat| {
+			NumCast::from(feat.extract(state)).unwrap()
+		}).collect()
 	}
 }
 
@@ -145,6 +156,21 @@ impl<F: Float + Debug, S: Space, A: FiniteSpace> ParameterizedFunc<F> for QLinea
 			let func = self.get_func(&a);
 			func.set_params(params[index..index+num_params].to_vec());
 			index += num_params;
+		}
+	}
+}
+
+impl<S: Space, A: FiniteSpace, F: Float + Debug> FeatureExtractor<S, A, F> for QLinear<F, S, A> 
+	where A::Element: Hash + Eq {
+	fn num_features(&self) -> usize {
+		self.features.len()
+	}
+	fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+		if self.functions.contains_key(action) {
+			let feat_extract: &FeatureExtractor<S, A, F> = self;
+			feat_extract.extract(state, action)
+		} else {
+			vec![F::zero(); self.features.len()]
 		}
 	}
 }
