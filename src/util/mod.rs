@@ -9,6 +9,7 @@ mod metric;
 use std::fmt::Debug;
 
 use num::Num;
+use num::Float;
 
 use environment::Space;
 
@@ -23,11 +24,11 @@ pub trait ParameterizedFunc<T: Num> {
 }
 
 /// Represents something that extracts features from state-action pairs
-pub trait FeatureExtractor<S: Space, A: Space> {
+pub trait FeatureExtractor<S: Space, A: Space, F: Float> {
 	/// Number of features that can be calculated
 	fn num_features(&self) -> usize;
 	/// Vector containg the values of all the features for this state
-	fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<f64>;
+	fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<F>;
 }
 
 /// QFunction Trait
@@ -60,14 +61,14 @@ pub trait Chooser<T> : Debug {
 }
 
 /// A real-valued feature of elements of some state space
-pub trait Feature<S: Space> : Debug {
+pub trait Feature<S: Space, F: Float> : Debug {
 	/// Extracts some real-valued feature from a given state
-	fn extract(&self, state: &S::Element) -> f64;
+	fn extract(&self, state: &S::Element) -> F;
 	/// Creates a cloned trait object of self
-	fn box_clone(&self) -> Box<Feature<S>>;
+	fn box_clone(&self) -> Box<Feature<S, F>>;
 }
 
-impl<S: Space> Clone for Box<Feature<S>> {
+impl<F: Float, S: Space> Clone for Box<Feature<S, F>> {
 	fn clone(&self) -> Self {
 		self.box_clone()
 	}

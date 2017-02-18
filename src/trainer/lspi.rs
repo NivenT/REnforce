@@ -6,14 +6,14 @@ use num::Float;
 use num::cast::NumCast;
 
 use rulinalg::matrix::{Matrix, MatrixSlice, BaseMatrix, BaseMatrixMut};
-use rulinalg::vector::Vector;
 
 use environment::{Space, Environment, Transition};
+
 use trainer::BatchTrainer;
+
 use agent::Agent;
-use util::ParameterizedFunc;
-use util::TimePeriod;
-use stat::mean_var;
+
+use util::{ParameterizedFunc, FeatureExtractor};
 
 /// Least-squares Policy Iteration method
 /// * Uses LSTD-Q for calculating the Q-function associated with a policy
