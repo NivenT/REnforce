@@ -7,6 +7,7 @@
 
 extern crate rand;
 extern crate num;
+extern crate rulinalg;
 
 pub mod environment;
 pub mod trainer;

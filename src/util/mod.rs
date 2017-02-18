@@ -14,12 +14,20 @@ use environment::Space;
 
 /// A function that evaluates its input by making use of some parameters
 pub trait ParameterizedFunc<T: Num> {
-	/// Returns number of parameters used by the agent
+	/// Returns number of parameters used by the function
 	fn num_params(&self) -> usize;
-	/// Returns the parameters used by the agent
+	/// Returns the parameters used by the function
 	fn get_params(&self) -> Vec<T>;
-	/// Changes the parameters used by the agent
+	/// Changes the parameters used by the function
 	fn set_params(&mut self, params: Vec<T>);
+}
+
+/// Represents something that extracts features from state-action pairs
+pub trait FeatureExtractor<S: Space, A: Space> {
+	/// Number of features that can be calculated
+	fn num_features(&self) -> usize;
+	/// Vector containg the values of all the features for this state
+	fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<f64>;
 }
 
 /// QFunction Trait
@@ -51,7 +59,7 @@ pub trait Chooser<T> : Debug {
 	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T;
 }
 
-/// A feature real-valued feature of elements of some state space
+/// A real-valued feature of elements of some state space
 pub trait Feature<S: Space> : Debug {
 	/// Extracts some real-valued feature from a given state
 	fn extract(&self, state: &S::Element) -> f64;

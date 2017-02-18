@@ -35,6 +35,7 @@ impl<S: Space, A: FiniteSpace, T> BatchTrainer<S, A, T> for FittedQIteration<A>
 				patterns.push((s0, a, target));
 			}
 
+			// Replace with more general learn function and new LearnableFunction trait?
 			for (s, a, q) in patterns {
 				agent.update(s, a, q, self.alpha);
 			}

@@ -2,9 +2,11 @@
 
 mod qlearner;
 mod cem;
+mod lspi;
 
 pub use self::qlearner::{QLearner, SARSALearner, DynaQ, FittedQIteration};
 pub use self::cem::CrossEntropy;
+pub use self::lspi::LSPolicyIteration;
 
 use environment::{Space, Environment, Transition};
 
