@@ -10,6 +10,7 @@ extern crate num;
 extern crate rulinalg;
 
 pub mod environment;
+pub mod prelude;
 pub mod trainer;
 pub mod model;
 pub mod agent;
