@@ -37,6 +37,12 @@ pub trait DifferentiableFunc<T: Num> : ParameterizedFunc<T> {
 	fn calculate_nth(&self, input: Vec<T>, index: usize) -> Vec<T>;
 }
 
+/// Calculates gradient steps
+pub trait GradientDesc<T: Num> {
+	/// Calculates local step for maximizing function
+	fn calculate(&self, grad: Vec<T>, lr: T) -> Vec<T>;
+}
+
 /// Represents something that extracts features from state-action pairs
 pub trait FeatureExtractor<S: Space, A: Space, F: Float> {
 	/// Number of features that can be calculated
