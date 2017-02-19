@@ -14,7 +14,7 @@ use agent::Agent;
 use util::ParameterizedFunc;
 use util::TimePeriod;
 
-use stat::mean_var;
+use stat::{mean_var, normalize, shuffle};
 
 /// A variation of the [Vanilla Policy Gradient](https://youtu.be/PtAIh9KSnjo?t=2590) algorithm
 ///
