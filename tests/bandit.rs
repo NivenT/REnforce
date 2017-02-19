@@ -261,3 +261,42 @@ fn fqi_bandit() {
 	println!("FQI reward: {}", reward);
 	assert!(reward >= SOLVED_VALUE);
 }
+
+#[test]
+fn lspi_bandit() {
+	let mut env = test_env();
+
+	let action_space = Finite::new(env.num_arms() as u32);
+	let q_func: QLinear<f64, (), Finite> = QLinear::default(&action_space);
+	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut trainer = LSPolicyIteration::default();
+
+	// Collect transitions
+	let mut transitions = Vec::new();
+	for _ in 0..1000 {
+		let action = agent.get_action(&());
+		let obs = env.step(&action);
+
+		transitions.push(((), action, obs.reward, obs.state));
+	}
+
+	println!("training...");
+	trainer.train(&mut agent, transitions);
+	println!("finished");
+
+	let mut obs = env.reset();
+	let mut iters = 100;
+	let mut reward = 0.0;
+
+	agent.set_epsilon(0.05);
+	while iters != 0 {
+		let action = agent.get_action(&obs.state);
+		obs = env.step(&action);
+
+		reward += obs.reward;
+		iters -= 1;
+	}
+
+	println!("LSPI reward: {}", reward);
+	assert!(reward >= SOLVED_VALUE);
+}

@@ -21,6 +21,11 @@ pub struct LSPolicyIteration<F: Float> {
 	gamma: F,
 }
 
+// currently space inefficient for QLinear (intended Q function) since it uses
+// O(n^2d^2) space for an n-action space and d features. Since we have to solve
+// a system with a matrix of this size, that also slows things down. There is probably
+// a way to atleast reduce this to O(nd^2) space since each action uses only d features
+// instead of the requiring the full nd features that techincally exist
 impl<F: Float + 'static, S: Space, A: Space, T> BatchTrainer<S, A, T> for LSPolicyIteration<F>
 	where T: Agent<S, A> + ParameterizedFunc<F> + FeatureExtractor<S, A, F> {
 	fn train(&mut self, agent: &mut T, transitions: Vec<Transition<S, A>>) {
@@ -48,6 +53,7 @@ impl<F: Float + 'static, S: Space, A: Space, T> BatchTrainer<S, A, T> for LSPoli
 		let vec = Vector::new(vec.into_vec());
 		// Optimal weights w should satisfy mat * w = vec
 		let weights = (&mat / num).solve(&vec / num).unwrap();
+
 		agent.set_params(weights.into_vec());
 	}
 }

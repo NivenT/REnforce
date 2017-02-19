@@ -60,12 +60,15 @@ impl<F: Float + Debug, S: Space> ParameterizedFunc<F> for VLinear<F, S> {
 
 impl<S: Space, A: Space, F: Float + Debug> FeatureExtractor<S, A, F> for VLinear<F, S> {
 	fn num_features(&self) -> usize {
-		self.features.len()
+		// One feature is constant 1
+		self.weights.len()
 	}
 	fn extract(&self, state: &S::Element, _: &A::Element) -> Vec<F> {
-		self.features.iter().map(|feat| {
+		let mut feats: Vec<F> = self.features.iter().map(|feat| {
 			NumCast::from(feat.extract(state)).unwrap()
-		}).collect()
+		}).collect();
+		feats.push(F::one());
+		feats
 	}
 }
 
@@ -113,6 +116,8 @@ pub struct QLinear<F: Float + Debug, S: Space, A: FiniteSpace>
 	where A::Element: Hash + Eq {
 	functions: HashMap<A::Element, VLinear<F, S>>,
 	actions: Vec<A::Element>,
+	/// Indices of each action in the actions vector
+	indices: HashMap<A::Element, usize>,
 	/// Every linear function uses the same set of features with different weights
 	features: Vec<Box<Feature<S, F>>>,
 }
@@ -138,7 +143,6 @@ impl<F: Float + Debug, S: Space, A: FiniteSpace> ParameterizedFunc<F> for QLinea
 		(self.features.len()+1)*self.actions.len()
 	}
 	fn get_params(&self) -> Vec<F> {
-		//self.functions.values().flat_map(|v| v.get_params().iter().map(|x| *x)).collect()
 		let mut vec = Vec::with_capacity(self.num_params());
 		for a in &self.actions {
 			if self.functions.contains_key(a) {
@@ -163,35 +167,44 @@ impl<F: Float + Debug, S: Space, A: FiniteSpace> ParameterizedFunc<F> for QLinea
 impl<S: Space, A: FiniteSpace, F: Float + Debug> FeatureExtractor<S, A, F> for QLinear<F, S, A> 
 	where A::Element: Hash + Eq {
 	fn num_features(&self) -> usize {
-		self.features.len()
+		// Last feature is constant 1
+		(self.features.len() + 1) * self.actions.len()
+		//                          Technically, each action has its own unique set of feature
+		//                          even though this set is shared across actions
 	}
 	fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
-		if self.functions.contains_key(action) {
-			let feat_extract: &FeatureExtractor<S, A, F> = self;
-			feat_extract.extract(state, action)
-		} else {
-			vec![F::zero(); self.features.len()]
+		let index = self.indices[action];
+		let mut feats = vec![F::zero(); index*(self.features.len() + 1)];
+
+		for feat in &self.features {
+			feats.push(NumCast::from(feat.extract(state)).unwrap());
 		}
+		feats.push(F::one());
+
+		feats.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*(self.features.len() + 1)]);
+		feats
 	}
 }
 
 impl<S: Space, A: FiniteSpace> QLinear<f64, S, A> where A::Element: Hash + Eq {
 	/// Creates a new, empty QLinear
 	pub fn default(action_space: &A) -> QLinear<f64, S, A> {
-		QLinear {
-			functions: HashMap::new(),
-			actions: action_space.enumerate(),
-			features: Vec::new()
-		}
+		QLinear::new(action_space)
 	}
 }
 
 impl<F: Float + Debug, S: Space, A: FiniteSpace> QLinear<F, S, A> where A::Element: Hash + Eq {
 	/// Creates a new, empty QLinear
 	pub fn new(action_space: &A) -> QLinear<F, S, A> {
+		let actions = action_space.enumerate();
+		let mut indices = HashMap::new();
+		for i in 0..actions.len() {
+			indices.insert(actions[i].clone(), i);
+		}
 		QLinear {
 			functions: HashMap::new(),
 			actions: action_space.enumerate(),
+			indices: indices,
 			features: Vec::new()
 		}
 	}

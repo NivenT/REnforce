@@ -3,11 +3,15 @@
 use std::marker::PhantomData;
 
 use num::Num;
+use num::Float;
 
 use rand::{Rng, thread_rng};
+
 use environment::{Space, FiniteSpace};
+
 use agent::Agent;
-use util::{ParameterizedFunc, QFunction};
+
+use util::{ParameterizedFunc, QFunction, FeatureExtractor};
 use util::Chooser;
 
 macro_rules! implement_qfunction {
@@ -33,6 +37,17 @@ macro_rules! implement_parameterizedfunc {
 			self.q_func.set_params(params)
 		}
     }
+}
+
+macro_rules! implement_featureextractor {
+    () => {
+    	fn num_features(&self) -> usize {
+			self.q_func.num_features()
+		}
+		fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+			self.q_func.extract(state, action)
+		}
+	}
 }
 
 /// Greedy Q-Agent
@@ -70,7 +85,12 @@ impl<S: Space, A: FiniteSpace, Q: QFunction<S, A>> QFunction<S, A> for GreedyQAg
 
 impl<N: Num, S: Space, A: FiniteSpace, Q> ParameterizedFunc<N> for GreedyQAgent<S, A, Q>
 	where Q: QFunction<S, A> + ParameterizedFunc<N> {
-		implement_parameterizedfunc!();
+	implement_parameterizedfunc!();
+}
+
+impl<F: Float, A: FiniteSpace, S: Space, Q> FeatureExtractor<S, A, F> for GreedyQAgent<S, A, Q>
+	where Q: QFunction<S, A> + FeatureExtractor<S, A, F> {
+	implement_featureextractor!();
 }
 
 impl<S: Space, A: FiniteSpace, Q: QFunction<S, A>> GreedyQAgent<S, A, Q> {
@@ -139,7 +159,13 @@ impl<S: Space, A: FiniteSpace, Q, T> QFunction<S, A> for EGreedyQAgent<S, A, Q, 
 impl<N: Num, S: Space, A: FiniteSpace, Q, T> ParameterizedFunc<N> for EGreedyQAgent<S, A, Q, T>
 	where 	T: Chooser<A::Element>,
 			Q: QFunction<S, A> + ParameterizedFunc<N> {
-		implement_parameterizedfunc!();
+	implement_parameterizedfunc!();
+}
+
+impl<F: Float, S: Space, A: FiniteSpace, Q, T> FeatureExtractor<S, A, F> for EGreedyQAgent<S, A, Q, T>
+	where T: Chooser<A::Element>,
+		  Q: QFunction<S, A> + FeatureExtractor<S, A, F> {
+	implement_featureextractor!();
 }
 
 impl<S: Space, A: FiniteSpace, Q, T> EGreedyQAgent<S, A, Q, T> 
