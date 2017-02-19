@@ -13,6 +13,7 @@ use agent::Agent;
 use util::{ParameterizedFunc, FeatureExtractor};
 
 /// Least-squares Policy Iteration method
+///
 /// * Uses LSTD-Q for calculating the Q-function associated with a policy
 /// * Only trains linear Q-functions (not currently enforced by library)
 #[derive(Debug)]

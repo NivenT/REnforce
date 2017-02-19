@@ -1,14 +1,19 @@
 use rand::{Rng, thread_rng};
 use rand::distributions::IndependentSample;
 use rand::distributions::normal::Normal;
+
 use num::Float;
 use num::cast::NumCast;
 
 use environment::{Space, Environment};
+
 use trainer::EpisodicTrainer;
+
 use agent::Agent;
+
 use util::ParameterizedFunc;
 use util::TimePeriod;
+
 use stat::mean_var;
 
 /// Cross Entropy method for parameter selection

@@ -3,10 +3,12 @@
 mod qlearner;
 mod cem;
 mod lspi;
+mod policygrad;
 
 pub use self::qlearner::{QLearner, SARSALearner, DynaQ, FittedQIteration};
 pub use self::cem::CrossEntropy;
 pub use self::lspi::LSPolicyIteration;
+pub use self::policygrad::PolicyGradient;
 
 use environment::{Space, Environment, Transition};
 
