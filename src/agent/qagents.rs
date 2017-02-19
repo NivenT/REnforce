@@ -102,6 +102,16 @@ impl<S: Space, A: FiniteSpace, Q: QFunction<S, A>> GreedyQAgent<S, A, Q> {
 			phantom: PhantomData
 		}
 	}
+	/// Returns an EGreedyQAgent using this agent's Q function
+	pub fn to_egreedy<T: Chooser<A::Element>>(self, eps: f64, chooser: T) -> EGreedyQAgent<S, A, Q, T> {
+		EGreedyQAgent {
+			q_func: self.q_func,
+			action_space: self.action_space,
+			epsilon: eps,
+			chooser: chooser,
+			phantom: PhantomData
+		}
+	}
 }
 
 /// Epsilon Greedy Q-Agent
