@@ -31,6 +31,12 @@ pub trait Space : Debug {
 pub trait FiniteSpace : Space {
 	/// (Determistically) Returns a vector of all elements of this space
 	fn enumerate(&self) -> Vec<Self::Element>;
+
+	/// Returns the number of elements in this space
+	// should this be called len of count or something else?
+	fn size(&self) -> usize {
+		self.enumerate().len()
+	}
 	/// Returns the index of an element in the vector returned by enumerate
 	fn index(&self, elm: Self::Element) -> isize {
 		let all = self.enumerate();

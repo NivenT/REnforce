@@ -22,6 +22,15 @@ impl Space for Range {
 	}
 }
 
+impl Default for Range {
+	fn default() -> Range {
+		Range {
+			low: 0.0,
+			high: 1.0
+		}
+	}
+}
+
 impl Range {
 	/// Returns a new Range with values drawn from [low, high)
 	pub fn new(low: f64, high: f64) -> Range {

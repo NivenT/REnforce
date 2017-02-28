@@ -30,4 +30,10 @@ impl<T: FiniteSpace + Clone> FiniteSpace for Vec<T> {
 			}
 		}
 	}
+
+	fn size(&self) -> usize {
+		(0..self.len()).map(|i| self[i].size()).product()
+	}
+
+	// TODO: index
 }

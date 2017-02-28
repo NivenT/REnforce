@@ -17,4 +17,16 @@ impl <T: FiniteSpace, U: FiniteSpace> FiniteSpace for (T, U) {
 			  .flat_map(|x| iter::repeat(x.clone()).zip(y_enum.clone().into_iter()))
 			  .collect()
 	}
+
+	fn size(&self) -> usize {
+		self.0.size() * self.1.size()
+	}
+
+	fn index(&self, elm: Self::Element) -> isize {
+		let i = self.0.index(elm.0);
+		if i == -1 {-1} else {
+			let j = self.1.index(elm.1);
+			if j == -1 {-1} else {i*self.1.size() as isize + j}
+		}
+	}
 }
