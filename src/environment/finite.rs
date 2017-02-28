@@ -24,6 +24,10 @@ impl FiniteSpace for Finite {
 	fn enumerate(&self) -> Vec<u32> {
 		(0..self.size).collect()
 	}
+
+	fn index(&self, elm: u32) -> isize {
+		if elm < self.size {elm as isize} else {-1}
+	}
 }
 
 impl Finite {

@@ -39,7 +39,7 @@ pub trait DifferentiableFunc<T: Num> : ParameterizedFunc<T> {
 
 /// Calculates gradient steps
 pub trait GradientDesc<T: Num> {
-	/// Calculates local step for maximizing function
+	/// Calculates local step for minimizing function
 	fn calculate(&self, grad: Vec<T>, lr: T) -> Vec<T>;
 }
 
@@ -96,6 +96,7 @@ impl<F: Float, S: Space> Clone for Box<Feature<S, F>> {
 
 /// A type with a notion of distance
 /// The distance function should satisfy the triangle inequality (and the other [metric](https://www.wikiwand.com/en/Metric_(mathematics)) properties)
+///
 /// d(x,z) <= d(x,y) + d(y,z)
 pub trait Metric {
 	/// Returns the distance between x and y
