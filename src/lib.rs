@@ -16,3 +16,5 @@ pub mod model;
 pub mod agent;
 pub mod util;
 pub mod stat;
+
+// TODO: Replace all instances of f64 with F: Float (or Num)?

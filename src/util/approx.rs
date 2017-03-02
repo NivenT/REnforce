@@ -74,17 +74,17 @@ impl<S: Space, A: Space, F: Float + Debug> FeatureExtractor<S, A, F> for VLinear
 	}
 }
 
-/*
 impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLinear<F, S> {
-	fn num_outputs(&self) -> usize {
-		1
+	fn get_grad(&self, state: &S::Element, _: &A::Element) -> Vec<F> {
+		self.features.iter().map(|feat| {
+			NumCast::from(feat.extract(state)).unwrap()
+		}).collect()
 	}
 
-	fn get_grad(&self, state: &S::Element, action: &A::Element, index: usize) -> Vec<F> {
-
+	fn calculate(&self, state: &S::Element, _: &A::Element) -> F {
+		NumCast::from(self.eval(state)).unwrap()
 	}
 }
-*/
 
 impl<S: Space> Default for VLinear<f64, S> {
 	/// Creates a new Linear V-Function Approximator
@@ -197,6 +197,25 @@ impl<S: Space, A: FiniteSpace, F: Float + Debug> FeatureExtractor<S, A, F> for Q
 
 		feats.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*(self.features.len() + 1)]);
 		feats
+	}
+}
+
+impl<S: Space, A: FiniteSpace, F: Float + Debug> DifferentiableFunc<S, A, F> for QLinear<F, S, A> 
+	where A::Element: Hash + Eq, {
+	fn get_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+		let index = self.indices[action];
+		let mut grads = vec![F::zero(); index*self.features.len()];
+
+		for feat in &self.features {
+			grads.push(NumCast::from(feat.extract(state)).unwrap());
+		}
+
+		grads.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*self.features.len()]);
+		grads
+	}
+
+	fn calculate(&self, state: &S::Element, action: &A::Element) -> F {
+		NumCast::from(self.eval(state, action)).unwrap()
 	}
 }
 
