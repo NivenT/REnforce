@@ -67,6 +67,21 @@ impl<F: Float, S: Space, A: FiniteSpace, T, G> EpisodicTrainer<S, A, T> for Poli
 	}
 }
 
+// Are these even good default values?
+impl<G: GradientDesc<f64>, A: FiniteSpace> PolicyGradient<f64, G, A> {
+	/// Creates a PolicyGradient with default parameter values and given action space and gradient descent algorithm
+	pub fn default(action_space: A, grad_desc: G) -> PolicyGradient<f64, G, A> {
+		PolicyGradient {
+			action_space: action_space,
+			grad_desc: grad_desc,
+			gamma: 0.99,
+			lr: 0.005,
+			iters: 100,
+			eval_period: TimePeriod::EPISODES(1)
+		}
+	}
+}
+
 impl<F: Float, G: GradientDesc<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
 	/// Constructs a new PolicyGradient with given information
 	pub fn new(action_space: A, grad_desc: G, gamma: f64, lr: F, iters: usize, eval_period: TimePeriod) -> PolicyGradient<F, G, A> {
