@@ -4,6 +4,8 @@ pub mod table;
 pub mod chooser;
 pub mod approx;
 pub mod feature;
+pub mod graddesc;
+
 mod metric;
 
 use std::fmt::Debug;
@@ -32,7 +34,7 @@ pub trait DifferentiableFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> 
 }
 
 /// Calculates gradient steps
-pub trait GradientDesc<T: Num> {
+pub trait GradientDescAlgo<T: Float> {
 	/// Calculates local step for minimizing function
 	fn calculate(&self, grad: Vec<T>, lr: T) -> Vec<T>;
 }

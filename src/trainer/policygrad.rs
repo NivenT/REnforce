@@ -7,7 +7,7 @@ use trainer::EpisodicTrainer;
 
 use agent::Agent;
 
-use util::{DifferentiableFunc, GradientDesc};
+use util::{DifferentiableFunc, GradientDescAlgo};
 use util::TimePeriod;
 
 use stat::normalize;
@@ -16,7 +16,7 @@ use stat::normalize;
 ///
 /// Instead of using a baseline, rewards are normalized to mean 0 and variance 1
 #[derive(Debug)]
-pub struct PolicyGradient<F: Float, G: GradientDesc<F>, A: FiniteSpace> {
+pub struct PolicyGradient<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> {
 	/// Action Space 
 	action_space: A,
 	/// Gradient descent algorithm
@@ -35,7 +35,7 @@ pub struct PolicyGradient<F: Float, G: GradientDesc<F>, A: FiniteSpace> {
 // Honestly, even disregarding the trait boilerplate, this whole implementation is pretty messy
 impl<F: Float, S: Space, A: FiniteSpace, T, G> EpisodicTrainer<S, A, T> for PolicyGradient<F, G, A>
 	where T: Agent<S, A> + DifferentiableFunc<S, A, F>,
-		  G: GradientDesc<F> {
+		  G: GradientDescAlgo<F> {
 	fn train_step(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let (xs, ys, mut rs) = self.collect_trajectory(agent, env);
 		if rs.len() > 0 {
@@ -68,7 +68,7 @@ impl<F: Float, S: Space, A: FiniteSpace, T, G> EpisodicTrainer<S, A, T> for Poli
 }
 
 // Are these even good default values?
-impl<G: GradientDesc<f64>, A: FiniteSpace> PolicyGradient<f64, G, A> {
+impl<G: GradientDescAlgo<f64>, A: FiniteSpace> PolicyGradient<f64, G, A> {
 	/// Creates a PolicyGradient with default parameter values and given action space and gradient descent algorithm
 	pub fn default(action_space: A, grad_desc: G) -> PolicyGradient<f64, G, A> {
 		PolicyGradient {
@@ -82,7 +82,7 @@ impl<G: GradientDesc<f64>, A: FiniteSpace> PolicyGradient<f64, G, A> {
 	}
 }
 
-impl<F: Float, G: GradientDesc<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
+impl<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
 	/// Constructs a new PolicyGradient with given information
 	pub fn new(action_space: A, grad_desc: G, gamma: f64, lr: F, iters: usize, eval_period: TimePeriod) -> PolicyGradient<F, G, A> {
 		assert!(0.0 < gamma && gamma <= 1.0, "gamma must be between 0 and 1");
