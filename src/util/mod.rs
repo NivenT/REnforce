@@ -27,7 +27,7 @@ pub trait ParameterizedFunc<T: Num> {
 
 /// A differentiable function taking in (state, action) pairs 
 pub trait DifferentiableFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> {
-	/// Calculated the gradient of one output with respect to this function's parameters
+	/// Calculates the gradient of the output with respect to this function's parameters
 	fn get_grad(&self, state: &S::Element, action: &A::Element) -> Vec<T>;
 	/// Calculates the result of calling function on given input
 	fn calculate(&self, state: &S::Element, action: &A::Element) -> T;

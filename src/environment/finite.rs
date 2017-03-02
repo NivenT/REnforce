@@ -29,8 +29,8 @@ impl FiniteSpace for Finite {
 		self.size as usize
 	}
 
-	fn index(&self, elm: u32) -> isize {
-		if elm < self.size {elm as isize} else {-1}
+	fn index(&self, elm: &u32) -> isize {
+		if *elm < self.size {*elm as isize} else {-1}
 	}
 }
 

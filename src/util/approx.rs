@@ -84,7 +84,6 @@ impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLine
 		}
 		grad
 	}
-
 	fn calculate(&self, state: &S::Element, _: &A::Element) -> F {
 		NumCast::from(self.eval(state)).unwrap()
 	}
