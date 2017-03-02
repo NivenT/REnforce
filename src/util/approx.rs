@@ -11,7 +11,9 @@ use num::cast::NumCast;
 
 use environment::{Space, FiniteSpace};
 
-use util::{Feature, VFunction, QFunction, ParameterizedFunc, FeatureExtractor};
+use util::{VFunction, QFunction};
+use util::{Feature, FeatureExtractor};
+use util::{ParameterizedFunc};
 
 /// Represents a linear function approximator
 /// f(x) = w^T g(x) + b

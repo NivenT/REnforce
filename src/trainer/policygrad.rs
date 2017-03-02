@@ -39,7 +39,7 @@ pub struct PolicyGradient<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<
 // Sometimes I wonder if I'm using traits how they were meant to be used, because this just looks ugly
 // Honestly, even disregarding the trait boilerplate, this whole implementation is pretty messy
 impl<F: Float, S: Space, A: FiniteSpace, T, G, U> EpisodicTrainer<S, A, T> for PolicyGradient<F, G, A, U>
-	where T: Agent<S, A> + DifferentiableFunc<F>,
+	where T: Agent<S, A> + DifferentiableFunc<S, A, F>,
 		  G: GradientDesc<F>,
 		  U: Into<F> + Debug,
 		  S::Element: Into<Vec<U>> {
@@ -123,7 +123,7 @@ impl<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<F> + Debug> PolicyGra
 	}
 	fn collect_trajectory<T, S>(&self, agent: &T, env: &mut Environment<State=S, Action=A>) -> (Vec<S::Element>, Vec<A::Element>, Vec<f64>)
 		where S: Space,
-			  T: Agent<S, A> + DifferentiableFunc<F> {
+			  T: Agent<S, A> + DifferentiableFunc<S, A, F> {
 		let (mut states, mut actions, mut rewards) = if let TimePeriod::TIMESTEPS(len) = self.eval_period.clone() {
 			(Vec::with_capacity(len), Vec::with_capacity(len), Vec::with_capacity(len))
 		} else {
