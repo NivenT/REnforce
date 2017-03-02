@@ -13,7 +13,7 @@ use environment::{Space, FiniteSpace};
 
 use util::{VFunction, QFunction};
 use util::{Feature, FeatureExtractor};
-use util::{ParameterizedFunc};
+use util::{ParameterizedFunc, DifferentiableFunc};
 
 /// Represents a linear function approximator
 /// f(x) = w^T g(x) + b
@@ -73,6 +73,18 @@ impl<S: Space, A: Space, F: Float + Debug> FeatureExtractor<S, A, F> for VLinear
 		feats
 	}
 }
+
+/*
+impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLinear<F, S> {
+	fn num_outputs(&self) -> usize {
+		1
+	}
+
+	fn get_grad(&self, state: &S::Element, action: &A::Element, index: usize) -> Vec<F> {
+
+	}
+}
+*/
 
 impl<S: Space> Default for VLinear<f64, S> {
 	/// Creates a new Linear V-Function Approximator

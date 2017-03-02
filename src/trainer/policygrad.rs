@@ -1,6 +1,3 @@
-use std::marker::PhantomData;
-use std::fmt::Debug;
-
 use num::Float;
 use num::cast::NumCast;
 
@@ -19,7 +16,7 @@ use stat::normalize;
 ///
 /// Instead of using a baseline, rewards are normalized to mean 0 and variance 1
 #[derive(Debug)]
-pub struct PolicyGradient<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<F> + Debug> {
+pub struct PolicyGradient<F: Float, G: GradientDesc<F>, A: FiniteSpace> {
 	/// Action Space 
 	action_space: A,
 	/// Gradient descent algorithm
@@ -32,17 +29,13 @@ pub struct PolicyGradient<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<
 	iters: usize,
 	/// Time period to evaluate each parameter sample on
 	eval_period: TimePeriod,
-	/// Phantom
-	phantom: PhantomData<U>,
 }
 
 // Sometimes I wonder if I'm using traits how they were meant to be used, because this just looks ugly
 // Honestly, even disregarding the trait boilerplate, this whole implementation is pretty messy
-impl<F: Float, S: Space, A: FiniteSpace, T, G, U> EpisodicTrainer<S, A, T> for PolicyGradient<F, G, A, U>
+impl<F: Float, S: Space, A: FiniteSpace, T, G> EpisodicTrainer<S, A, T> for PolicyGradient<F, G, A>
 	where T: Agent<S, A> + DifferentiableFunc<S, A, F>,
-		  G: GradientDesc<F>,
-		  U: Into<F> + Debug,
-		  S::Element: Into<Vec<U>> {
+		  G: GradientDesc<F> {
 	fn train_step(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let (xs, ys, mut rs) = self.collect_trajectory(agent, env);
 		if rs.len() > 0 {
@@ -50,16 +43,18 @@ impl<F: Float, S: Space, A: FiniteSpace, T, G, U> EpisodicTrainer<S, A, T> for P
 
 			let mut grad = vec![F::zero(); agent.num_params()];
 			for i in 0..rs.len() {
-				let g = agent.get_grad(self.to_vec(xs[i].clone()), self.action_space.index(ys[i].clone()) as usize);
+				let g = agent.get_grad(&xs[i], &ys[i]);
+				let r = NumCast::from(rs[i]).unwrap();
+
 				for j in 0..g.len() {
-					grad[j] = grad[j] + g[j] * NumCast::from(rs[i]).unwrap();
+					grad[j] = grad[j] + g[j] * r;
 				}
 			}
 
 			let mut params = agent.get_params();
-			grad = self.grad_desc.calculate(grad, self.lr);
+			let grad_step = self.grad_desc.calculate(grad, self.lr);
 			for i in 0..params.len() {
-				params[i] = params[i] + grad[i];
+				params[i] = params[i] + grad_step[i];
 			}
 
 			agent.set_params(params);
@@ -72,9 +67,9 @@ impl<F: Float, S: Space, A: FiniteSpace, T, G, U> EpisodicTrainer<S, A, T> for P
 	}
 }
 
-impl<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<F> + Debug> PolicyGradient<F, G, A, U> {
+impl<F: Float, G: GradientDesc<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
 	/// Constructs a new PolicyGradient with given information
-	pub fn new(action_space: A, grad_desc: G, gamma: f64, lr: F, iters: usize, eval_period: TimePeriod) -> PolicyGradient<F, G, A, U> {
+	pub fn new(action_space: A, grad_desc: G, gamma: f64, lr: F, iters: usize, eval_period: TimePeriod) -> PolicyGradient<F, G, A> {
 		assert!(0.0 < gamma && gamma <= 1.0, "gamma must be between 0 and 1");
 		assert!(F::zero() < lr && lr <= F::one(), "learning rate must be between 0 and 1");
 
@@ -84,31 +79,30 @@ impl<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<F> + Debug> PolicyGra
 			gamma: gamma,
 			lr: lr,
 			iters: iters,
-			eval_period: eval_period,
-			phantom: PhantomData
+			eval_period: eval_period
 		}
 	}
 	/// Updates gamma field of self
-	pub fn gamma(mut self, gamma: f64) -> PolicyGradient<F, G, A, U> {
+	pub fn gamma(mut self, gamma: f64) -> PolicyGradient<F, G, A> {
 		assert!(0.0 <= gamma && gamma <= 1.0, "gamma must be between 0 and 1");
 
 		self.gamma = gamma;
 		self
 	}
 	/// Updates lr field of self
-	pub fn lr(mut self, lr: F) -> PolicyGradient<F, G, A, U> {
+	pub fn lr(mut self, lr: F) -> PolicyGradient<F, G, A> {
 		assert!(F::zero() <= lr && lr <= F::one(), "lr must be between 0 and 1");
 
 		self.lr = lr;
 		self
 	}
 	/// Updates iters field of self
-	pub fn iters(mut self, iters: usize) -> PolicyGradient<F, G, A, U> {
+	pub fn iters(mut self, iters: usize) -> PolicyGradient<F, G, A> {
 		self.iters = iters;
 		self
 	}
 	/// Updates eval_period field of self
-	pub fn eval_period(mut self, eval_period: TimePeriod) -> PolicyGradient<F, G, A, U> {
+	pub fn eval_period(mut self, eval_period: TimePeriod) -> PolicyGradient<F, G, A> {
 		self.eval_period = eval_period;
 		self
 	}
@@ -154,9 +148,5 @@ impl<F: Float, G: GradientDesc<F>, A: FiniteSpace, U: Into<F> + Debug> PolicyGra
 		// TODO: Add rewards from unfinished episode?
 
 		(states, actions, rewards)
-	}
-	fn to_vec<T: Into<Vec<U>>>(&self, s: T) -> Vec<F> {
-		let v: Vec<U> = s.into();
-		v.into_iter().map(|u| u.into()).collect()
 	}
 }
