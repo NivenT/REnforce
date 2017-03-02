@@ -76,9 +76,13 @@ impl<S: Space, A: Space, F: Float + Debug> FeatureExtractor<S, A, F> for VLinear
 
 impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLinear<F, S> {
 	fn get_grad(&self, state: &S::Element, _: &A::Element) -> Vec<F> {
-		self.features.iter().map(|feat| {
-			NumCast::from(feat.extract(state)).unwrap()
-		}).collect()
+		let mut grad = Vec::with_capacity(self.weights.len());
+		grad[0] = F::one();
+
+		for feat in &self.features {
+			grad.push(NumCast::from(feat.extract(state)).unwrap());
+		}
+		grad
 	}
 
 	fn calculate(&self, state: &S::Element, _: &A::Element) -> F {
@@ -204,13 +208,14 @@ impl<S: Space, A: FiniteSpace, F: Float + Debug> DifferentiableFunc<S, A, F> for
 	where A::Element: Hash + Eq, {
 	fn get_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
 		let index = self.indices[action];
-		let mut grads = vec![F::zero(); index*self.features.len()];
+		let mut grads = vec![F::zero(); index*(self.features.len() + 1)];
 
+		grads.push(F::one());
 		for feat in &self.features {
 			grads.push(NumCast::from(feat.extract(state)).unwrap());
 		}
 
-		grads.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*self.features.len()]);
+		grads.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*(self.features.len() + 1)]);
 		grads
 	}
 

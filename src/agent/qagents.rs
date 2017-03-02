@@ -11,8 +11,10 @@ use environment::{Space, FiniteSpace};
 
 use agent::Agent;
 
-use util::{ParameterizedFunc, QFunction, FeatureExtractor};
+use util::{ParameterizedFunc, DifferentiableFunc, QFunction, FeatureExtractor};
 use util::Chooser;
+
+// TODO: Derive macro?
 
 macro_rules! implement_qfunction {
     () => {
@@ -46,6 +48,17 @@ macro_rules! implement_featureextractor {
 		}
 		fn extract(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
 			self.q_func.extract(state, action)
+		}
+	}
+}
+
+macro_rules! implement_differentiablefunc {
+    () => {
+    	fn get_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+			self.q_func.get_grad(state, action)
+		}
+		fn calculate(&self, state: &S::Element, action: &A::Element) -> F {
+			self.q_func.calculate(state, action)
 		}
 	}
 }
@@ -91,6 +104,11 @@ impl<N: Num, S: Space, A: FiniteSpace, Q> ParameterizedFunc<N> for GreedyQAgent<
 impl<F: Float, A: FiniteSpace, S: Space, Q> FeatureExtractor<S, A, F> for GreedyQAgent<S, A, Q>
 	where Q: QFunction<S, A> + FeatureExtractor<S, A, F> {
 	implement_featureextractor!();
+}
+
+impl<F: Float, A: FiniteSpace, S: Space, Q> DifferentiableFunc<S, A, F> for GreedyQAgent<S, A, Q>
+	where Q: QFunction<S, A> + DifferentiableFunc<S, A, F> {
+	implement_differentiablefunc!();
 }
 
 impl<S: Space, A: FiniteSpace, Q: QFunction<S, A>> GreedyQAgent<S, A, Q> {
@@ -176,6 +194,12 @@ impl<F: Float, S: Space, A: FiniteSpace, Q, T> FeatureExtractor<S, A, F> for EGr
 	where T: Chooser<A::Element>,
 		  Q: QFunction<S, A> + FeatureExtractor<S, A, F> {
 	implement_featureextractor!();
+}
+
+impl<F: Float, S: Space, A: FiniteSpace, Q, T> DifferentiableFunc<S, A, F> for EGreedyQAgent<S, A, Q, T> 
+	where T: Chooser<A::Element>,
+		  Q: QFunction<S, A> + DifferentiableFunc<S, A, F> {
+	implement_differentiablefunc!();
 }
 
 impl<S: Space, A: FiniteSpace, Q, T> EGreedyQAgent<S, A, Q, T> 

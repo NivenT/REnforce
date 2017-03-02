@@ -77,7 +77,7 @@ impl<G: GradientDescAlgo<f64>, A: FiniteSpace> PolicyGradient<f64, G, A> {
 			gamma: 0.99,
 			lr: 0.005,
 			iters: 100,
-			eval_period: TimePeriod::EPISODES(1)
+			eval_period: TimePeriod::EPISODES(10)
 		}
 	}
 }
@@ -155,13 +155,13 @@ impl<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
 			obs = if new_obs.done {
 				ep_rewards = self.discount(ep_rewards);
 				rewards.extend_from_slice(&ep_rewards);
+
 				ep_rewards.clear();
 				env.reset()
 			} else {new_obs};
 		}
 
-		// TODO: Add rewards from unfinished episode?
-
+		rewards.extend_from_slice(&self.discount(ep_rewards));
 		(states, actions, rewards)
 	}
 }

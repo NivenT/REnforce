@@ -1,3 +1,9 @@
+// Tests various RL algorithms on simple environment
+// These tests are generally fairly unstable which is a sign of poor implementation
+// of the algorithms, or a sign of poor execution on this environment (hopefully the
+// latter). I put little effort in the way of deliberately choosing good hyperparameters
+// for this test. This is mainly just to confirm that some can be learned.
+
 extern crate renforce as re;
 extern crate rand;
 
@@ -5,21 +11,18 @@ use rand::thread_rng;
 use rand::distributions::IndependentSample;
 use rand::distributions::normal::Normal;
 
-use re::environment::{Environment, Observation};
+use re::prelude::*;
+
 use re::environment::Finite;
 
-use re::trainer::{OnlineTrainer, EpisodicTrainer, BatchTrainer};
 use re::trainer::*;
 
 use re::model::PlainModel;
 
-use re::agent::Agent;
-use re::agent::qagents::EGreedyQAgent;
-
-use re::util::TimePeriod;
 use re::util::table::QTable;
 use re::util::approx::QLinear;
 use re::util::chooser::Uniform;
+use re::util::graddesc::GradientDesc;
 
 const SOLVED_VALUE: f64 = 9000.0;
 
@@ -119,8 +122,8 @@ fn qlearner_bandit() {
 	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QTable::new();
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
-	let mut trainer = QLearner::default(action_space).train_period(TimePeriod::TIMESTEPS(10000));
 
+	let mut trainer = QLearner::default(action_space).train_period(TimePeriod::TIMESTEPS(10000));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -147,8 +150,8 @@ fn sarsalearner_bandit() {
 	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QTable::new();
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
-	let mut trainer = SARSALearner::default().train_period(TimePeriod::TIMESTEPS(10000));
 
+	let mut trainer = SARSALearner::default().train_period(TimePeriod::TIMESTEPS(10000));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -175,8 +178,8 @@ fn cem_bandit() {
 	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QLinear::default(&action_space);
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
-	let mut trainer = CrossEntropy::default().eval_period(TimePeriod::TIMESTEPS(5));
 
+	let mut trainer = CrossEntropy::default().eval_period(TimePeriod::TIMESTEPS(5));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -204,8 +207,8 @@ fn dyna_bandit() {
 	let q_func = QTable::new();
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
 	let model = PlainModel::new();
-	let mut trainer = DynaQ::default(action_space, model).train_period(TimePeriod::TIMESTEPS(500));
 
+	let mut trainer = DynaQ::default(action_space, model).train_period(TimePeriod::TIMESTEPS(500));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -232,6 +235,7 @@ fn fqi_bandit() {
 	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func: QTable<(), Finite> = QTable::new();
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+
 	let mut trainer = FittedQIteration::default(action_space);
 
 	// Collect transitions
@@ -269,6 +273,7 @@ fn lspi_bandit() {
 	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func: QLinear<f64, (), Finite> = QLinear::default(&action_space);
 	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+
 	let mut trainer = LSPolicyIteration::default();
 
 	// Collect transitions
@@ -298,5 +303,33 @@ fn lspi_bandit() {
 	}
 
 	println!("LSPI reward: {}", reward);
+	assert!(reward >= SOLVED_VALUE);
+}
+
+#[test]
+fn pg_bandit() {
+	let mut env = test_env();
+
+	let action_space = Finite::new(env.num_arms() as u32);
+	let q_func = QLinear::default(&action_space);
+	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+
+	let mut trainer = PolicyGradient::default(action_space, GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
+	trainer.train(&mut agent, &mut env);
+
+	let mut obs = env.reset();
+	let mut iters = 100;
+	let mut reward = 0.0;
+
+	agent.set_epsilon(0.05);
+	while iters != 0 {
+		let action = agent.get_action(&obs.state);
+		obs = env.step(&action);
+
+		reward += obs.reward;
+		iters -= 1;
+	}
+
+	println!("PolicyGradient reward: {}", reward);
 	assert!(reward >= SOLVED_VALUE);
 }
