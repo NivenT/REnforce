@@ -11,7 +11,7 @@ pub struct GradientDesc;
 
 // Up to clinet to negate step if needed
 impl<T: Float> GradientDescAlgo<T> for GradientDesc {
-	fn calculate(&self, mut grad: Vec<T>, lr: T) -> Vec<T> {
+	fn calculate(&mut self, mut grad: Vec<T>, lr: T) -> Vec<T> {
 		for x in &mut grad {
 			*x = *x * lr;
 		}

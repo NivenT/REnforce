@@ -1,4 +1,10 @@
-// Here, we train an agent on the classic cartpole problem
+// Here, we train an agent on the mountain car problem
+
+// Currently, the agent does learn to make it to the top of the hill
+// (which I think is a nontrivial accomplishment, but I'm not 100% sure)
+// However, it takes it much longer than it should to get there
+// At some point, I'll need to take some time to verify that I'm doing things
+// correctly, and do more exploring with hyper parameters
 
 extern crate renforce as re;
 extern crate gym;
@@ -12,23 +18,22 @@ use re::trainer::EpisodicTrainer;
 use re::trainer::PolicyGradient;
 
 use re::agent::Agent;
-use re::agent::qagents::EGreedyQAgent;
+use re::agent::PolicyAgent;
 
 use re::util::TimePeriod;
 use re::util::approx::QLinear;
-use re::util::chooser::Uniform;
-use re::util::feature::IFeature;
+use re::util::feature::BBFeature;
 use re::util::graddesc::GradientDesc;
 
 use gym::GymClient;
 
-struct CartPole {
+struct MountainCar {
 	pub render: bool,
 
 	env: gym::Environment,
 }
 
-impl Environment for CartPole {
+impl Environment for MountainCar {
 	type State = Vec<Range>;
 	type Action = Finite;
 
@@ -51,48 +56,47 @@ impl Environment for CartPole {
 	fn render(&self) {}
 }
 
-impl CartPole {
-	fn new() -> CartPole {
+impl MountainCar {
+	fn new() -> MountainCar {
 		let client = GymClient::new("http://localhost:5000".to_string());
-		let mut env = match client.make("CartPole-v0") {
+		let mut env = match client.make("MountainCar-v0") {
 			Ok(env) => env,
 			Err(msg) => panic!("Could not make environment because of error:\n{}\n\nMake sure you have a [gym server](https://github.com/openai/gym-http-api) running.", msg)
 		};
 		let _ = env.reset();
-		CartPole {env: env, render: false}
+		MountainCar {env: env, render: false}
 	}
 }
 
 fn main() {
-	// The agent has 2 actions: move {left, right}
-	let action_space = Finite::new(2);
+	// The agent has 3 actions
+	let action_space = Finite::new(3);
 
-	let mut q_func = QLinear::default(&action_space);
-	for d in 0..4 {
-		q_func.add(Box::new(IFeature::new(d)));
+	let mut log_prob_func = QLinear::default(&action_space);
+	for i in 0..18 {
+		for j in 0..14 {
+			let (x, y) = (-1.2 + 0.1 * i as f64, -0.07 + 0.01 * j as f64);
+			log_prob_func.add(Box::new(BBFeature::new(vec![x, y], 0.2)));
+		}
 	}
 
-	// Creates an epsilon greedy Q-agent
-	// 20% of the time, the agent uniformly chooses a random action
-	let mut agent = EGreedyQAgent::new(q_func, action_space.clone(), 0.20, Uniform);
+	// Creates an agent that acts randomly
+	// The (log of the) probability of each action is determined by log_prob_func
+	let mut agent = PolicyAgent::default(action_space, log_prob_func);
 
-	let mut env = CartPole::new();
+	let mut env = MountainCar::new();
 
-	// CrossEntropy will evalute agents for 1 episode or 300 time steps
+	// PolicyGradient will evalute agents for 1 episode or 1000 time steps
 	// whichever comes first
-	let tp = {
-		use TimePeriod::*;
-		OR(Box::new(EPISODES(100)), Box::new(TIMESTEPS(10000)))
-	};
-	// Train agent using Cross Entropy Method with default parameters
+	let tp = TimePeriod::OR(Box::new(TimePeriod::EPISODES(1)), Box::new(TimePeriod::TIMESTEPS(1000)));
+	// Train agent using Policy gradients with (mostly) default parameters
 	let mut trainer = PolicyGradient::default(action_space, GradientDesc).eval_period(tp)
-																		 .lr(0.01);
-
+																		 .update_delay(10);
+																		 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);
 	println!("Done training (press enter)");
 
-	let agent = agent.to_greedy();
 	env.render = true;
 	let _ = stdin().read_line(&mut String::new());
 
@@ -103,7 +107,6 @@ fn main() {
 		let action = agent.get_action(&obs.state);
 		obs = env.step(&action);
 		reward += obs.reward;
-		println!("action: {:?}", action);
 	}
 	println!("total reward: {}", reward);
 

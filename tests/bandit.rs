@@ -312,7 +312,7 @@ fn pg_bandit() {
 
 	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QLinear::default(&action_space);
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut agent = PolicyAgent::new(action_space, q_func, 0.01);
 
 	let mut trainer = PolicyGradient::default(action_space, GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
 	trainer.train(&mut agent, &mut env);
@@ -321,7 +321,6 @@ fn pg_bandit() {
 	let mut iters = 100;
 	let mut reward = 0.0;
 
-	agent.set_epsilon(0.05);
 	while iters != 0 {
 		let action = agent.get_action(&obs.state);
 		obs = env.step(&action);

@@ -20,7 +20,7 @@ use util::{ParameterizedFunc, DifferentiableFunc};
 /// 	where g: S -> R^n maps states to a vector of features
 /// Weights updated using squared error cost
 /// C = 1/2(w^T g(x) + b - y)^2
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct VLinear<F: Float + Debug, S: Space> {
 	features: Vec<Box<Feature<S, F>>>,
 	/// 1st member of weights is bias
@@ -128,7 +128,7 @@ impl<F: Float + Debug, S: Space> VLinear<F, S> {
 }
 
 /// Represents multiple linear function approximators, one for each action
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct QLinear<F: Float + Debug, S: Space, A: FiniteSpace> 
 	where A::Element: Hash + Eq {
 	functions: HashMap<A::Element, VLinear<F, S>>,
