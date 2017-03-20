@@ -32,6 +32,13 @@ impl Environment for Board {
 	type State = Vec<Finite>;
 	type Action = Finite;
 
+	fn state_space(&self) -> Vec<Finite> {
+		vec![Finite::new(3); 9]
+	}
+	fn action_space(&self) -> Finite {
+		// The agent has 9 spots to play an X in
+		Finite::new(9)
+	}
 	fn step(&mut self, action: &<Finite as Space>::Element) -> Observation<Self::State> {
 		let mut winner = 0;
 		let mut valid_move = false;
@@ -98,14 +105,14 @@ impl Board {
 }
 
 fn main() {
-	// The agent has 9 spots to play an X in
-	let action_space = Finite::new(9);
+	let mut env = Board::new();
+
 	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 15% of the time
-	let mut agent = EGreedyQAgent::new(q_func.clone(), action_space.clone(),
+	let mut agent = EGreedyQAgent::new(q_func.clone(), env.action_space(),
 										0.15, Softmax::new(1.0));
-	let mut env = Board::new();
+	
 
 	// We will use SARSA learning to train the agent
 	// In this example, default values are used for the parameters

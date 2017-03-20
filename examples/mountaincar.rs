@@ -37,6 +37,13 @@ impl Environment for MountainCar {
 	type State = Vec<Range>;
 	type Action = Finite;
 
+	fn state_space(&self) -> Vec<Range> {
+		vec![Range::new(-1.2, 0.6), Range::new(-0.07, 0.07)]
+	}
+	fn action_space(&self) -> Finite {
+		// The agent has 3 actions: left, right, neutral
+		Finite::new(3)
+	}
 	fn step(&mut self, action: &u32) -> Observation<Vec<Range>> {
 		let obs = self.env.step(vec![*action as f64], self.render).unwrap();
 		Observation {
@@ -69,10 +76,9 @@ impl MountainCar {
 }
 
 fn main() {
-	// The agent has 3 actions (left, right, neutral)
-	let action_space = Finite::new(3);
-
-	let mut log_prob_func = QLinear::default(&action_space);
+	let mut env = MountainCar::new();
+	
+	let mut log_prob_func = QLinear::default(&env.action_space());
 	for i in 0..18 {
 		for j in 0..14 {
 			let (x, y) = (-1.2 + 0.1 * i as f64, -0.07 + 0.01 * j as f64);
@@ -82,9 +88,7 @@ fn main() {
 
 	// Creates an agent that acts randomly
 	// The (log of the) probability of each action is determined by log_prob_func
-	let mut agent = PolicyAgent::new(action_space, log_prob_func, 0.5);
-
-	let mut env = MountainCar::new();
+	let mut agent = PolicyAgent::new(env.action_space(), log_prob_func, 0.5);
 
 	// PolicyGradient will evalute agents for 3 episode or 20000 time steps
 	// whichever comes first

@@ -31,6 +31,13 @@ impl Environment for Maze {
 	type State = (Finite, Finite);
 	type Action = Finite;
 
+	fn state_space(&self) -> (Finite, Finite) {
+		(Finite::new(8), Finite::new(8))
+	}
+	fn action_space(&self) -> Finite {
+		// The agent has 4 actions: move {up, down, left, right}
+		Finite::new(4)
+	}
 	fn step(&mut self, action: &u32) -> Observation<(Finite, Finite)> {
 		let action = *action;
 		if action < 4 {
@@ -110,18 +117,17 @@ impl Maze {
 }
 
 fn main() {
-	// The agent has 4 actions: move {up, down, left, right}
-	let action_space = Finite::new(4);
+	let mut env = Maze::new();
+
 	// The agent will use a table as its Q-function
 	let q_func = QTable::new();
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.05, Softmax::new(1.0));
-	let mut env = Maze::new();
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.05, Softmax::new(1.0));
 	// We will use Q-learning to train the agent with
 	// discount factor and learning rate both 0.9 and
 	// 10000 training iterations
-	let mut trainer = QLearner::new(action_space, 0.9, 0.9, TimePeriod::TIMESTEPS(10000));
+	let mut trainer = QLearner::new(env.action_space(), 0.9, 0.9, TimePeriod::TIMESTEPS(10000));
 
 	// Magic happens
 	trainer.train(&mut agent, &mut env);

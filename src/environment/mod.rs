@@ -71,6 +71,10 @@ pub trait Environment {
 	/// The type of Action Space used by this Environment
 	type Action : Space;
 
+	/// Returns the state space used by this Environment
+	fn state_space(&self) -> Self::State;
+	/// Returns the action space used by this Environment
+	fn action_space(&self) -> Self::Action;
 	/// Performs action in environment and returns the observed result
 	fn step(&mut self, action: &<Self::Action as Space>::Element) -> Observation<Self::State>;
 	/// Resets the environment to its initial configuration

@@ -21,6 +21,10 @@ impl Environment for NumberChooser {
 	type State = ();
 	type Action = Finite;
 
+	fn state_space(&self) {}
+	fn action_space(&self) -> Finite {
+		Finite::new(10)
+	}
 	fn step(&mut self, action: &u32) -> Observation<()> {
 		Observation {
 			state: (), 
@@ -41,11 +45,9 @@ impl Environment for NumberChooser {
 
 #[test]
 fn learn_to_choose_odd() {
-	let action_space = Finite::new(10);
-	let q_func = QTable::new();
-	let mut agent = GreedyQAgent::new(q_func, action_space);
 	let mut env = NumberChooser;
-	let mut trainer = QLearner::new(action_space, 0.9, 0.9, TimePeriod::TIMESTEPS(100));
+	let mut agent = GreedyQAgent::new(QTable::new(), env.action_space());
+	let mut trainer = QLearner::new(env.action_space(), 0.9, 0.9, TimePeriod::TIMESTEPS(100));
 
 	trainer.train(&mut agent, &mut env);
 

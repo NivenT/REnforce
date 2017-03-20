@@ -34,6 +34,10 @@ impl Environment for NArmedBandit {
 	type State = ();
 	type Action = Finite;
 
+	fn state_space(&self) {}
+	fn action_space(&self) -> Finite {
+		Finite::new(self.num_arms() as u32)
+	}
 	fn step(&mut self, action: &u32) -> Observation<()> {
 		let mut rng = thread_rng();
 		let action = *action as usize;
@@ -119,11 +123,10 @@ fn test_env() -> NArmedBandit {
 fn qlearner_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QTable::new();
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 
-	let mut trainer = QLearner::default(action_space).train_period(TimePeriod::TIMESTEPS(10000));
+	let mut trainer = QLearner::default(env.action_space()).train_period(TimePeriod::TIMESTEPS(10000));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -147,9 +150,8 @@ fn qlearner_bandit() {
 fn sarsalearner_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QTable::new();
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 
 	let mut trainer = SARSALearner::default().train_period(TimePeriod::TIMESTEPS(10000));
 	trainer.train(&mut agent, &mut env);
@@ -175,9 +177,8 @@ fn sarsalearner_bandit() {
 fn cem_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
-	let q_func = QLinear::default(&action_space);
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let q_func = QLinear::default(&env.action_space());
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 
 	let mut trainer = CrossEntropy::default().eval_period(TimePeriod::TIMESTEPS(5));
 	trainer.train(&mut agent, &mut env);
@@ -203,12 +204,11 @@ fn cem_bandit() {
 fn dyna_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func = QTable::new();
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 	let model = PlainModel::new();
 
-	let mut trainer = DynaQ::default(action_space, model).train_period(TimePeriod::TIMESTEPS(500));
+	let mut trainer = DynaQ::default(env.action_space(), model).train_period(TimePeriod::TIMESTEPS(500));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -232,11 +232,10 @@ fn dyna_bandit() {
 fn fqi_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
 	let q_func: QTable<(), Finite> = QTable::new();
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 
-	let mut trainer = FittedQIteration::default(action_space);
+	let mut trainer = FittedQIteration::default(env.action_space());
 
 	// Collect transitions
 	let mut transitions = Vec::new();
@@ -270,9 +269,8 @@ fn fqi_bandit() {
 fn lspi_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
-	let q_func: QLinear<f64, (), Finite> = QLinear::default(&action_space);
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.2, Uniform);
+	let q_func: QLinear<f64, (), Finite> = QLinear::default(&env.action_space());
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 
 	let mut trainer = LSPolicyIteration::default();
 
@@ -310,9 +308,8 @@ fn lspi_bandit() {
 fn pg_bandit() {
 	let mut env = test_env();
 
-	let action_space = Finite::new(env.num_arms() as u32);
-	let q_func = QLinear::default(&action_space);
-	let mut agent = PolicyAgent::new(action_space, q_func, 0.01);
+	let q_func = QLinear::default(&env.action_space());
+	let mut agent = PolicyAgent::new(env.action_space(), q_func, 0.01);
 
 	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
 	trainer.train(&mut agent, &mut env);
