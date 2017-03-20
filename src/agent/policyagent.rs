@@ -19,11 +19,11 @@ pub struct PolicyAgent<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc
 	pub log_func: D,
 
 	/// The space the agent draws its actions from
-	action_space: A, // Should probably just store Vec of actions instead of calling enumerate a lot but meh
+	action_space: A, 
+	actions: Vec<A::Element>,
 	/// Temperature of associated softmax
 	temp: F,
-	phant1: PhantomData<F>,
-	phant2: PhantomData<S>,
+	phant: PhantomData<S>,
 }
 
 impl<F: Float, S: Space, A: FiniteSpace, D> StochasticAgent<F, S, A> for PolicyAgent<F, S, A, D>
@@ -50,13 +50,25 @@ impl<F: Float, S: Space, A: FiniteSpace, D> StochasticAgent<F, S, A> for PolicyA
 impl<F: Float, S: Space, A: FiniteSpace, D> Agent<S, A> for PolicyAgent<F, S, A, D>
 	where D: DifferentiableFunc<S, A, F> {
 	fn get_action(&self, state: &S::Element) -> A::Element {
-		let actions = self.action_space.enumerate();
 		let mut weights = Vec::with_capacity(self.action_space.size());
-		for a in &actions {
+		for a in &self.actions {
 			weights.push(self.log_func.calculate(state, a).to_f64().unwrap());
 		}
 
-		Softmax::new(self.temp.to_f64().unwrap()).choose(actions, weights)
+		Softmax::new(self.temp.to_f64().unwrap()).choose(self.actions.clone(), weights)
+	}
+}
+
+impl<S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, f64>> PolicyAgent<f64, S, A, D> {
+	/// Creates a new PolicyAgent with temperature 1.0 used in Softmax
+	pub fn default(action_space: A, log_func: D) -> PolicyAgent<f64, S, A, D> {
+		PolicyAgent {
+			log_func: log_func,
+			actions: action_space.enumerate(),
+			action_space: action_space,
+			temp: 1.0,
+			phant: PhantomData
+		}
 	}
 }
 
@@ -65,10 +77,10 @@ impl<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> PolicyA
 	pub fn new(action_space: A, log_func: D, temp: F) -> PolicyAgent<F, S, A, D> {
 		PolicyAgent {
 			log_func: log_func,
+			actions: action_space.enumerate(),
 			action_space: action_space,
 			temp: temp,
-			phant1: PhantomData,
-			phant2: PhantomData
+			phant: PhantomData
 		}
 	}
 	/// Updates temp field of self
@@ -80,17 +92,39 @@ impl<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> PolicyA
 	pub fn get_temp(&self) -> F {
 		self.temp
 	}
-}
+	/// Calculates the derivative of the log of this function
+	// Can probably be calculated more efficiently
+	pub fn log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+		let mut total = F::zero();
 
-impl<S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, f64>> PolicyAgent<f64, S, A, D> {
-	/// Creates a new PolicyAgent with temperature 1.0 used in Softmax
-	pub fn default(action_space: A, log_func: D) -> PolicyAgent<f64, S, A, D> {
-		PolicyAgent {
-			log_func: log_func,
-			action_space: action_space,
-			temp: 1.0,
-			phant1: PhantomData,
-			phant2: PhantomData
+		let weights = self.actions.iter()
+								  .map(|a| {
+								  	let w = (self.log_func.calculate(state, a)/self.temp).exp();
+								  	total = total + w;
+								  	w
+								  })
+								  .collect::<Vec<_>>();
+
+		let mut index = 0;
+		let mut grad = vec![F::zero(); self.log_func.num_params()];
+		for i in 0..self.actions.len() {
+			if self.actions[i] != *action {
+				let g = self.log_func.get_grad(state, &self.actions[i]);
+				for j in 0..g.len() {
+					grad[j] = grad[j] + g[j] * weights[i];
+				}
+			} else {
+				index = i;
+			}
 		}
+
+		let coeff = weights[index] - total;
+		let g = self.log_func.get_grad(state, action);
+		for i in 0..g.len() {
+			grad[i] = -(grad[i] + coeff * g[i])/(total*self.temp);
+		}
+
+		grad
 	}
 }
+

@@ -22,7 +22,7 @@ use re::agent::PolicyAgent;
 
 use re::util::TimePeriod;
 use re::util::approx::QLinear;
-use re::util::feature::BBFeature;
+use re::util::feature::RBFeature;
 use re::util::graddesc::GradientDesc;
 
 use gym::GymClient;
@@ -69,29 +69,28 @@ impl MountainCar {
 }
 
 fn main() {
-	// The agent has 3 actions
+	// The agent has 3 actions (left, right, neutral)
 	let action_space = Finite::new(3);
 
 	let mut log_prob_func = QLinear::default(&action_space);
 	for i in 0..18 {
 		for j in 0..14 {
 			let (x, y) = (-1.2 + 0.1 * i as f64, -0.07 + 0.01 * j as f64);
-			log_prob_func.add(Box::new(BBFeature::new(vec![x, y], 0.2)));
+			log_prob_func.add(Box::new(RBFeature::new(vec![x, y], 0.1)));
 		}
 	}
 
 	// Creates an agent that acts randomly
 	// The (log of the) probability of each action is determined by log_prob_func
-	let mut agent = PolicyAgent::default(action_space, log_prob_func);
+	let mut agent = PolicyAgent::new(action_space, log_prob_func, 0.5);
 
 	let mut env = MountainCar::new();
 
-	// PolicyGradient will evalute agents for 1 episode or 1000 time steps
+	// PolicyGradient will evalute agents for 3 episode or 20000 time steps
 	// whichever comes first
-	let tp = TimePeriod::OR(Box::new(TimePeriod::EPISODES(1)), Box::new(TimePeriod::TIMESTEPS(1000)));
-	// Train agent using Policy gradients with (mostly) default parameters
-	let mut trainer = PolicyGradient::default(action_space, GradientDesc).eval_period(tp)
-																		 .update_delay(10);
+	let tp = TimePeriod::OR(Box::new(TimePeriod::EPISODES(3)), Box::new(TimePeriod::TIMESTEPS(20000)));
+	// Train agent using Policy gradients
+	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(tp).iters(50);
 																		 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);

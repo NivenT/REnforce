@@ -314,7 +314,7 @@ fn pg_bandit() {
 	let q_func = QLinear::default(&action_space);
 	let mut agent = PolicyAgent::new(action_space, q_func, 0.01);
 
-	let mut trainer = PolicyGradient::default(action_space, GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
+	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();

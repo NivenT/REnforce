@@ -17,13 +17,9 @@ use stat::normalize;
 ///
 /// Instead of using a baseline, rewards are normalized to mean 0 and variance 1
 #[derive(Debug)]
-pub struct PolicyGradient<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> {
-	/// Action Space 
-	action_space: A,
+pub struct PolicyGradient<F: Float, G: GradientDescAlgo<F>> {
 	/// Gradient descent algorithm
 	grad_desc: G,
-	/// Parameters with a delayed update used for collecting trajectories
-	policy: Option<Vec<F>>,
 	/// Discount factor
 	gamma: f64,
 	/// Learning rate
@@ -32,31 +28,25 @@ pub struct PolicyGradient<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> {
 	iters: usize,
 	/// Time period to evaluate each parameter sample on
 	eval_period: TimePeriod,
-	/// Number of iterations to wait before updating policy
-	update_delay: usize,
 }
 
 // Have I deviated too much from the original algorithm here?
 // Should there be a Baseline trait instead of always normalizing rewards?
-// Is {policy, update_delay} actually beneficial?
 
 // Sometimes I wonder if I'm using traits how they were meant to be used, because this just looks ugly
 // Honestly, even disregarding the trait boilerplate, this whole implementation is pretty messy
-impl<F: Float, S: Space, A: FiniteSpace, G, D> EpisodicTrainer<S, A, PolicyAgent<F, S, A, D>> for PolicyGradient<F, G, A>
+impl<F: Float, S: Space, A: FiniteSpace, G, D> EpisodicTrainer<S, A, PolicyAgent<F, S, A, D>> for PolicyGradient<F, G>
 	where D: DifferentiableFunc<S, A, F>,
 		  G: GradientDescAlgo<F> {
 	fn train_step(&mut self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) {
-		if self.policy == None {
-			self.policy = Some(agent.log_func.get_params());
-		}
-
 		let (xs, ys, mut rs) = self.collect_trajectory(agent, env);
 		if rs.len() > 0 {
 			normalize(&mut rs);
 
 			let mut grad = vec![F::zero(); agent.log_func.num_params()];
 			for i in 0..rs.len() {
-				let g = agent.log_func.get_grad(&xs[i], &ys[i]);
+				// Honestly, not 100% sure either of these are correct
+				let g = agent.log_grad(&xs[i], &ys[i]);//agent.log_func.get_grad(&xs[i], &ys[i]);
 				let r = NumCast::from(rs[i]).unwrap();
 
 				for j in 0..g.len() {
@@ -74,77 +64,62 @@ impl<F: Float, S: Space, A: FiniteSpace, G, D> EpisodicTrainer<S, A, PolicyAgent
 		}
 	}
 	fn train(&mut self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) {
-		for i in 0..self.iters {
-			if i%self.update_delay == 0 {
-				self.policy = Some(agent.log_func.get_params());
-			}
-
+		for _ in 0..self.iters {
 			self.train_step(agent, env);	
 		}
 	}
 }
 
 // Are these even good default values?
-impl<G: GradientDescAlgo<f64>, A: FiniteSpace> PolicyGradient<f64, G, A> {
+impl<G: GradientDescAlgo<f64>> PolicyGradient<f64, G> {
 	/// Creates a PolicyGradient with default parameter values and given action space and gradient descent algorithm
-	pub fn default(action_space: A, grad_desc: G) -> PolicyGradient<f64, G, A> {
+	pub fn default(grad_desc: G) -> PolicyGradient<f64, G> {
 		PolicyGradient {
-			action_space: action_space,
 			grad_desc: grad_desc,
-			policy: None,
 			gamma: 0.99,
 			lr: 0.0001,
 			iters: 100,
-			eval_period: TimePeriod::EPISODES(20),
-			update_delay: 1
+			eval_period: TimePeriod::EPISODES(20)
 		}
 	}
 }
 
-impl<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
+impl<F: Float, G: GradientDescAlgo<F>> PolicyGradient<F, G> {
 	/// Constructs a new PolicyGradient with given information
-	pub fn new(action_space: A, grad_desc: G, gamma: f64, lr: F, iters: usize, eval_period: TimePeriod, update_delay: usize) -> PolicyGradient<F, G, A> {
+	pub fn new(grad_desc: G, gamma: f64, lr: F, iters: usize, eval_period: TimePeriod) -> PolicyGradient<F, G> {
 		assert!(0.0 < gamma && gamma <= 1.0, "gamma must be between 0 and 1");
 		assert!(F::zero() < lr && lr <= F::one(), "learning rate must be between 0 and 1");
 
 		PolicyGradient {
-			action_space: action_space,
 			grad_desc: grad_desc,
-			policy: None,
 			gamma: gamma,
 			lr: lr,
 			iters: iters,
 			eval_period: eval_period,
-			update_delay: update_delay
 		}
 	}
 	/// Updates gamma field of self
-	pub fn gamma(mut self, gamma: f64) -> PolicyGradient<F, G, A> {
+	pub fn gamma(mut self, gamma: f64) -> PolicyGradient<F, G> {
 		assert!(0.0 <= gamma && gamma <= 1.0, "gamma must be between 0 and 1");
 
 		self.gamma = gamma;
 		self
 	}
 	/// Updates lr field of self
-	pub fn lr(mut self, lr: F) -> PolicyGradient<F, G, A> {
+	pub fn lr(mut self, lr: F) -> PolicyGradient<F, G> {
 		assert!(F::zero() <= lr && lr <= F::one(), "lr must be between 0 and 1");
 
 		self.lr = lr;
 		self
 	}
 	/// Updates iters field of self
-	pub fn iters(mut self, iters: usize) -> PolicyGradient<F, G, A> {
+	pub fn iters(mut self, iters: usize) -> PolicyGradient<F, G> {
 		self.iters = iters;
 		self
 	}
 	/// Updates eval_period field of self
-	pub fn eval_period(mut self, eval_period: TimePeriod) -> PolicyGradient<F, G, A> {
+	pub fn eval_period(mut self, eval_period: TimePeriod) -> PolicyGradient<F, G> {
 		self.eval_period = eval_period;
-		self
-	}
-	/// Updates update_delay field of self
-	pub fn update_delay(mut self, update_delay: usize) -> PolicyGradient<F, G, A> {
-		self.update_delay = update_delay;
 		self
 	}
 
@@ -156,12 +131,10 @@ impl<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
 		}
 		return rewards;
 	}
-	fn collect_trajectory<S, D>(&self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) -> (Vec<S::Element>, Vec<A::Element>, Vec<f64>)
+	fn collect_trajectory<S, A, D>(&self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) -> (Vec<S::Element>, Vec<A::Element>, Vec<f64>)
 		where S: Space,
+			  A: FiniteSpace,
 			  D: DifferentiableFunc<S, A, F> {
-		let params = agent.log_func.get_params();
-		agent.log_func.set_params(self.policy.clone().unwrap());
-
 		let (mut states, mut actions, mut rewards) = if let TimePeriod::TIMESTEPS(len) = self.eval_period.clone() {
 			(Vec::with_capacity(len), Vec::with_capacity(len), Vec::with_capacity(len))
 		} else {
@@ -191,7 +164,6 @@ impl<F: Float, G: GradientDescAlgo<F>, A: FiniteSpace> PolicyGradient<F, G, A> {
 		}
 
 		rewards.extend_from_slice(&self.discount(ep_rewards));
-		agent.log_func.set_params(params);
 		(states, actions, rewards)
 	}
 }

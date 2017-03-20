@@ -193,10 +193,10 @@ impl<S: Space, A: FiniteSpace, F: Float + Debug> FeatureExtractor<S, A, F> for Q
 		let index = self.indices[action];
 		let mut feats = vec![F::zero(); index*(self.features.len() + 1)];
 
+		feats.push(F::one());
 		for feat in &self.features {
 			feats.push(NumCast::from(feat.extract(state)).unwrap());
 		}
-		feats.push(F::one());
 
 		feats.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*(self.features.len() + 1)]);
 		feats
@@ -206,16 +206,7 @@ impl<S: Space, A: FiniteSpace, F: Float + Debug> FeatureExtractor<S, A, F> for Q
 impl<S: Space, A: FiniteSpace, F: Float + Debug> DifferentiableFunc<S, A, F> for QLinear<F, S, A> 
 	where A::Element: Hash + Eq, {
 	fn get_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
-		let index = self.indices[action];
-		let mut grads = vec![F::zero(); index*(self.features.len() + 1)];
-
-		grads.push(F::one());
-		for feat in &self.features {
-			grads.push(NumCast::from(feat.extract(state)).unwrap());
-		}
-
-		grads.extend_from_slice(&vec![F::zero(); (self.actions.len()-index-1)*(self.features.len() + 1)]);
-		grads
+		self.extract(state, action)
 	}
 
 	fn calculate(&self, state: &S::Element, action: &A::Element) -> F {
