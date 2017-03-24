@@ -6,9 +6,8 @@ use environment::{Space, FiniteSpace, Environment};
 use trainer::EpisodicTrainer;
 
 use agent::Agent;
-use agent::PolicyAgent;
 
-use util::{DifferentiableFunc, GradientDescAlgo};
+use util::{LogDiffFunc, GradientDescAlgo};
 use util::TimePeriod;
 
 use stat::normalize;
@@ -35,18 +34,17 @@ pub struct PolicyGradient<F: Float, G: GradientDescAlgo<F>> {
 
 // Sometimes I wonder if I'm using traits how they were meant to be used, because this just looks ugly
 // Honestly, even disregarding the trait boilerplate, this whole implementation is pretty messy
-impl<F: Float, S: Space, A: FiniteSpace, G, D> EpisodicTrainer<S, A, PolicyAgent<F, S, A, D>> for PolicyGradient<F, G>
-	where D: DifferentiableFunc<S, A, F>,
+impl<F: Float, S: Space, A: FiniteSpace, G, T> EpisodicTrainer<S, A, T> for PolicyGradient<F, G>
+	where T: Agent<S, A> + LogDiffFunc<S, A, F>,
 		  G: GradientDescAlgo<F> {
-	fn train_step(&mut self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) {
+	fn train_step(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		let (xs, ys, mut rs) = self.collect_trajectory(agent, env);
 		if rs.len() > 0 {
 			normalize(&mut rs);
 
-			let mut grad = vec![F::zero(); agent.log_func.num_params()];
+			let mut grad = vec![F::zero(); agent.num_params()];
 			for i in 0..rs.len() {
-				// Honestly, not 100% sure either of these are correct
-				let g = agent.log_grad(&xs[i], &ys[i]);//agent.log_func.get_grad(&xs[i], &ys[i]);
+				let g = agent.log_grad(&xs[i], &ys[i]);
 				let r = NumCast::from(rs[i]).unwrap();
 
 				for j in 0..g.len() {
@@ -54,16 +52,16 @@ impl<F: Float, S: Space, A: FiniteSpace, G, D> EpisodicTrainer<S, A, PolicyAgent
 				}
 			}
 
-			let mut params = agent.log_func.get_params();
+			let mut params = agent.get_params();
 			let grad_step = self.grad_desc.calculate(grad, self.lr);
 			for i in 0..params.len() {
 				params[i] = params[i] + grad_step[i];
 			}
 
-			agent.log_func.set_params(params);
+			agent.set_params(params);
 		}
 	}
-	fn train(&mut self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) {
+	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		for _ in 0..self.iters {
 			self.train_step(agent, env);	
 		}
@@ -131,10 +129,10 @@ impl<F: Float, G: GradientDescAlgo<F>> PolicyGradient<F, G> {
 		}
 		return rewards;
 	}
-	fn collect_trajectory<S, A, D>(&self, agent: &mut PolicyAgent<F, S, A, D>, env: &mut Environment<State=S, Action=A>) -> (Vec<S::Element>, Vec<A::Element>, Vec<f64>)
+	fn collect_trajectory<S, A, T>(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) -> (Vec<S::Element>, Vec<A::Element>, Vec<f64>)
 		where S: Space,
 			  A: FiniteSpace,
-			  D: DifferentiableFunc<S, A, F> {
+			  T: Agent<S, A> + LogDiffFunc<S, A, F> {
 		let (mut states, mut actions, mut rewards) = if let TimePeriod::TIMESTEPS(len) = self.eval_period.clone() {
 			(Vec::with_capacity(len), Vec::with_capacity(len), Vec::with_capacity(len))
 		} else {

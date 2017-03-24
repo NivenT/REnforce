@@ -4,9 +4,9 @@ use num::Float;
 
 use environment::{Space, FiniteSpace};
 
-use agent::{Agent, StochasticAgent};
+use agent::Agent;
 
-use util::DifferentiableFunc;
+use util::{LogDiffFunc, DifferentiableFunc, ParameterizedFunc};
 use util::Chooser;
 use util::chooser::Softmax;
 
@@ -17,15 +17,18 @@ use util::chooser::Softmax;
 pub struct PolicyAgent<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> { // TODO: Think of a better name
 	/// The function used by this agent to calculate weights passed into Softmax
 	pub log_func: D,
-
+	/*
 	/// The space the agent draws its actions from
 	action_space: A, 
+	*/
+	/// All the actions performable by this agent
 	actions: Vec<A::Element>,
 	/// Temperature of associated softmax
 	temp: F,
 	phant: PhantomData<S>,
 }
 
+/*
 impl<F: Float, S: Space, A: FiniteSpace, D> StochasticAgent<F, S, A> for PolicyAgent<F, S, A, D>
 	where D: DifferentiableFunc<S, A, F> {
 	fn get_action_prob(&self, state: &S::Element, action: &A::Element) -> F {
@@ -46,16 +49,50 @@ impl<F: Float, S: Space, A: FiniteSpace, D> StochasticAgent<F, S, A> for PolicyA
 		weights[index as usize]/total
 	}
 }
+*/
+
+impl<F: Float, S: Space, A: FiniteSpace, D> ParameterizedFunc<F> for PolicyAgent<F, S, A, D> 
+	where D: DifferentiableFunc<S, A, F> {
+	fn num_params(&self) -> usize {
+		self.log_func.num_params()
+	}
+	fn get_params(&self) -> Vec<F> {
+		self.log_func.get_params()
+	}
+	fn set_params(&mut self, params: Vec<F>) {
+		self.log_func.set_params(params)
+	}
+}
+
+/* TODO: Implement this
+impl<F: Float, S: Space, A: FiniteSpace, D> DifferentiableFunc<S, A, F> for PolicyAgent<F, S, A, D>
+	where D: DifferentiableFunc<S, A, F> {
+	fn get_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+		Vec::new()
+	}
+	fn calculate(&self, state: &S::Element, action: &A::Element) -> F {
+		F::zero()
+	}
+}
+*/
+
+impl<F: Float, S: Space, A: FiniteSpace, D> LogDiffFunc<S, A, F> for PolicyAgent<F, S, A, D>
+	where D: DifferentiableFunc<S, A, F> {
+	fn log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+		// Not 100% sure either of these are correct
+		self.log_func.get_grad(state, action)//self.calc_log_grad(state, action)
+	}
+}
 
 impl<F: Float, S: Space, A: FiniteSpace, D> Agent<S, A> for PolicyAgent<F, S, A, D>
 	where D: DifferentiableFunc<S, A, F> {
 	fn get_action(&self, state: &S::Element) -> A::Element {
-		let mut weights = Vec::with_capacity(self.action_space.size());
+		let mut weights = Vec::with_capacity(self.actions.len());
 		for a in &self.actions {
 			weights.push(self.log_func.calculate(state, a).to_f64().unwrap());
 		}
 
-		Softmax::new(self.temp.to_f64().unwrap()).choose(self.actions.clone(), weights)
+		Softmax::new(self.temp.to_f64().unwrap()).choose(&self.actions, weights)
 	}
 }
 
@@ -65,7 +102,7 @@ impl<S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, f64>> PolicyAgent<f64
 		PolicyAgent {
 			log_func: log_func,
 			actions: action_space.enumerate(),
-			action_space: action_space,
+			//action_space: action_space,
 			temp: 1.0,
 			phant: PhantomData
 		}
@@ -78,7 +115,7 @@ impl<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> PolicyA
 		PolicyAgent {
 			log_func: log_func,
 			actions: action_space.enumerate(),
-			action_space: action_space,
+			//action_space: action_space,
 			temp: temp,
 			phant: PhantomData
 		}
@@ -96,7 +133,7 @@ impl<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> PolicyA
 	// Can probably be calculated more efficiently
 	// This function is correct assuming I correctly worked out the gradient
 	// Would not put all my trust in it
-	pub fn log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
+	pub fn calc_log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
 		let mut total = F::zero();
 
 		let weights = self.actions.iter()

@@ -145,7 +145,7 @@ impl<S: Space, A: FiniteSpace, M: Model<S, A>> DynaQ<S, A, M>
 		let states: Vec<_> = self.states.iter().collect();
 
 		let chooser = Weighted;
-		let s1 = chooser.choose(states, weights);
+		let s1 = chooser.choose(&states, weights);
 		let r = self.model.reward(s, a, s1);
 		(r, s1)
 	}

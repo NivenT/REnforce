@@ -25,6 +25,7 @@ use re::util::chooser::Uniform;
 use re::util::graddesc::GradientDesc;
 
 const SOLVED_VALUE: f64 = 9000.0;
+const TRAINING_ITERS: usize = 100;
 
 struct NArmedBandit {
 	arms: Vec<Normal>
@@ -130,7 +131,7 @@ fn qlearner_bandit() {
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	agent.set_epsilon(0.05);
@@ -157,7 +158,7 @@ fn sarsalearner_bandit() {
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	agent.set_epsilon(0.05);
@@ -184,7 +185,7 @@ fn cem_bandit() {
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	agent.set_epsilon(0.05);
@@ -212,7 +213,7 @@ fn dyna_bandit() {
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	agent.set_epsilon(0.05);
@@ -249,7 +250,7 @@ fn fqi_bandit() {
 	trainer.train(&mut agent, transitions);
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	agent.set_epsilon(0.05);
@@ -276,19 +277,17 @@ fn lspi_bandit() {
 
 	// Collect transitions
 	let mut transitions = Vec::new();
-	for _ in 0..1000 {
+	for _ in 0..5000 {
 		let action = agent.get_action(&());
 		let obs = env.step(&action);
 
 		transitions.push(((), action, obs.reward, obs.state));
 	}
 
-	println!("training...");
 	trainer.train(&mut agent, transitions);
-	println!("finished");
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	agent.set_epsilon(0.05);
@@ -311,11 +310,11 @@ fn pg_bandit() {
 	let q_func = QLinear::default(&env.action_space());
 	let mut agent = PolicyAgent::new(env.action_space(), q_func, 0.01);
 
-	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
+	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(TimePeriod::TIMESTEPS(500)).iters(10).lr(0.01);
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
-	let mut iters = 100;
+	let mut iters = TRAINING_ITERS;
 	let mut reward = 0.0;
 
 	while iters != 0 {

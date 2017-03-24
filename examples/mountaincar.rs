@@ -95,7 +95,7 @@ fn main() {
 	let tp = TimePeriod::OR(Box::new(TimePeriod::EPISODES(3)), Box::new(TimePeriod::TIMESTEPS(20000)));
 	// Train agent using Policy gradients
 	let mut trainer = PolicyGradient::default(GradDescMomentum::default()).eval_period(tp)
-																		  .iters(50);
+																		  .iters(20);
 																		 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);

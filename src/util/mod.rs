@@ -33,6 +33,12 @@ pub trait DifferentiableFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> 
 	fn calculate(&self, state: &S::Element, action: &A::Element) -> T;
 }
 
+/// A function taking in (state, action) pairs whose log can be differentiated
+pub trait LogDiffFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> {
+	/// The gradient of the log of the output with respect to the parameters
+	fn log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<T>;
+}
+
 /// Calculates gradient steps
 pub trait GradientDescAlgo<F: Float> {
 	/// Calculates local step for minimizing function
@@ -73,7 +79,7 @@ pub trait VFunction<S: Space> : Debug {
 /// Represents a way to randomly choose an element of a list given some weights
 pub trait Chooser<T> : Debug {
 	/// returns an element of choices
-	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T;
+	fn choose(&self, choices: &Vec<T>, weights: Vec<f64>) -> T;
 }
 
 /// A real-valued feature of elements of some state space

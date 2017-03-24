@@ -9,7 +9,7 @@ use util::Chooser;
 pub struct Uniform;
 
 impl<T: Clone> Chooser<T> for Uniform {
-	fn choose(&self, choices: Vec<T>, _: Vec<f64>) -> T {
+	fn choose(&self, choices: &Vec<T>, _: Vec<f64>) -> T {
 		let mut rng = thread_rng();
 		rng.choose(&choices).unwrap().clone()
 	}
@@ -29,7 +29,7 @@ impl Default for Softmax {
 }
 
 impl<T: Clone> Chooser<T> for Softmax {
-	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T {
+	fn choose(&self, choices: &Vec<T>, weights: Vec<f64>) -> T {
 		let mut total = 0.0;
 		let new_weights: Vec<_> = weights.into_iter()
 								 		 .map(|w| {
@@ -68,7 +68,7 @@ impl Softmax {
 pub struct Weighted; // TODO: Come up with a better name
 
 impl<T: Clone> Chooser<T> for Weighted {
-	fn choose(&self, choices: Vec<T>, weights: Vec<f64>) -> T {
+	fn choose(&self, choices: &Vec<T>, weights: Vec<f64>) -> T {
 		let total = weights.iter().sum();
 
 		let mut rng = thread_rng();

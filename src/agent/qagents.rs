@@ -161,7 +161,7 @@ impl<S: Space, A: FiniteSpace, Q, T> Agent<S, A> for EGreedyQAgent<S, A, Q, T>
 			let weights = actions.iter()
 								 .map(|a| self.q_func.eval(state, a))
 								 .collect();
-			best_action = self.chooser.choose(actions, weights);
+			best_action = self.chooser.choose(&actions, weights);
 		} else {
 			let mut best_val = self.q_func.eval(state, &actions[0]);
 			
