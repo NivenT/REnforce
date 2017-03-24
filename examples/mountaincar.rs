@@ -23,7 +23,7 @@ use re::agent::PolicyAgent;
 use re::util::TimePeriod;
 use re::util::approx::QLinear;
 use re::util::feature::RBFeature;
-use re::util::graddesc::GradientDesc;
+use re::util::graddesc::GradDescMomentum;
 
 use gym::GymClient;
 
@@ -94,7 +94,8 @@ fn main() {
 	// whichever comes first
 	let tp = TimePeriod::OR(Box::new(TimePeriod::EPISODES(3)), Box::new(TimePeriod::TIMESTEPS(20000)));
 	// Train agent using Policy gradients
-	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(tp).iters(50);
+	let mut trainer = PolicyGradient::default(GradDescMomentum::default()).eval_period(tp)
+																		  .iters(50);
 																		 
 	println!("Training...");
 	trainer.train(&mut agent, &mut env);

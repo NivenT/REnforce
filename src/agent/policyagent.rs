@@ -94,6 +94,8 @@ impl<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> PolicyA
 	}
 	/// Calculates the derivative of the log of this function
 	// Can probably be calculated more efficiently
+	// This function is correct assuming I correctly worked out the gradient
+	// Would not put all my trust in it
 	pub fn log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
 		let mut total = F::zero();
 

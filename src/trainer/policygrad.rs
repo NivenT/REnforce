@@ -79,7 +79,7 @@ impl<G: GradientDescAlgo<f64>> PolicyGradient<f64, G> {
 			gamma: 0.99,
 			lr: 0.0001,
 			iters: 100,
-			eval_period: TimePeriod::EPISODES(20)
+			eval_period: TimePeriod::EPISODES(5)
 		}
 	}
 }
