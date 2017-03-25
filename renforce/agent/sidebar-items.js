@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["qagents","Q-Agents module"],["vagents","V-Agents module"]],"struct":[["RandomAgent","Random Agent"]],"trait":[["Agent","Represents an agent acting in an environment"]]});
+initSidebarItems({"mod":[["qagents","Q-Agents module"],["vagents","V-Agents module"]],"struct":[["PolicyAgent","Policy Agent"],["RandomAgent","Random Agent"]],"trait":[["Agent","Represents an agent acting in an environment"]]});

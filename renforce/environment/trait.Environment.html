@@ -9,6 +9,7 @@
 
     <title>renforce::environment::Environment - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,12 +48,14 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-144' class='srclink' href='../../src/renforce/src/environment/mod.rs.html#52-64' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/renforce/environment/mod.rs.html#68-84' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Environment {
-    type <a href='#associatedtype.State' class='type'>State</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>;
-    type <a href='#associatedtype.Action' class='type'>Action</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>;
-    fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self, action: &amp;Self::Action::Element) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;Self::State&gt;;
-    fn <a href='#tymethod.reset' class='fnname'>reset</a>(&amp;mut self) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;Self::State&gt;;
+    type <a href='#associatedtype.State' class='type'>State</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>;
+    type <a href='#associatedtype.Action' class='type'>Action</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>;
+    fn <a href='#tymethod.state_space' class='fnname'>state_space</a>(&amp;self) -&gt; Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>State</a>;
+    fn <a href='#tymethod.action_space' class='fnname'>action_space</a>(&amp;self) -&gt; Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Action</a>;
+    fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; action: &amp;Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Action</a>::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>State</a>&gt;;
+    fn <a href='#tymethod.reset' class='fnname'>reset</a>(&amp;mut self) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>State</a>&gt;;
     fn <a href='#tymethod.render' class='fnname'>render</a>(&amp;self);
 }</pre><div class='docblock'><p>Environment Trait</p>
 
@@ -60,14 +63,16 @@
 </div>
             <h2 id='associated-types'>Associated Types</h2>
             <div class='methods'>
-        <h3 id='associatedtype.State' class='method stab '><span id='State.t' class='invisible'><code>type <a href='#associatedtype.State' class='type'>State</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a></code></span></h3><div class='docblock'><p>The type of State Space used by this Environment</p>
-</div><h3 id='associatedtype.Action' class='method stab '><span id='Action.t' class='invisible'><code>type <a href='#associatedtype.Action' class='type'>Action</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a></code></span></h3><div class='docblock'><p>The type of Action Space used by this Environment</p>
+        <h3 id='associatedtype.State' class='method'><span id='State.t' class='invisible'><code>type <a href='#associatedtype.State' class='type'>State</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a></code></span></h3><div class='docblock'><p>The type of State Space used by this Environment</p>
+</div><h3 id='associatedtype.Action' class='method'><span id='Action.t' class='invisible'><code>type <a href='#associatedtype.Action' class='type'>Action</a>: <a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a></code></span></h3><div class='docblock'><p>The type of Action Space used by this Environment</p>
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.step' class='method stab '><span id='step.v' class='invisible'><code>fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self, action: &amp;Self::Action::Element) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;Self::State&gt;</code></span></h3><div class='docblock'><p>Performs action in environment and returns the observed result</p>
-</div><h3 id='tymethod.reset' class='method stab '><span id='reset.v' class='invisible'><code>fn <a href='#tymethod.reset' class='fnname'>reset</a>(&amp;mut self) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;Self::State&gt;</code></span></h3><div class='docblock'><p>Resets the environment to its initial configuration</p>
-</div><h3 id='tymethod.render' class='method stab '><span id='render.v' class='invisible'><code>fn <a href='#tymethod.render' class='fnname'>render</a>(&amp;self)</code></span></h3><div class='docblock'><p>Displays the environment</p>
+        <h3 id='tymethod.state_space' class='method'><span id='state_space.v' class='invisible'><code>fn <a href='#tymethod.state_space' class='fnname'>state_space</a>(&amp;self) -&gt; Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>State</a></code></span></h3><div class='docblock'><p>Returns the state space used by this Environment</p>
+</div><h3 id='tymethod.action_space' class='method'><span id='action_space.v' class='invisible'><code>fn <a href='#tymethod.action_space' class='fnname'>action_space</a>(&amp;self) -&gt; Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Action</a></code></span></h3><div class='docblock'><p>Returns the action space used by this Environment</p>
+</div><h3 id='tymethod.step' class='method'><span id='step.v' class='invisible'><code>fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self, action: &amp;Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Action</a>::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>State</a>&gt;</code></span></h3><div class='docblock'><p>Performs action in environment and returns the observed result</p>
+</div><h3 id='tymethod.reset' class='method'><span id='reset.v' class='invisible'><code>fn <a href='#tymethod.reset' class='fnname'>reset</a>(&amp;mut self) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;Self::<a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>State</a>&gt;</code></span></h3><div class='docblock'><p>Resets the environment to its initial configuration</p>
+</div><h3 id='tymethod.render' class='method'><span id='render.v' class='invisible'><code>fn <a href='#tymethod.render' class='fnname'>render</a>(&amp;self)</code></span></h3><div class='docblock'><p>Displays the environment</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
@@ -129,11 +134,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

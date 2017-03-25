@@ -9,6 +9,7 @@
 
     <title>bounds.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -170,14 +171,14 @@
 
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>bounded_tuple</span> {
     ( $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>)<span class='op'>*</span> ) <span class='op'>=&gt;</span> (
-        <span class='kw'>impl</span><span class='op'>&lt;</span>$(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>: <span class='ident'>Bounded</span>,)<span class='op'>*</span><span class='op'>&gt;</span> <span class='ident'>Bounded</span> <span class='kw'>for</span> ($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>,)<span class='op'>*</span>) {
+        <span class='kw'>impl</span><span class='op'>&lt;</span>$(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>: <span class='ident'>Bounded</span>,)<span class='kw-2'>*</span><span class='op'>&gt;</span> <span class='ident'>Bounded</span> <span class='kw'>for</span> ($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>,)<span class='kw-2'>*</span>) {
             <span class='attribute'>#[<span class='ident'>inline</span>]</span>
             <span class='kw'>fn</span> <span class='ident'>min_value</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-                ($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>::<span class='ident'>min_value</span>(),)<span class='op'>*</span>)
+                ($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>::<span class='ident'>min_value</span>(),)<span class='kw-2'>*</span>)
             }
             <span class='attribute'>#[<span class='ident'>inline</span>]</span>
             <span class='kw'>fn</span> <span class='ident'>max_value</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-                ($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>::<span class='ident'>max_value</span>(),)<span class='op'>*</span>)
+                ($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>::<span class='ident'>max_value</span>(),)<span class='kw-2'>*</span>)
             }
         }
     );
@@ -242,11 +243,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "num_traits";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

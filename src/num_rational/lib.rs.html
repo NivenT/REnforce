@@ -9,6 +9,7 @@
 
     <title>lib.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -1327,7 +1328,7 @@
     <span class='doccomment'>/// Rounds towards minus infinity.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>floor</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Ratio</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='op'>*</span><span class='self'>self</span> <span class='op'>&lt;</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>() {
+        <span class='kw'>if</span> <span class='kw-2'>*</span><span class='self'>self</span> <span class='op'>&lt;</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>() {
             <span class='kw'>let</span> <span class='ident'>one</span>: <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
             <span class='ident'>Ratio</span>::<span class='ident'>from_integer</span>((<span class='self'>self</span>.<span class='ident'>numer</span>.<span class='ident'>clone</span>() <span class='op'>-</span> <span class='self'>self</span>.<span class='ident'>denom</span>.<span class='ident'>clone</span>() <span class='op'>+</span> <span class='ident'>one</span>) <span class='op'>/</span>
                                 <span class='self'>self</span>.<span class='ident'>denom</span>.<span class='ident'>clone</span>())
@@ -1339,7 +1340,7 @@
     <span class='doccomment'>/// Rounds towards plus infinity.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ceil</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Ratio</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='op'>*</span><span class='self'>self</span> <span class='op'>&lt;</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>() {
+        <span class='kw'>if</span> <span class='kw-2'>*</span><span class='self'>self</span> <span class='op'>&lt;</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>() {
             <span class='ident'>Ratio</span>::<span class='ident'>from_integer</span>(<span class='self'>self</span>.<span class='ident'>numer</span>.<span class='ident'>clone</span>() <span class='op'>/</span> <span class='self'>self</span>.<span class='ident'>denom</span>.<span class='ident'>clone</span>())
         } <span class='kw'>else</span> {
             <span class='kw'>let</span> <span class='ident'>one</span>: <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
@@ -1365,14 +1366,14 @@
         <span class='comment'>// is, a/b &gt;= 1/2, or a &gt;= b/2. For odd denominators, we use</span>
         <span class='comment'>// a &gt;= (b/2)+1. This avoids overflow issues.</span>
         <span class='kw'>let</span> <span class='ident'>half_or_larger</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>fractional</span>.<span class='ident'>denom</span>().<span class='ident'>is_even</span>() {
-            <span class='op'>*</span><span class='ident'>fractional</span>.<span class='ident'>numer</span>() <span class='op'>&gt;=</span> <span class='ident'>fractional</span>.<span class='ident'>denom</span>().<span class='ident'>clone</span>() <span class='op'>/</span> <span class='ident'>two</span>.<span class='ident'>clone</span>()
+            <span class='kw-2'>*</span><span class='ident'>fractional</span>.<span class='ident'>numer</span>() <span class='op'>&gt;=</span> <span class='ident'>fractional</span>.<span class='ident'>denom</span>().<span class='ident'>clone</span>() <span class='op'>/</span> <span class='ident'>two</span>.<span class='ident'>clone</span>()
         } <span class='kw'>else</span> {
-            <span class='op'>*</span><span class='ident'>fractional</span>.<span class='ident'>numer</span>() <span class='op'>&gt;=</span> (<span class='ident'>fractional</span>.<span class='ident'>denom</span>().<span class='ident'>clone</span>() <span class='op'>/</span> <span class='ident'>two</span>.<span class='ident'>clone</span>()) <span class='op'>+</span> <span class='ident'>one</span>.<span class='ident'>clone</span>()
+            <span class='kw-2'>*</span><span class='ident'>fractional</span>.<span class='ident'>numer</span>() <span class='op'>&gt;=</span> (<span class='ident'>fractional</span>.<span class='ident'>denom</span>().<span class='ident'>clone</span>() <span class='op'>/</span> <span class='ident'>two</span>.<span class='ident'>clone</span>()) <span class='op'>+</span> <span class='ident'>one</span>.<span class='ident'>clone</span>()
         };
 
         <span class='kw'>if</span> <span class='ident'>half_or_larger</span> {
             <span class='kw'>let</span> <span class='ident'>one</span>: <span class='ident'>Ratio</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
-            <span class='kw'>if</span> <span class='op'>*</span><span class='self'>self</span> <span class='op'>&gt;=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>() {
+            <span class='kw'>if</span> <span class='kw-2'>*</span><span class='self'>self</span> <span class='op'>&gt;=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>() {
                 <span class='self'>self</span>.<span class='ident'>trunc</span>() <span class='op'>+</span> <span class='ident'>one</span>
             } <span class='kw'>else</span> {
                 <span class='self'>self</span>.<span class='ident'>trunc</span>() <span class='op'>-</span> <span class='ident'>one</span>
@@ -1695,7 +1696,7 @@
 
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>abs_sub</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>Ratio</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Ratio</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='op'>*</span><span class='self'>self</span> <span class='op'>&lt;=</span> <span class='op'>*</span><span class='ident'>other</span> {
+        <span class='kw'>if</span> <span class='kw-2'>*</span><span class='self'>self</span> <span class='op'>&lt;=</span> <span class='kw-2'>*</span><span class='ident'>other</span> {
             <span class='ident'>Zero</span>::<span class='ident'>zero</span>()
         } <span class='kw'>else</span> {
             <span class='self'>self</span> <span class='op'>-</span> <span class='ident'>other</span>
@@ -1816,7 +1817,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>RatioErrorKind</span> {
     <span class='kw'>fn</span> <span class='ident'>description</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> {
-        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+        <span class='kw'>match</span> <span class='kw-2'>*</span><span class='self'>self</span> {
             <span class='ident'>RatioErrorKind</span>::<span class='ident'>ParseError</span> <span class='op'>=&gt;</span> <span class='string'>&quot;failed to parse integer&quot;</span>,
             <span class='ident'>RatioErrorKind</span>::<span class='ident'>ZeroDenominator</span> <span class='op'>=&gt;</span> <span class='string'>&quot;zero value denominator&quot;</span>,
         }
@@ -2370,11 +2371,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "num_rational";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

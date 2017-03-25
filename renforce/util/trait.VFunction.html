@@ -9,6 +9,7 @@
 
     <title>renforce::util::VFunction - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,24 +48,24 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1386' class='srclink' href='../../src/renforce/src/util/mod.rs.html#39-44' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait VFunction&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt;: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> {
-    fn <a href='#tymethod.eval' class='fnname'>eval</a>(&amp;self, state: &amp;S::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>;
-    fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, state: &amp;S::Element, new_val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, alpha: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>);
+               </span><a class='srclink' href='../../src/renforce/util/mod.rs.html#70-75' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait VFunction&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt;: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a> {
+    fn <a href='#tymethod.eval' class='fnname'>eval</a>(&amp;self, state: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>;
+    fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, state: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>, new_val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, alpha: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>);
 }</pre><div class='docblock'><p>VFunction Trait</p>
 
 <p>Represents a function V: S -&gt; R that takes in a state and returns its value</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.eval' class='method stab '><span id='eval.v' class='invisible'><code>fn <a href='#tymethod.eval' class='fnname'>eval</a>(&amp;self, state: &amp;S::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h3><div class='docblock'><p>Evaluate the function on the given state</p>
-</div><h3 id='tymethod.update' class='method stab '><span id='update.v' class='invisible'><code>fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, state: &amp;S::Element, new_val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, alpha: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>)</code></span></h3><div class='docblock'><p>Update the function using the given information (alpha is learning rate)</p>
+        <h3 id='tymethod.eval' class='method'><span id='eval.v' class='invisible'><code>fn <a href='#tymethod.eval' class='fnname'>eval</a>(&amp;self, state: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h3><div class='docblock'><p>Evaluate the function on the given state</p>
+</div><h3 id='tymethod.update' class='method'><span id='update.v' class='invisible'><code>fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, state: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>, new_val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, alpha: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>)</code></span></h3><div class='docblock'><p>Update the function using the given information (alpha is learning rate)</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='renforce::environment::FiniteSpace'>FiniteSpace</a>&gt; VFunction&lt;S&gt; for <a class='struct' href='../../renforce/agent/vagents/struct.BinaryVAgent.html' title='renforce::agent::vagents::BinaryVAgent'>BinaryVAgent</a>&lt;S,&nbsp;A&gt;</code></li>
-<li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='renforce::environment::FiniteSpace'>FiniteSpace</a>&gt; VFunction&lt;S&gt; for <a class='struct' href='../../renforce/util/table/struct.VTable.html' title='renforce::util::table::VTable'>VTable</a>&lt;S&gt; <span class='where'>where S::Element: <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a></span></code></li>
-<li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; VFunction&lt;S&gt; for <a class='struct' href='../../renforce/util/approx/struct.VLinear.html' title='renforce::util::approx::VLinear'>VLinear</a>&lt;S&gt;</code></li>
+    <li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='trait renforce::environment::FiniteSpace'>FiniteSpace</a>&gt; VFunction&lt;S&gt; for <a class='struct' href='../../renforce/agent/vagents/struct.BinaryVAgent.html' title='struct renforce::agent::vagents::BinaryVAgent'>BinaryVAgent</a>&lt;S, A&gt;</code></li>
+<li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='trait renforce::environment::FiniteSpace'>FiniteSpace</a>&gt; VFunction&lt;S&gt; for <a class='struct' href='../../renforce/util/table/struct.VTable.html' title='struct renforce::util::table::VTable'>VTable</a>&lt;S&gt; <span class='where fmt-newline'>where S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='trait core::hash::Hash'>Hash</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='trait core::cmp::Eq'>Eq</a></span></code></li>
+<li><code>impl&lt;F:&nbsp;<a class='trait' href='../../num_traits/float/trait.Float.html' title='trait num_traits::float::Float'>Float</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a>, S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; VFunction&lt;S&gt; for <a class='struct' href='../../renforce/util/approx/struct.VLinear.html' title='struct renforce::util::approx::VLinear'>VLinear</a>&lt;F, S&gt;</code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/renforce/util/trait.VFunction.js">
                  </script></section>
@@ -123,11 +124,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

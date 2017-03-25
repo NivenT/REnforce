@@ -9,6 +9,7 @@
 
     <title>renforce::environment::Observation - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,9 +48,9 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-123' class='srclink' href='../../src/renforce/src/environment/mod.rs.html#40-47' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct Observation&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; {
-    pub state: S::Element,
+               </span><a class='srclink' href='../../src/renforce/environment/mod.rs.html#56-63' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Observation&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; {
+    pub state: S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>,
     pub reward: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>,
     pub done: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
 }</pre><div class='docblock'><p>Observation</p>
@@ -57,21 +58,21 @@
 <p>Stores the information returned by the environment</p>
 </div><h2 class='fields'>Fields</h2><span id='structfield.state' class='structfield'>
                            <span id='state.v' class='invisible'>
-                           <code>state: S::Element</code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>The state of the environment</p>
+                           <code>state: S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a></code>
+                           </span></span><div class='docblock'><p>The state of the environment</p>
 </div><span id='structfield.reward' class='structfield'>
                            <span id='reward.v' class='invisible'>
                            <code>reward: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>The reward received by the agent</p>
+                           </span></span><div class='docblock'><p>The reward received by the agent</p>
 </div><span id='structfield.done' class='structfield'>
                            <span id='done.v' class='invisible'>
                            <code>done: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Whether or not the episode has finished</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;S:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> + <a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;S&gt; <span class='where'>where S::Element: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a></span></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-128' class='srclink' href='../../src/renforce/src/environment/mod.rs.html#39' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+                           </span></span><div class='docblock'><p>Whether or not the episode has finished</p>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;S:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a> + <a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a> for <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;S&gt; <span class='where fmt-newline'>where S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a></span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/renforce/environment/mod.rs.html#55' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='struct core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='type core::fmt::Result'>Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;S:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;S&gt; <span class='where'>where S::Element: <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-137' class='srclink' href='../../src/renforce/src/environment/mod.rs.html#39' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.clone' class='method'><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='renforce::environment::Observation'>Observation</a>&lt;S&gt;</code></span></h4>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;S:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='trait core::clone::Clone'>Clone</a> + <a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='trait core::clone::Clone'>Clone</a> for <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;S&gt; <span class='where fmt-newline'>where S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='trait core::clone::Clone'>Clone</a></span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/renforce/environment/mod.rs.html#55' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../renforce/environment/struct.Observation.html' title='struct renforce::environment::Observation'>Observation</a>&lt;S&gt;</code></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id='method.clone_from' class='method'><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
@@ -131,11 +132,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

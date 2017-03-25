@@ -9,6 +9,7 @@
 
     <title>renforce::trainer::BatchTrainer - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,18 +48,19 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-586' class='srclink' href='../../src/renforce/src/trainer/mod.rs.html#30-33' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait BatchTrainer&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;T:&nbsp;<a class='trait' href='../../renforce/agent/trait.Agent.html' title='renforce::agent::Agent'>Agent</a>&lt;S,&nbsp;A&gt;&gt; {
-    fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, transitions: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='type' href='../../renforce/environment/type.Transition.html' title='renforce::environment::Transition'>Transition</a>&lt;S,&nbsp;A&gt;&gt;);
+               </span><a class='srclink' href='../../src/renforce/trainer/mod.rs.html#34-37' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait BatchTrainer&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, T:&nbsp;<a class='trait' href='../../renforce/agent/trait.Agent.html' title='trait renforce::agent::Agent'>Agent</a>&lt;S, A&gt;&gt; {
+    fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, transitions: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='struct collections::vec::Vec'>Vec</a>&lt;<a class='type' href='../../renforce/environment/type.Transition.html' title='type renforce::environment::Transition'>Transition</a>&lt;S, A&gt;&gt;);
 }</pre><div class='docblock'><p>Represents a way to train an agent from a set of transitions</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.train' class='method stab '><span id='train.v' class='invisible'><code>fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, transitions: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='type' href='../../renforce/environment/type.Transition.html' title='renforce::environment::Transition'>Transition</a>&lt;S,&nbsp;A&gt;&gt;)</code></span></h3><div class='docblock'><p>Trains agent based on the observed transitions</p>
+        <h3 id='tymethod.train' class='method'><span id='train.v' class='invisible'><code>fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, transitions: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='struct collections::vec::Vec'>Vec</a>&lt;<a class='type' href='../../renforce/environment/type.Transition.html' title='type renforce::environment::Transition'>Transition</a>&lt;S, A&gt;&gt;)</code></span></h3><div class='docblock'><p>Trains agent based on the observed transitions</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='renforce::environment::FiniteSpace'>FiniteSpace</a>,&nbsp;T&gt; BatchTrainer&lt;S,&nbsp;A,&nbsp;T&gt; for <a class='struct' href='../../renforce/trainer/struct.FittedQIteration.html' title='renforce::trainer::FittedQIteration'>FittedQIteration</a>&lt;A&gt; <span class='where'>where T: <a class='trait' href='../../renforce/util/trait.QFunction.html' title='renforce::util::QFunction'>QFunction</a>&lt;S,&nbsp;A&gt; + <a class='trait' href='../../renforce/agent/trait.Agent.html' title='renforce::agent::Agent'>Agent</a>&lt;S,&nbsp;A&gt;</span></code></li>
+    <li><code>impl&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='trait renforce::environment::FiniteSpace'>FiniteSpace</a>, T&gt; BatchTrainer&lt;S, A, T&gt; for <a class='struct' href='../../renforce/trainer/struct.FittedQIteration.html' title='struct renforce::trainer::FittedQIteration'>FittedQIteration</a>&lt;A&gt; <span class='where fmt-newline'>where T: <a class='trait' href='../../renforce/util/trait.QFunction.html' title='trait renforce::util::QFunction'>QFunction</a>&lt;S, A&gt; + <a class='trait' href='../../renforce/agent/trait.Agent.html' title='trait renforce::agent::Agent'>Agent</a>&lt;S, A&gt;</span></code></li>
+<li><code>impl&lt;F:&nbsp;<a class='trait' href='../../num_traits/float/trait.Float.html' title='trait num_traits::float::Float'>Float</a> + 'static, S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, T&gt; BatchTrainer&lt;S, A, T&gt; for <a class='struct' href='../../renforce/trainer/struct.LSPolicyIteration.html' title='struct renforce::trainer::LSPolicyIteration'>LSPolicyIteration</a>&lt;F&gt; <span class='where fmt-newline'>where T: <a class='trait' href='../../renforce/agent/trait.Agent.html' title='trait renforce::agent::Agent'>Agent</a>&lt;S, A&gt; + <a class='trait' href='../../renforce/util/trait.ParameterizedFunc.html' title='trait renforce::util::ParameterizedFunc'>ParameterizedFunc</a>&lt;F&gt; + <a class='trait' href='../../renforce/util/trait.FeatureExtractor.html' title='trait renforce::util::FeatureExtractor'>FeatureExtractor</a>&lt;S, A, F&gt;</span></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/renforce/trainer/trait.BatchTrainer.js">
                  </script></section>
@@ -117,11 +119,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

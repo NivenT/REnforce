@@ -9,6 +9,7 @@
 
     <title>renforce::util - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,34 +48,41 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-917' class='srclink' href='../../src/renforce/src/util/mod.rs.html#1-108' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/renforce/util/mod.rs.html#1-144' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Utilities Module</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='mod' href='approx/index.html'
-                                  title='renforce::util::approx'>approx</a></td>
+                                  title='mod renforce::util::approx'>approx</a></td>
                            <td class='docblock-short'>
                                 <p>Function Approximator Module</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='chooser/index.html'
-                                  title='renforce::util::chooser'>chooser</a></td>
+                                  title='mod renforce::util::chooser'>chooser</a></td>
                            <td class='docblock-short'>
                                 <p>Chooser Module</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='feature/index.html'
-                                  title='renforce::util::feature'>feature</a></td>
+                                  title='mod renforce::util::feature'>feature</a></td>
                            <td class='docblock-short'>
                                 <p>Feature Extraction Module</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='mod' href='graddesc/index.html'
+                                  title='mod renforce::util::graddesc'>graddesc</a></td>
+                           <td class='docblock-short'>
+                                <p>Gradient Descent Module</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='mod' href='table/index.html'
-                                  title='renforce::util::table'>table</a></td>
+                                  title='mod renforce::util::table'>table</a></td>
                            <td class='docblock-short'>
                                 <p>Table Module</p>
                            </td>
@@ -82,7 +90,7 @@
 <table>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.TimePeriod.html'
-                                  title='renforce::util::TimePeriod'>TimePeriod</a></td>
+                                  title='enum renforce::util::TimePeriod'>TimePeriod</a></td>
                            <td class='docblock-short'>
                                 <p>Some length of time experienced by an agent</p>
                            </td>
@@ -90,44 +98,71 @@
 <table>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.Chooser.html'
-                                  title='renforce::util::Chooser'>Chooser</a></td>
+                                  title='trait renforce::util::Chooser'>Chooser</a></td>
                            <td class='docblock-short'>
                                 <p>Choose Trait</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='trait' href='trait.Feature.html'
-                                  title='renforce::util::Feature'>Feature</a></td>
+                           <td><a class='trait' href='trait.DifferentiableFunc.html'
+                                  title='trait renforce::util::DifferentiableFunc'>DifferentiableFunc</a></td>
                            <td class='docblock-short'>
-                                <p>A feature real-valued feature of elements of some state space</p>
+                                <p>A differentiable function taking in (state, action) pairs</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.Feature.html'
+                                  title='trait renforce::util::Feature'>Feature</a></td>
+                           <td class='docblock-short'>
+                                <p>A real-valued feature of elements of some state space</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.FeatureExtractor.html'
+                                  title='trait renforce::util::FeatureExtractor'>FeatureExtractor</a></td>
+                           <td class='docblock-short'>
+                                <p>Represents something that extracts features from state-action pairs</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.GradientDescAlgo.html'
+                                  title='trait renforce::util::GradientDescAlgo'>GradientDescAlgo</a></td>
+                           <td class='docblock-short'>
+                                <p>Calculates gradient steps</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.LogDiffFunc.html'
+                                  title='trait renforce::util::LogDiffFunc'>LogDiffFunc</a></td>
+                           <td class='docblock-short'>
+                                <p>A function taking in (state, action) pairs whose log can be differentiated</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.Metric.html'
-                                  title='renforce::util::Metric'>Metric</a></td>
+                                  title='trait renforce::util::Metric'>Metric</a></td>
                            <td class='docblock-short'>
                                 <p>A type with a notion of distance
-The distance function should satisfy the triangle inequality (and the other <a href="https://www.wikiwand.com/en/Metric_(mathematics)">metric</a> properties)
-d(x,z) &lt;= d(x,y) + d(y,z)</p>
+The distance function should satisfy the triangle inequality (and the other <a href="https://www.wikiwand.com/en/Metric_(mathematics)">metric</a> properties)</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.ParameterizedFunc.html'
-                                  title='renforce::util::ParameterizedFunc'>ParameterizedFunc</a></td>
+                                  title='trait renforce::util::ParameterizedFunc'>ParameterizedFunc</a></td>
                            <td class='docblock-short'>
                                 <p>A function that evaluates its input by making use of some parameters</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.QFunction.html'
-                                  title='renforce::util::QFunction'>QFunction</a></td>
+                                  title='trait renforce::util::QFunction'>QFunction</a></td>
                            <td class='docblock-short'>
                                 <p>QFunction Trait</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.VFunction.html'
-                                  title='renforce::util::VFunction'>VFunction</a></td>
+                                  title='trait renforce::util::VFunction'>VFunction</a></td>
                            <td class='docblock-short'>
                                 <p>VFunction Trait</p>
                            </td>
@@ -187,11 +222,9 @@ d(x,z) &lt;= d(x,y) + d(y,z)</p>
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

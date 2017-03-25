@@ -9,6 +9,7 @@
 
     <title>int.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -423,7 +424,7 @@
 
 <span class='kw'>use</span> {<span class='ident'>Num</span>, <span class='ident'>NumCast</span>};
 <span class='kw'>use</span> <span class='ident'>bounds</span>::<span class='ident'>Bounded</span>;
-<span class='kw'>use</span> <span class='ident'>ops</span>::<span class='ident'>checked</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>ops</span>::<span class='ident'>checked</span>::<span class='kw-2'>*</span>;
 <span class='kw'>use</span> <span class='ident'>ops</span>::<span class='ident'>saturating</span>::<span class='ident'>Saturating</span>;
 
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>PrimInt</span>
@@ -852,11 +853,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "num_traits";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

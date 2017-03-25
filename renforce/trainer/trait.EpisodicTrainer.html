@@ -9,6 +9,7 @@
 
     <title>renforce::trainer::EpisodicTrainer - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,20 +48,21 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-574' class='srclink' href='../../src/renforce/src/trainer/mod.rs.html#22-27' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait EpisodicTrainer&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;T:&nbsp;<a class='trait' href='../../renforce/agent/trait.Agent.html' title='renforce::agent::Agent'>Agent</a>&lt;S,&nbsp;A&gt;&gt; {
-    fn <a href='#tymethod.train_step' class='fnname'>train_step</a>(&amp;mut self, agent: &amp;mut T, env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='renforce::environment::Environment'>Environment</a>&lt;State=S,&nbsp;Action=A&gt;);
-    fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='renforce::environment::Environment'>Environment</a>&lt;State=S,&nbsp;Action=A&gt;);
+               </span><a class='srclink' href='../../src/renforce/trainer/mod.rs.html#26-31' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait EpisodicTrainer&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, T:&nbsp;<a class='trait' href='../../renforce/agent/trait.Agent.html' title='trait renforce::agent::Agent'>Agent</a>&lt;S, A&gt;&gt; {
+    fn <a href='#tymethod.train_step' class='fnname'>train_step</a>(&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; agent: &amp;mut T,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Environment</a>&lt;State=S, Action=A&gt;);
+    fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Environment</a>&lt;State=S, Action=A&gt;);
 }</pre><div class='docblock'><p>Trains agents 1 &quot;episode&quot; at a time</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.train_step' class='method stab '><span id='train_step.v' class='invisible'><code>fn <a href='#tymethod.train_step' class='fnname'>train_step</a>(&amp;mut self, agent: &amp;mut T, env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='renforce::environment::Environment'>Environment</a>&lt;State=S,&nbsp;Action=A&gt;)</code></span></h3><div class='docblock'><p>Trains agent using 1 &quot;episodes&quot; worth of exploration</p>
-</div><h3 id='tymethod.train' class='method stab '><span id='train.v' class='invisible'><code>fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='renforce::environment::Environment'>Environment</a>&lt;State=S,&nbsp;Action=A&gt;)</code></span></h3><div class='docblock'><p>Trains agent to perform well in the environment, potentially acting out multiple episodes</p>
+        <h3 id='tymethod.train_step' class='method'><span id='train_step.v' class='invisible'><code>fn <a href='#tymethod.train_step' class='fnname'>train_step</a>(&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; agent: &amp;mut T,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Environment</a>&lt;State=S, Action=A&gt;)</code></span></h3><div class='docblock'><p>Trains agent using 1 &quot;episodes&quot; worth of exploration</p>
+</div><h3 id='tymethod.train' class='method'><span id='train.v' class='invisible'><code>fn <a href='#tymethod.train' class='fnname'>train</a>(&amp;mut self, agent: &amp;mut T, env: &amp;mut <a class='trait' href='../../renforce/environment/trait.Environment.html' title='trait renforce::environment::Environment'>Environment</a>&lt;State=S, Action=A&gt;)</code></span></h3><div class='docblock'><p>Trains agent to perform well in the environment, potentially acting out multiple episodes</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;F:&nbsp;<a class='trait' href='../../num_traits/float/trait.Float.html' title='num_traits::float::Float'>Float</a>,&nbsp;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;T&gt; EpisodicTrainer&lt;S,&nbsp;A,&nbsp;T&gt; for <a class='struct' href='../../renforce/trainer/struct.CrossEntropy.html' title='renforce::trainer::CrossEntropy'>CrossEntropy</a>&lt;F&gt; <span class='where'>where T: <a class='trait' href='../../renforce/agent/trait.Agent.html' title='renforce::agent::Agent'>Agent</a>&lt;S,&nbsp;A&gt; + <a class='trait' href='../../renforce/util/trait.ParameterizedFunc.html' title='renforce::util::ParameterizedFunc'>ParameterizedFunc</a>&lt;F&gt;</span></code></li>
+    <li><code>impl&lt;F:&nbsp;<a class='trait' href='../../num_traits/float/trait.Float.html' title='trait num_traits::float::Float'>Float</a>, S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, T&gt; EpisodicTrainer&lt;S, A, T&gt; for <a class='struct' href='../../renforce/trainer/struct.CrossEntropy.html' title='struct renforce::trainer::CrossEntropy'>CrossEntropy</a>&lt;F&gt; <span class='where fmt-newline'>where T: <a class='trait' href='../../renforce/agent/trait.Agent.html' title='trait renforce::agent::Agent'>Agent</a>&lt;S, A&gt; + <a class='trait' href='../../renforce/util/trait.ParameterizedFunc.html' title='trait renforce::util::ParameterizedFunc'>ParameterizedFunc</a>&lt;F&gt;</span></code></li>
+<li><code>impl&lt;F:&nbsp;<a class='trait' href='../../num_traits/float/trait.Float.html' title='trait num_traits::float::Float'>Float</a>, S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.FiniteSpace.html' title='trait renforce::environment::FiniteSpace'>FiniteSpace</a>, G, T&gt; EpisodicTrainer&lt;S, A, T&gt; for <a class='struct' href='../../renforce/trainer/struct.PolicyGradient.html' title='struct renforce::trainer::PolicyGradient'>PolicyGradient</a>&lt;F, G&gt; <span class='where fmt-newline'>where T: <a class='trait' href='../../renforce/agent/trait.Agent.html' title='trait renforce::agent::Agent'>Agent</a>&lt;S, A&gt; + <a class='trait' href='../../renforce/util/trait.LogDiffFunc.html' title='trait renforce::util::LogDiffFunc'>LogDiffFunc</a>&lt;S, A, F&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;G: <a class='trait' href='../../renforce/util/trait.GradientDescAlgo.html' title='trait renforce::util::GradientDescAlgo'>GradientDescAlgo</a>&lt;F&gt;</span></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/renforce/trainer/trait.EpisodicTrainer.js">
                  </script></section>
@@ -119,11 +121,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

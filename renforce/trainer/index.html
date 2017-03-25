@@ -9,6 +9,7 @@
 
     <title>renforce::trainer - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,20 +48,20 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-154' class='srclink' href='../../src/renforce/src/trainer/mod.rs.html#1-33' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/renforce/trainer/mod.rs.html#1-37' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Trainer Module</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.CrossEntropy.html'
-                                  title='renforce::trainer::CrossEntropy'>CrossEntropy</a></td>
+                                  title='struct renforce::trainer::CrossEntropy'>CrossEntropy</a></td>
                            <td class='docblock-short'>
                                 <p>Cross Entropy method for parameter selection</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.DynaQ.html'
-                                  title='renforce::trainer::DynaQ'>DynaQ</a></td>
+                                  title='struct renforce::trainer::DynaQ'>DynaQ</a></td>
                            <td class='docblock-short'>
                                 <p>Represents an OnlineTrainer for Q-functions
 Uses the Dyna-Q algorithm</p>
@@ -68,15 +69,29 @@ Uses the Dyna-Q algorithm</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.FittedQIteration.html'
-                                  title='renforce::trainer::FittedQIteration'>FittedQIteration</a></td>
+                                  title='struct renforce::trainer::FittedQIteration'>FittedQIteration</a></td>
                            <td class='docblock-short'>
                                 <p>BatchTrainer for Q-functions
 Uses Fitted Q Iteration </p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='struct' href='struct.LSPolicyIteration.html'
+                                  title='struct renforce::trainer::LSPolicyIteration'>LSPolicyIteration</a></td>
+                           <td class='docblock-short'>
+                                <p>Least-squares Policy Iteration method</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PolicyGradient.html'
+                                  title='struct renforce::trainer::PolicyGradient'>PolicyGradient</a></td>
+                           <td class='docblock-short'>
+                                <p>A variation of the <a href="https://youtu.be/PtAIh9KSnjo?t=2590">Vanilla Policy Gradient</a> algorithm</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='struct' href='struct.QLearner.html'
-                                  title='renforce::trainer::QLearner'>QLearner</a></td>
+                                  title='struct renforce::trainer::QLearner'>QLearner</a></td>
                            <td class='docblock-short'>
                                 <p>Represents an OnlineTrainer for Q-functions
 Uses the <a href="https://www.wikiwand.com/en/Q-learning">Q-learning algorithm</a></p>
@@ -84,7 +99,7 @@ Uses the <a href="https://www.wikiwand.com/en/Q-learning">Q-learning algorithm</
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.SARSALearner.html'
-                                  title='renforce::trainer::SARSALearner'>SARSALearner</a></td>
+                                  title='struct renforce::trainer::SARSALearner'>SARSALearner</a></td>
                            <td class='docblock-short'>
                                 <p>Represents an OnlineTrainer for Q-functions
 Uses the <a href="https://www.wikiwand.com/en/State-Action-Reward-State-Action">SARSA algorithm</a></p>
@@ -93,21 +108,21 @@ Uses the <a href="https://www.wikiwand.com/en/State-Action-Reward-State-Action">
 <table>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.BatchTrainer.html'
-                                  title='renforce::trainer::BatchTrainer'>BatchTrainer</a></td>
+                                  title='trait renforce::trainer::BatchTrainer'>BatchTrainer</a></td>
                            <td class='docblock-short'>
                                 <p>Represents a way to train an agent from a set of transitions</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.EpisodicTrainer.html'
-                                  title='renforce::trainer::EpisodicTrainer'>EpisodicTrainer</a></td>
+                                  title='trait renforce::trainer::EpisodicTrainer'>EpisodicTrainer</a></td>
                            <td class='docblock-short'>
                                 <p>Trains agents 1 &quot;episode&quot; at a time</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.OnlineTrainer.html'
-                                  title='renforce::trainer::OnlineTrainer'>OnlineTrainer</a></td>
+                                  title='trait renforce::trainer::OnlineTrainer'>OnlineTrainer</a></td>
                            <td class='docblock-short'>
                                 <p>Represents a way to train an agent online (by interacting with the environment)</p>
                            </td>
@@ -167,11 +182,9 @@ Uses the <a href="https://www.wikiwand.com/en/State-Action-Reward-State-Action">
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

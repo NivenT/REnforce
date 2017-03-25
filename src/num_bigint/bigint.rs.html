@@ -9,6 +9,7 @@
 
     <title>bigint.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -1227,7 +1228,7 @@
     <span class='kw'>fn</span> <span class='ident'>serialize</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>serializer</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>
         <span class='kw'>where</span> <span class='ident'>S</span>: <span class='ident'>serde</span>::<span class='ident'>Serializer</span>
     {
-        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+        <span class='kw'>match</span> <span class='kw-2'>*</span><span class='self'>self</span> {
             <span class='ident'>Sign</span>::<span class='ident'>Minus</span> <span class='op'>=&gt;</span> (<span class='op'>-</span><span class='number'>1i8</span>).<span class='ident'>serialize</span>(<span class='ident'>serializer</span>),
             <span class='ident'>Sign</span>::<span class='ident'>NoSign</span> <span class='op'>=&gt;</span> <span class='number'>0i8</span>.<span class='ident'>serialize</span>(<span class='ident'>serializer</span>),
             <span class='ident'>Sign</span>::<span class='ident'>Plus</span> <span class='op'>=&gt;</span> <span class='number'>1i8</span>.<span class='ident'>serialize</span>(<span class='ident'>serializer</span>),
@@ -1426,7 +1427,7 @@
 
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>abs_sub</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>BigInt</span>) <span class='op'>-&gt;</span> <span class='ident'>BigInt</span> {
-        <span class='kw'>if</span> <span class='op'>*</span><span class='self'>self</span> <span class='op'>&lt;=</span> <span class='op'>*</span><span class='ident'>other</span> {
+        <span class='kw'>if</span> <span class='kw-2'>*</span><span class='self'>self</span> <span class='op'>&lt;=</span> <span class='kw-2'>*</span><span class='ident'>other</span> {
             <span class='ident'>Zero</span>::<span class='ident'>zero</span>()
         } <span class='kw'>else</span> {
             <span class='self'>self</span> <span class='op'>-</span> <span class='ident'>other</span>
@@ -1970,7 +1971,7 @@
         <span class='kw'>impl</span> <span class='ident'>ToBigInt</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>T</span> {
             <span class='attribute'>#[<span class='ident'>inline</span>]</span>
             <span class='kw'>fn</span> <span class='ident'>to_bigint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>BigInt</span><span class='op'>&gt;</span> {
-                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>from_ty</span>(<span class='op'>*</span><span class='self'>self</span>)
+                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>from_ty</span>(<span class='kw-2'>*</span><span class='self'>self</span>)
             }
         }
     }
@@ -2053,19 +2054,19 @@
         <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='ident'>bound</span>.<span class='ident'>bits</span>();
         <span class='kw'>loop</span> {
             <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>gen_biguint</span>(<span class='ident'>bits</span>);
-            <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&lt;</span> <span class='op'>*</span><span class='ident'>bound</span> {
+            <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&lt;</span> <span class='kw-2'>*</span><span class='ident'>bound</span> {
                 <span class='kw'>return</span> <span class='ident'>n</span>;
             }
         }
     }
 
     <span class='kw'>fn</span> <span class='ident'>gen_biguint_range</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>lbound</span>: <span class='kw-2'>&amp;</span><span class='ident'>BigUint</span>, <span class='ident'>ubound</span>: <span class='kw-2'>&amp;</span><span class='ident'>BigUint</span>) <span class='op'>-&gt;</span> <span class='ident'>BigUint</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>*</span><span class='ident'>lbound</span> <span class='op'>&lt;</span> <span class='op'>*</span><span class='ident'>ubound</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='kw-2'>*</span><span class='ident'>lbound</span> <span class='op'>&lt;</span> <span class='kw-2'>*</span><span class='ident'>ubound</span>);
         <span class='kw'>return</span> <span class='ident'>lbound</span> <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>gen_biguint_below</span>(<span class='kw-2'>&amp;</span>(<span class='ident'>ubound</span> <span class='op'>-</span> <span class='ident'>lbound</span>));
     }
 
     <span class='kw'>fn</span> <span class='ident'>gen_bigint_range</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>lbound</span>: <span class='kw-2'>&amp;</span><span class='ident'>BigInt</span>, <span class='ident'>ubound</span>: <span class='kw-2'>&amp;</span><span class='ident'>BigInt</span>) <span class='op'>-&gt;</span> <span class='ident'>BigInt</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>*</span><span class='ident'>lbound</span> <span class='op'>&lt;</span> <span class='op'>*</span><span class='ident'>ubound</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='kw-2'>*</span><span class='ident'>lbound</span> <span class='op'>&lt;</span> <span class='kw-2'>*</span><span class='ident'>ubound</span>);
         <span class='kw'>let</span> <span class='ident'>delta</span> <span class='op'>=</span> (<span class='ident'>ubound</span> <span class='op'>-</span> <span class='ident'>lbound</span>).<span class='ident'>to_biguint</span>().<span class='ident'>unwrap</span>();
         <span class='kw'>return</span> <span class='ident'>lbound</span> <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>gen_biguint_below</span>(<span class='kw-2'>&amp;</span><span class='ident'>delta</span>).<span class='ident'>to_bigint</span>().<span class='ident'>unwrap</span>();
     }
@@ -2316,11 +2317,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "num_bigint";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

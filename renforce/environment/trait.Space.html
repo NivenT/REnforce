@@ -9,6 +9,7 @@
 
     <title>renforce::environment::Space - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,29 +48,29 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-116' class='srclink' href='../../src/renforce/src/environment/mod.rs.html#20-26' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait Space: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> {
-    type <a href='#associatedtype.Element' class='type'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>;
-    fn <a href='#tymethod.sample' class='fnname'>sample</a>(&amp;self) -&gt; Self::Element;
+               </span><a class='srclink' href='../../src/renforce/environment/mod.rs.html#20-26' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Space: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a> {
+    type <a href='#associatedtype.Element' class='type'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='trait core::cmp::PartialEq'>PartialEq</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='trait core::clone::Clone'>Clone</a>;
+    fn <a href='#tymethod.sample' class='fnname'>sample</a>(&amp;self) -&gt; Self::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>;
 }</pre><div class='docblock'><p>Space Trait</p>
 
 <p>Represents a {State, Action} Space</p>
 </div>
             <h2 id='associated-types'>Associated Types</h2>
             <div class='methods'>
-        <h3 id='associatedtype.Element' class='method stab '><span id='Element.t' class='invisible'><code>type <a href='#associatedtype.Element' class='type'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></code></span></h3><div class='docblock'><p>The type of members of the Space</p>
+        <h3 id='associatedtype.Element' class='method'><span id='Element.t' class='invisible'><code>type <a href='#associatedtype.Element' class='type'>Element</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='trait core::fmt::Debug'>Debug</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='trait core::cmp::PartialEq'>PartialEq</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='trait core::clone::Clone'>Clone</a></code></span></h3><div class='docblock'><p>The type of members of the Space</p>
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.sample' class='method stab '><span id='sample.v' class='invisible'><code>fn <a href='#tymethod.sample' class='fnname'>sample</a>(&amp;self) -&gt; Self::Element</code></span></h3><div class='docblock'><p>Returns a random element of this space</p>
+        <h3 id='tymethod.sample' class='method'><span id='sample.v' class='invisible'><code>fn <a href='#tymethod.sample' class='fnname'>sample</a>(&amp;self) -&gt; Self::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a></code></span></h3><div class='docblock'><p>Returns a random element of this space</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl Space for <a class='struct' href='../../renforce/environment/struct.Finite.html' title='renforce::environment::Finite'>Finite</a></code></li>
-<li><code>impl Space for <a class='struct' href='../../renforce/environment/struct.Range.html' title='renforce::environment::Range'>Range</a></code></li>
+    <li><code>impl Space for <a class='struct' href='../../renforce/environment/struct.Finite.html' title='struct renforce::environment::Finite'>Finite</a></code></li>
+<li><code>impl Space for <a class='struct' href='../../renforce/environment/struct.Range.html' title='struct renforce::environment::Range'>Range</a></code></li>
 <li><code>impl Space for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a></code></li>
-<li><code>impl&lt;T:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;U:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; Space for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a>T, U<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></li>
-<li><code>impl&lt;T:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; Space for <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</code></li>
+<li><code>impl&lt;T:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, U:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; Space for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a>T, U<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></li>
+<li><code>impl&lt;T:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; Space for <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='struct collections::vec::Vec'>Vec</a>&lt;T&gt;</code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/renforce/environment/trait.Space.js">
                  </script></section>
@@ -128,11 +129,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

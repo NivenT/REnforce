@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["agent","Agent Module"],["environment","Environment Module"],["model","Model Module"],["stat","Statistics Module"],["trainer","Trainer Module"],["util","Utilities Module"]]});
+initSidebarItems({"mod":[["agent","Agent Module"],["environment","Environment Module"],["model","Model Module"],["prelude","The REnforce prelude."],["stat","Statistics Module"],["trainer","Trainer Module"],["util","Utilities Module"]]});

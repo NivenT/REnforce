@@ -9,6 +9,7 @@
 
     <title>lib.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -241,29 +242,29 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;num-bigint&quot;</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>bigint</span> {
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_bigint</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_bigint</span>::<span class='kw-2'>*</span>;
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;num-complex&quot;</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>complex</span> {
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_complex</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_complex</span>::<span class='kw-2'>*</span>;
 }
 
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>integer</span> {
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_integer</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_integer</span>::<span class='kw-2'>*</span>;
 }
 
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>iter</span> {
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_iter</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_iter</span>::<span class='kw-2'>*</span>;
 }
 
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>traits</span> {
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_traits</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_traits</span>::<span class='kw-2'>*</span>;
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;num-rational&quot;</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>rational</span> {
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_rational</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>num_rational</span>::<span class='kw-2'>*</span>;
 }
 </pre>
 </section>
@@ -322,11 +323,9 @@
     <script>
         window.rootPath = "../../";
         window.currentCrate = "num";
-        window.playgroundUrl = "http://play.rust-lang.org/";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    <script src="../../playpen.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

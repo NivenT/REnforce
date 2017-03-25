@@ -9,6 +9,7 @@
 
     <title>renforce::model::DeterministicModel - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -47,19 +48,19 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-665' class='srclink' href='../../src/renforce/src/model/mod.rs.html#43-50' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait DeterministicModel&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>,&nbsp;A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='renforce::environment::Space'>Space</a>&gt; {
-    fn <a href='#tymethod.transition2' class='fnname'>transition2</a>(&amp;self, curr: &amp;S::Element, action: &amp;A::Element) -&gt; S::Element;
-    fn <a href='#tymethod.reward2' class='fnname'>reward2</a>(&amp;self, curr: &amp;S::Element, action: &amp;A::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>;
-    fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, transition: <a class='type' href='../../renforce/environment/type.Transition.html' title='renforce::environment::Transition'>Transition</a>&lt;S,&nbsp;A&gt;);
+               </span><a class='srclink' href='../../src/renforce/model/mod.rs.html#43-50' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait DeterministicModel&lt;S:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>, A:&nbsp;<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Space</a>&gt; {
+    fn <a href='#tymethod.transition2' class='fnname'>transition2</a>(&amp;self, curr: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>, action: &amp;A::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>;
+    fn <a href='#tymethod.reward2' class='fnname'>reward2</a>(&amp;self, curr: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>, action: &amp;A::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>;
+    fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, transition: <a class='type' href='../../renforce/environment/type.Transition.html' title='type renforce::environment::Transition'>Transition</a>&lt;S, A&gt;);
 }</pre><div class='docblock'><p>Represents a deterministic model of an environment
 When the agent performs a specified action in a specified state, there&#39;s only one possible next state</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.transition2' class='method stab '><span id='transition2.v' class='invisible'><code>fn <a href='#tymethod.transition2' class='fnname'>transition2</a>(&amp;self, curr: &amp;S::Element, action: &amp;A::Element) -&gt; S::Element</code></span></h3><div class='docblock'><p>Returns the new state of the agent after performing action in curr</p>
-</div><h3 id='tymethod.reward2' class='method stab '><span id='reward2.v' class='invisible'><code>fn <a href='#tymethod.reward2' class='fnname'>reward2</a>(&amp;self, curr: &amp;S::Element, action: &amp;A::Element) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h3><div class='docblock'><p>Returns the reward received when performing action in curr</p>
-</div><h3 id='tymethod.update' class='method stab '><span id='update.v' class='invisible'><code>fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, transition: <a class='type' href='../../renforce/environment/type.Transition.html' title='renforce::environment::Transition'>Transition</a>&lt;S,&nbsp;A&gt;)</code></span></h3><div class='docblock'><p>Upates the model using information from the given transition</p>
+        <h3 id='tymethod.transition2' class='method'><span id='transition2.v' class='invisible'><code>fn <a href='#tymethod.transition2' class='fnname'>transition2</a>(&amp;self, curr: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>, action: &amp;A::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a></code></span></h3><div class='docblock'><p>Returns the new state of the agent after performing action in curr</p>
+</div><h3 id='tymethod.reward2' class='method'><span id='reward2.v' class='invisible'><code>fn <a href='#tymethod.reward2' class='fnname'>reward2</a>(&amp;self, curr: &amp;S::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>, action: &amp;A::<a class='trait' href='../../renforce/environment/trait.Space.html' title='trait renforce::environment::Space'>Element</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h3><div class='docblock'><p>Returns the reward received when performing action in curr</p>
+</div><h3 id='tymethod.update' class='method'><span id='update.v' class='invisible'><code>fn <a href='#tymethod.update' class='fnname'>update</a>(&amp;mut self, transition: <a class='type' href='../../renforce/environment/type.Transition.html' title='type renforce::environment::Transition'>Transition</a>&lt;S, A&gt;)</code></span></h3><div class='docblock'><p>Upates the model using information from the given transition</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
@@ -121,11 +122,9 @@ When the agent performs a specified action in a specified state, there&#39;s onl
     <script>
         window.rootPath = "../../";
         window.currentCrate = "renforce";
-        window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
-    
     <script defer src="../../search-index.js"></script>
 </body>
 </html>

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["GradDescMomentum","Basic gradient descent with momentum"],["GradientDesc","Simplest possible Gradient Descent algorithm Gradient step is just gradient * learning_rate"],["RMSProp","The RMSProp algorithm (Hinton et al. 2012)."]]});
