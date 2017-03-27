@@ -4,11 +4,13 @@ mod qlearner;
 mod cem;
 mod lspi;
 mod policygrad;
+mod nes;
 
 pub use self::qlearner::{QLearner, SARSALearner, DynaQ, FittedQIteration};
 pub use self::cem::CrossEntropy;
 pub use self::lspi::LSPolicyIteration;
 pub use self::policygrad::PolicyGradient;
+pub use self::nes::NaturalEvo;
 
 use environment::{Space, Environment, Transition};
 
