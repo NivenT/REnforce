@@ -328,3 +328,30 @@ fn pg_bandit() {
 	println!("PolicyGradient reward: {}", reward);
 	assert!(reward >= SOLVED_VALUE);
 }
+
+#[test]
+fn nes_bandit() {
+	let mut env = test_env();
+
+	let q_func = QLinear::default(&env.action_space());
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
+
+	let mut trainer = NaturalEvo::default().eval_period(TimePeriod::TIMESTEPS(5));
+	trainer.train(&mut agent, &mut env);
+
+	let mut obs = env.reset();
+	let mut iters = TRAINING_ITERS;
+	let mut reward = 0.0;
+
+	agent.set_epsilon(0.05);
+	while iters != 0 {
+		let action = agent.get_action(&obs.state);
+		obs = env.step(&action);
+
+		reward += obs.reward;
+		iters -= 1;
+	}
+
+	println!("NaturalEvo reward: {}", reward);
+	assert!(reward >= SOLVED_VALUE);
+}
