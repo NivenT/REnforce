@@ -52,9 +52,7 @@ pub fn shuffle<T: Clone>(nums: &mut [T]) {
 	for i in 0..(nums.len()-1) {
 		let j = rng.gen_range(i, nums.len());
 
-		let temp = nums[i].clone();
-		nums[i] = nums[j].clone();
-		nums[j] = temp;
+		nums.swap(i, j);
 	}
 }
 
