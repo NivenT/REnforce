@@ -11,6 +11,8 @@ use num::cast::NumCast;
 
 use environment::{Space, FiniteSpace};
 
+use agent::Agent;
+
 use util::{VFunction, QFunction};
 use util::{Feature, FeatureExtractor};
 use util::{ParameterizedFunc, DifferentiableFunc};
@@ -85,6 +87,14 @@ impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLine
 		grad
 	}
 	fn calculate(&self, state: &S::Element, _: &A::Element) -> F {
+		NumCast::from(self.eval(state)).unwrap()
+	}
+}
+
+// Not sure how I feel about letting functions be agents...
+impl<F: Float + Debug, S: Space, A: Space> Agent<S, A> for VLinear<F, S>
+	where A::Element: Float {
+	fn get_action(&self, state: &S::Element) -> A::Element {
 		NumCast::from(self.eval(state)).unwrap()
 	}
 }
