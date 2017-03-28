@@ -20,23 +20,27 @@ extern crate renforce;
 
 ## Example Usage
 See the [examples](https://github.com/NivenT/REnforce/tree/master/examples) and [tests](https://github.com/NivenT/REnforce/tree/master/tests) folders for example usage.
-In particular, once an environment has been set up, an agent can be trained and testing using code similar to this
+In particular, once an environment has been set up, an agent can be trained and tested using code similar to this
 
 ```Rust
 fn main() {
-	// What actions are available to the agent?
-	let action_space = ...
-	// Here, the agent will use a table as its Q-function
-	let q_func = QTable::new();
+	// Create the environment
+	let mut env = ExampleEnvironment::new();
+	
+	// Here, the agent will use linear value approximators for each action in a given state
+	// The agent will seelct actions based on how high of a value it assigns them
+	let q_func = QLinear::default(&env.action_space());
+	
 	// Creates an epsilon greedy Q-agent
 	// Agent will use softmax to act randomly 5% of the time
-	let mut agent = EGreedyQAgent::new(q_func, action_space, 0.05, Softmax::new(1.0));
-    // Create the environment
-	let mut env = ...
-	// Here, we use Q-learning to train the agent with
-	// discount factor and learning rate both 0.9 and
-	// 10000 training iterations
-	let trainer = QLearner::new(action_space, 0.9, 0.9, 10000);
+	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.05, Softmax::default());
+	
+	// Here, we use Q-learning to train the agent
+	// By default the discount factor is 0.95,
+	//            the learning rate is 0.1,
+	//            the trainer trains for 100 episodes when called train
+	// Here, we set the learning rate (alpha) to 0.9
+	let trainer = QLearner::default(&env.action_space()).alpha(0.9);
 
 	// Magic happens
 	trainer.train(&mut agent, &mut env);
@@ -48,9 +52,6 @@ fn main() {
 
 		let action = agent.get_action(obs.state);
 		obs = env.step(action);
-
-        // wait for user to press enter
-		let _ = stdin().read_line(&mut String::new());
 	}
 	env.render();
 }
@@ -61,4 +62,6 @@ A lot remains to be done, but the following reinforcement learning algorithms ha
 
 * [Q-learning](https://www.wikiwand.com/en/Q-learning)
 * [SARSA](https://www.wikiwand.com/en/State-Action-Reward-State-Action)
-* [Cross Entropy](https://gym.openai.com/docs/rl#black-box-optimization-and-the-cross-entropy-method)
+* [Cross Entropy](https://esc.fnwi.uva.nl/thesis/centraal/files/f2110275396.pdf)
+* [Vanilla Policy Gradients](https://youtu.be/PtAIh9KSnjo?t=2590)
+* [Natural Evolution Strategies](https://arxiv.org/pdf/1703.03864.pdf)
