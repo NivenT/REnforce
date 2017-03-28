@@ -41,6 +41,10 @@ impl Range {
 			high: high
 		}
 	}
+	/// Returns a symmetric Range with values drawn from [-abs, abs)
+	pub fn sym(abs: f64) -> Range {
+		Range::new(-abs, abs)
+	}
 	/// The minimum allowable value
 	pub fn low(&self) -> f64 {
 		self.low

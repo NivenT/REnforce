@@ -65,7 +65,7 @@ impl<F: Float, S: Space, A: Space, T> EpisodicTrainer<S, A, T> for CrossEntropy<
 		let mut scored_samples: Vec<_> = samples.into_iter()
 												.map(|s| (self.eval(s.clone(), agent, env), s))
 												.collect();
-		scored_samples.sort_by(|x, y| x.0.partial_cmp(&y.0).unwrap().reverse());
+		scored_samples.sort_by(|x, y| y.0.partial_cmp(&x.0).unwrap());
 		let scored_samples = &scored_samples[..num_keep];
 
 		for i in 0..self.mean_params.len() {
@@ -80,7 +80,7 @@ impl<F: Float, S: Space, A: Space, T> EpisodicTrainer<S, A, T> for CrossEntropy<
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		for _ in 0..self.iters {
-			self.train_step(agent, env);		
+			self.train_step(agent, env);
 		}
 	}
 }

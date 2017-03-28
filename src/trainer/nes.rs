@@ -43,14 +43,11 @@ impl<F: Float, S: Space, A: Space, T> EpisodicTrainer<S, A, T> for NaturalEvo<F>
 			self.mean_params = agent.get_params();
 		}
 
-		let normals: Vec<_> = (0..self.mean_params.len()).map(|i| {
-			Normal::new(self.mean_params[i].to_f64().unwrap(), 
-						self.deviation.to_f64().unwrap())
-		}).collect();
-
 		let samples: Vec<Vec<F>> = (0..self.num_samples).map(|_| {
-			normals.iter().map(|&distro| {
-				NumCast::from(distro.ind_sample(&mut rng)).unwrap()
+			(0..self.mean_params.len()).map(|i| {
+				let normal = Normal::new(self.mean_params[i].to_f64().unwrap(), 
+										 self.deviation.to_f64().unwrap());
+				NumCast::from(normal.ind_sample(&mut rng)).unwrap()
 			}).collect()
 		}).collect();
 
@@ -62,7 +59,7 @@ impl<F: Float, S: Space, A: Space, T> EpisodicTrainer<S, A, T> for NaturalEvo<F>
 		for d in 0..self.mean_params.len() {
 			let mut delta = F::zero();
 			for i in 0..self.num_samples {
-				delta = delta + scores[i]*samples[i][d];
+				delta = delta + scores[i]*(samples[i][d] - self.mean_params[d]);
 			}
 
 			let size: F = NumCast::from(self.num_samples).unwrap();
@@ -73,7 +70,7 @@ impl<F: Float, S: Space, A: Space, T> EpisodicTrainer<S, A, T> for NaturalEvo<F>
 	}
 	fn train(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
 		for _ in 0..self.iters {
-			self.train_step(agent, env);		
+			self.train_step(agent, env);
 		}
 	}
 }
@@ -151,6 +148,7 @@ impl<F: Float> NaturalEvo<F> {
 			time_remaining = time_remaining.dec(new_obs.done);
 			obs = if new_obs.done {env.reset()} else {new_obs};
 		}
+
 		NumCast::from(reward).unwrap()
 	}
 }
