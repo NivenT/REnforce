@@ -34,9 +34,23 @@ impl Default for Range {
 impl Range {
 	/// Returns a new Range with values drawn from [low, high)
 	pub fn new(low: f64, high: f64) -> Range {
+		assert!(low < high, "low must be less than high");
+
 		Range {
 			low: low,
 			high: high
 		}
+	}
+	/// The minimum allowable value
+	pub fn low(&self) -> f64 {
+		self.low
+	}
+	/// The maximum allowable value
+	pub fn high(&self) -> f64 {
+		self.high
+	}
+	/// The length of the range
+	pub fn length(&self) -> f64 {
+		self.high - self.low
 	}
 }
