@@ -15,7 +15,7 @@ use agent::Agent;
 
 use util::{VFunction, QFunction};
 use util::{Feature, FeatureExtractor};
-use util::{ParameterizedFunc, DifferentiableFunc};
+use util::{ParameterizedFunc, DifferentiableFunc, DifferentiableVecFunc};
 
 /// Represents a linear function approximator
 /// f(x) = w^T g(x) + b
@@ -88,6 +88,21 @@ impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLine
 	}
 	fn calculate(&self, state: &S::Element, _: &A::Element) -> F {
 		NumCast::from(self.eval(state)).unwrap()
+	}
+}
+
+impl<F: Float + Debug, S: Space> DifferentiableVecFunc<S, F> for VLinear<F, S> {
+	fn get_grads(&self, state: &S::Element) -> Vec<Vec<F>> {
+		let mut grads = Vec::with_capacity(self.weights.len());
+		grads[0] = vec![F::one()];
+
+		for feat in &self.features {
+			grads.push(vec![NumCast::from(feat.extract(state)).unwrap()]);
+		}
+		grads
+	}
+	fn apply(&self, state: &S::Element) -> Vec<F> {
+		vec![NumCast::from(self.eval(state)).unwrap()]
 	}
 }
 

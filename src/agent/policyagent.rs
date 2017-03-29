@@ -16,7 +16,7 @@ use util::chooser::Softmax;
 #[derive(Debug, Clone)]
 pub struct PolicyAgent<F: Float, S: Space, A: FiniteSpace, D: DifferentiableFunc<S, A, F>> { // TODO: Think of a better name
 	/// The function used by this agent to calculate weights passed into Softmax
-	pub log_func: D,
+	log_func: D,
 	/*
 	/// The space the agent draws its actions from
 	action_space: A, 

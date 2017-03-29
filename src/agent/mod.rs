@@ -4,9 +4,11 @@ pub mod qagents;
 pub mod vagents;
 mod randagent;
 mod policyagent;
+mod gaussianagent;
 
 pub use self::randagent::RandomAgent;
 pub use self::policyagent::PolicyAgent;
+pub use self::gaussianagent::GaussianAgent;
 
 use environment::Space;
 

@@ -33,6 +33,14 @@ pub trait DifferentiableFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> 
 	fn calculate(&self, state: &S::Element, action: &A::Element) -> T;
 }
 
+/// A differentiable function taking in a state and producing a vector output
+pub trait DifferentiableVecFunc<S: Space, T: Num> : ParameterizedFunc<T> {
+	/// Calculates the gradient of the output vector with respect to each parameter
+	fn get_grads(&self, state: &S::Element) -> Vec<Vec<T>>; // gradient vector for each parameter
+	/// Applies this function to the given state
+	fn apply(&self, state: &S::Element) -> Vec<T>;
+}
+
 /// A function taking in (state, action) pairs whose log can be differentiated
 pub trait LogDiffFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> {
 	/// The gradient of the log of the output with respect to the parameters
