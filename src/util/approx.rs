@@ -79,7 +79,7 @@ impl<S: Space, A: Space, F: Float + Debug> FeatureExtractor<S, A, F> for VLinear
 impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLinear<F, S> {
 	fn get_grad(&self, state: &S::Element, _: &A::Element) -> Vec<F> {
 		let mut grad = Vec::with_capacity(self.weights.len());
-		grad[0] = F::one();
+		grad.push(F::one());
 
 		for feat in &self.features {
 			grad.push(NumCast::from(feat.extract(state)).unwrap());
@@ -94,7 +94,7 @@ impl<S: Space, A: Space, F: Float + Debug> DifferentiableFunc<S, A, F> for VLine
 impl<F: Float + Debug, S: Space> DifferentiableVecFunc<S, F> for VLinear<F, S> {
 	fn get_grads(&self, state: &S::Element) -> Vec<Vec<F>> {
 		let mut grads = Vec::with_capacity(self.weights.len());
-		grads[0] = vec![F::one()];
+		grads.push(vec![F::one()]);
 
 		for feat in &self.features {
 			grads.push(vec![NumCast::from(feat.extract(state)).unwrap()]);

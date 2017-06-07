@@ -1,7 +1,7 @@
 use num::Float;
 use num::cast::NumCast;
 
-use environment::{Space, FiniteSpace, Environment};
+use environment::{Space, Environment};
 
 use trainer::EpisodicTrainer;
 
@@ -34,7 +34,7 @@ pub struct PolicyGradient<F: Float, G: GradientDescAlgo<F>> {
 
 // Sometimes I wonder if I'm using traits how they were meant to be used, because this just looks ugly
 // Honestly, even disregarding the trait boilerplate, this whole implementation is pretty messy
-impl<F: Float, S: Space, A: FiniteSpace, G, T> EpisodicTrainer<S, A, T> for PolicyGradient<F, G>
+impl<F: Float, S: Space, A: Space, G, T> EpisodicTrainer<S, A, T> for PolicyGradient<F, G>
 	where T: Agent<S, A> + LogDiffFunc<S, A, F>,
 		  G: GradientDescAlgo<F> {
 	fn train_step(&mut self, agent: &mut T, env: &mut Environment<State=S, Action=A>) {
@@ -131,7 +131,7 @@ impl<F: Float, G: GradientDescAlgo<F>> PolicyGradient<F, G> {
 	}
 	fn collect_trajectory<S, A, T>(&self, agent: &mut T, env: &mut Environment<State=S, Action=A>) -> (Vec<S::Element>, Vec<A::Element>, Vec<f64>)
 		where S: Space,
-			  A: FiniteSpace,
+			  A: Space,
 			  T: Agent<S, A> + LogDiffFunc<S, A, F> {
 		let (mut states, mut actions, mut rewards) = if let TimePeriod::TIMESTEPS(len) = self.eval_period.clone() {
 			(Vec::with_capacity(len), Vec::with_capacity(len), Vec::with_capacity(len))
@@ -160,8 +160,8 @@ impl<F: Float, G: GradientDescAlgo<F>> PolicyGradient<F, G> {
 				env.reset()
 			} else {new_obs};
 		}
-
 		rewards.extend_from_slice(&self.discount(ep_rewards));
-		(states, actions, rewards)
+
+        (states, actions, rewards)
 	}
 }

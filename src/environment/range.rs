@@ -57,4 +57,9 @@ impl Range {
 	pub fn length(&self) -> f64 {
 		self.high - self.low
 	}
+	/// Converts val to be in the range
+	// Terrible name for this
+	pub fn restrict(&self, val: f64) -> f64 {
+		(val - self.low())%self.length() + self.low()
+	}
 }

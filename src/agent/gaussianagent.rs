@@ -20,7 +20,9 @@ use util::{LogDiffFunc, DifferentiableVecFunc, ParameterizedFunc};
 // Can't tell if I hate or love traits
 pub struct GaussianAgent<F: Float, T: Into<F> + Clone, S: Space, A: Space, D: DifferentiableVecFunc<S, F>> 
 	where A::Element: Into<Vec<T>> {
-	mean_func: D,
+	/// The function used to calculate the mean value of the Gaussian the agent draws actions from
+	pub mean_func: D,
+	/// The standard deviation of the Gaussian used by the agent
 	deviation: F,
 
 	phant1: PhantomData<S::Element>,

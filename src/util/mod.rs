@@ -15,6 +15,9 @@ use num::Float;
 
 use environment::Space;
 
+// Is there a clean way to reduce the number of traits?
+// Are things progressing fine as is?
+
 /// A function that evaluates its input by making use of some parameters
 pub trait ParameterizedFunc<T: Num> {
 	/// Returns number of parameters used by the function
@@ -49,7 +52,7 @@ pub trait LogDiffFunc<S: Space, A: Space, T: Num> : ParameterizedFunc<T> {
 
 /// Calculates gradient steps
 pub trait GradientDescAlgo<F: Float> {
-	/// Calculates local step for minimizing function
+	/// Calculates local step for maximizing the function
 	fn calculate(&mut self, grad: Vec<F>, lr: F) -> Vec<F>;
 }
 

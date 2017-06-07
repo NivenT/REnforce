@@ -10,8 +10,8 @@ pub use trainer::{EpisodicTrainer, BatchTrainer, OnlineTrainer};
 
 pub use agent::Agent;
 pub use agent::qagents::{GreedyQAgent, EGreedyQAgent};
-pub use agent::{RandomAgent, PolicyAgent};
+pub use agent::{RandomAgent, PolicyAgent, GaussianAgent};
 
 pub use util::TimePeriod;
-pub use util::{ParameterizedFunc, DifferentiableFunc, LogDiffFunc, GradientDescAlgo};
+pub use util::{ParameterizedFunc, DifferentiableFunc, DifferentiableVecFunc, LogDiffFunc, GradientDescAlgo};
 pub use util::{QFunction, VFunction};
