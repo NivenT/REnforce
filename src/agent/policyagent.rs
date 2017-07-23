@@ -80,7 +80,8 @@ impl<F: Float, S: Space, A: FiniteSpace, D> LogDiffFunc<S, A, F> for PolicyAgent
 	where D: DifferentiableFunc<S, A, F> {
 	fn log_grad(&self, state: &S::Element, action: &A::Element) -> Vec<F> {
 		// Not 100% sure either of these are correct
-		self.log_func.get_grad(state, action)//self.calc_log_grad(state, action)
+		self.log_func.get_grad(state, action)
+		//self.calc_log_grad(state, action)
 	}
 }
 

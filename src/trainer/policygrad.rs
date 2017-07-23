@@ -75,7 +75,7 @@ impl<G: GradientDescAlgo<f64>> PolicyGradient<f64, G> {
 		PolicyGradient {
 			grad_desc: grad_desc,
 			gamma: 0.99,
-			lr: 0.0001,
+			lr: 0.001,
 			iters: 100,
 			eval_period: TimePeriod::EPISODES(5)
 		}

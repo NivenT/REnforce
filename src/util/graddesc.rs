@@ -85,7 +85,8 @@ impl<F: Float> GradientDescAlgo<F> for RMSProp<F> {
     				  .iter()
     				  .zip(grad.iter())
     				  .map(|(&x, &y)| x * self.decay_rate + y*y*(F::one() - self.decay_rate))
-    				  .collect());
+    				  .collect()
+        );
 
     	self.cache.as_ref()
     			  .unwrap()
