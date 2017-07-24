@@ -181,7 +181,8 @@ fn cem_bandit() {
 	let q_func = QLinear::default(&env.action_space());
 	let mut agent = EGreedyQAgent::new(q_func, env.action_space(), 0.2, Uniform);
 
-	let mut trainer = CrossEntropy::default().eval_period(TimePeriod::TIMESTEPS(5));
+	let mut trainer = CrossEntropy::default().eval_period(TimePeriod::TIMESTEPS(50))
+											 .iters(30).elite(0.1);
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
@@ -310,7 +311,7 @@ fn pg_bandit() {
 	let q_func = QLinear::default(&env.action_space());
 	let mut agent = PolicyAgent::new(env.action_space(), q_func, 0.01);
 
-	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(TimePeriod::TIMESTEPS(500)).iters(10).lr(0.01);
+	let mut trainer = PolicyGradient::default(GradientDesc).eval_period(TimePeriod::TIMESTEPS(500));
 	trainer.train(&mut agent, &mut env);
 
 	let mut obs = env.reset();
